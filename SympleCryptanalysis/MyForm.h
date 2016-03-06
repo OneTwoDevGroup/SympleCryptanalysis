@@ -34,6 +34,8 @@ namespace SympleCryptanalysis {
 				delete components;
 			}
 		}
+	private: System::Windows::Forms::Label^  label1;
+	protected:
 
 	private:
 		/// <summary>
@@ -48,11 +50,34 @@ namespace SympleCryptanalysis {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->components = gcnew System::ComponentModel::Container();
-			this->Size = System::Drawing::Size(300,300);
-			this->Text = L"MyForm";
-			this->Padding = System::Windows::Forms::Padding(0);
+			this->label1 = (gcnew System::Windows::Forms::Label());
+			this->SuspendLayout();
+			// 
+			// label1
+			// 
+			this->label1->AutoSize = true;
+			this->label1->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->label1->Font = (gcnew System::Drawing::Font(L"Calibri", 36, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(204)));
+			this->label1->Location = System::Drawing::Point(185, 136);
+			this->label1->Name = L"label1";
+			this->label1->Size = System::Drawing::Size(224, 59);
+			this->label1->TabIndex = 0;
+			this->label1->Text = L"Welcome!";
+			// 
+			// MyForm
+			// 
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->AutoSize = true;
+			this->BackColor = System::Drawing::SystemColors::Control;
+			this->ClientSize = System::Drawing::Size(584, 361);
+			this->Controls->Add(this->label1);
+			this->Name = L"MyForm";
+			this->Text = L"Symple Crypro";
+			this->ResumeLayout(false);
+			this->PerformLayout();
+
 		}
 #pragma endregion
 	};
