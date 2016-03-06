@@ -62,32 +62,32 @@ namespace SympleCryptanalysis {
 			this->label1->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
 			this->label1->Font = (gcnew System::Drawing::Font(L"Calibri", 36, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(204)));
-			this->label1->Location = System::Drawing::Point(247, 167);
-			this->label1->Margin = System::Windows::Forms::Padding(4, 0, 4, 0);
+			this->label1->Location = System::Drawing::Point(185, 136);
 			this->label1->Name = L"label1";
-			this->label1->Size = System::Drawing::Size(282, 73);
+			this->label1->Size = System::Drawing::Size(224, 59);
 			this->label1->TabIndex = 0;
 			this->label1->Text = L"Welcome!";
 			// 
 			// button1
 			// 
-			this->button1->Location = System::Drawing::Point(321, 278);
+			this->button1->Location = System::Drawing::Point(239, 197);
+			this->button1->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->button1->Name = L"button1";
-			this->button1->Size = System::Drawing::Size(75, 23);
+			this->button1->Size = System::Drawing::Size(96, 37);
 			this->button1->TabIndex = 1;
 			this->button1->Text = L"OK";
 			this->button1->UseVisualStyleBackColor = true;
+			this->button1->Click += gcnew System::EventHandler(this, &MyForm::button1_Click);
 			// 
 			// MyForm
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 			this->AutoSize = true;
 			this->BackColor = System::Drawing::SystemColors::Control;
-			this->ClientSize = System::Drawing::Size(779, 444);
+			this->ClientSize = System::Drawing::Size(584, 361);
 			this->Controls->Add(this->button1);
 			this->Controls->Add(this->label1);
-			this->Margin = System::Windows::Forms::Padding(4);
 			this->Name = L"MyForm";
 			this->Text = L"Symple Crypro";
 			this->ResumeLayout(false);
@@ -95,5 +95,8 @@ namespace SympleCryptanalysis {
 
 		}
 
+	private: System::Void button1_Click(System::Object^  sender, System::EventArgs^  e) {
+		Application::Exit();
+	}
 	};
 }
