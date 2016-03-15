@@ -136,16 +136,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="MyForm.cpp" />
+    <ClCompile Include="FrequencyAnalysis.cpp" />
+    <ClCompile Include="IndexOfСoincidence.cpp" />
+    <ClCompile Include="KasiskiExamination.cpp" />
+    <ClCompile Include="LinguisticAnalysis.cpp" />
+    <ClCompile Include="SympleCryptanalysis.cpp" />
+    <ClCompile Include="WordProcessing.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MyForm.h">
+    <ClInclude Include="FrequencyAnalysis.h" />
+    <ClInclude Include="IndexOfСoincidence.h" />
+    <ClInclude Include="KasiskiExamination.h" />
+    <ClInclude Include="LinguisticAnalysis.h" />
+    <ClInclude Include="SympleCryptanalysis.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="WordProcessing.h" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MyForm.resx">
-      <DependentUpon>MyForm.h</DependentUpon>
+    <EmbeddedResource Include="SympleCryptanalysis.resx">
+      <DependentUpon>SympleCryptanalysis.h</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

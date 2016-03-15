@@ -1,4 +1,9 @@
-#include "MyForm.h"
+#include "WordProcessing.h"
+#include "FrequencyAnalysis.h"
+#include "LinguisticAnalysis.h"
+#include "IndexOf—oincidence.h"
+#include "KasiskiExamination.h"
+#include "SympleCryptanalysis.h"
 
 using namespace System;
 using namespace System::Windows::Forms;
