@@ -9,11 +9,11 @@
 #include "WordProcessing.h"
 
 
-#define MAXALPHLEN 40    // Максимальная длина алфавита
+#define MAXALPHLEN 40    // РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° Р°Р»С„Р°РІРёС‚Р°
 
-WordProcessing::Alphabit alph("rus"); // Объявление используемого алфавита
+WordProcessing::Alphabit alph("eng");
 
-// функция сравнения элементов массива для функции QSort
+// С„СѓРЅРєС†РёСЏ СЃСЂР°РІРЅРµРЅРёСЏ СЌР»РµРјРµРЅС‚РѕРІ РјР°СЃСЃРёРІР° РґР»СЏ С„СѓРЅРєС†РёРё QSort
 int compare(const void * x1, const void * x2)
 {
 	double a = alph.freaquancy[*(int*)x2] - alph.freaquancy[*(int*)x1];
@@ -26,55 +26,87 @@ namespace FreaquancyAnalysis {
 
 	using namespace System;
 	using namespace msclr::interop;
-	
-	// Функция частотного анализа текста
-	// Соотносит частоты букв исходного текста буквам из заданного в алфавитном файле 
-	// частотному распределению. Ищется наименьшая разность частот для каждой буквы, начиная с
-	// самых чаcтых букв.
-	String^ CalcFreaquancy(String^ text) {
-		using namespace std;
-		//Alphabit alph("rus"); // Объявление используемого алфавита
-		text = text->ToLower();
 
-		// Подсчёт частот в заданном тексте
+
+	// Р¤СѓРЅРєС†РёСЏ С‡Р°СЃС‚РѕС‚РЅРѕРіРѕ Р°РЅР°Р»РёР·Р° С‚РµРєСЃС‚Р°
+	int CalcFreaquancy(String^ text) {
+
+		// РџРѕРґСЃС‡С‘С‚ С‡Р°СЃС‚РѕС‚ РІ Р·Р°РґР°РЅРЅРѕРј С‚РµРєСЃС‚Рµ
 		double freaquancy[MAXALPHLEN] = { 0.0 };
-		int charsAmount = 0;
+		double charsAmount = 0;
 		for (unsigned long i = 0; i < text->Length; i++) {
-			if (text[i] >= alph.firstchar && text[i] <= alph.lastchar) {
+			if (alph.isLetter(text[i])) {
 				freaquancy[text[i] - alph.firstchar] += 1;
 				charsAmount++;
 			}
 		}
 		for (int i = 0; i < alph.length; i++)
-			freaquancy[i] /= charsAmount / 100;
+			freaquancy[i] /= charsAmount;
 
-		// Инициализация массива индексов для соответствия отсортированному массиву по частоте
-		int newID[MAXALPHLEN]; for (int i = 0; i < alph.length; i++) newID[i] = i;
-		qsort(newID, alph.length, sizeof(int), compare);
-
-		// Поиск соответствий
-		double eps, temp;
-		int loc, conformity[MAXALPHLEN], chosen[MAXALPHLEN] = { 0 };
+		// РџРѕРґР±РѕСЂ СЃРґРІРёРіР°
+		int difference, min_difference = MAXINT32, best_shift = 0;
 		for (int i = 0; i < alph.length; i++) {
-			eps = 100.0;
-			loc = i;
-			for (int j = 0; j < alph.length; j++)
-				if (!chosen[j] && fabs(freaquancy[j] - alph.freaquancy[newID[i]]) < eps)
-				{
-					eps = fabs(freaquancy[j] - alph.freaquancy[newID[i]]);
-					loc = j;
-				}
-			conformity[newID[i]] = loc;
-			chosen[loc] = 1;
+			difference = 0;
+			for (int j = 0; j < alph.length; j++) {
+				difference += abs(freaquancy[j] - alph.freaquancy[(j + i) % alph.length]);
+			}
+			if (difference < min_difference) {
+				min_difference = difference;
+				best_shift = i;
+			}
 		}
 
-		String^ toFreaquancyTable;
-
-		for (int i = 0; i < alph.length; i++)
-			toFreaquancyTable += wchar_t(i + alph.firstchar) + "\t" + wchar_t(conformity[i] + alph.firstchar) +
-			"\t" + Convert::ToString(Math::Round(freaquancy[conformity[i]] * 100) / 100) + "%\r\n";
-
-		return toFreaquancyTable;
+		return best_shift;
 	}
+	
+	// Р¤СѓРЅРєС†РёСЏ С‡Р°СЃС‚РѕС‚РЅРѕРіРѕ Р°РЅР°Р»РёР·Р° С‚РµРєСЃС‚Р°
+	// РЎРѕРѕС‚РЅРѕСЃРёС‚ С‡Р°СЃС‚РѕС‚С‹ Р±СѓРєРІ РёСЃС…РѕРґРЅРѕРіРѕ С‚РµРєСЃС‚Р° Р±СѓРєРІР°Рј РёР· Р·Р°РґР°РЅРЅРѕРіРѕ РІ Р°Р»С„Р°РІРёС‚РЅРѕРј С„Р°Р№Р»Рµ 
+	// С‡Р°СЃС‚РѕС‚РЅРѕРјСѓ СЂР°СЃРїСЂРµРґРµР»РµРЅРёСЋ. РС‰РµС‚СЃСЏ РЅР°РёРјРµРЅСЊС€Р°СЏ СЂР°Р·РЅРѕСЃС‚СЊ С‡Р°СЃС‚РѕС‚ РґР»СЏ РєР°Р¶РґРѕР№ Р±СѓРєРІС‹, РЅР°С‡РёРЅР°СЏ СЃ
+	// СЃР°РјС‹С… С‡Р°cС‚С‹С… Р±СѓРєРІ.
+	//String^ CalcFreaquancy(String^ text) {
+	//	using namespace std;
+	//	//Alphabit alph("rus"); // РћР±СЉСЏРІР»РµРЅРёРµ РёСЃРїРѕР»СЊР·СѓРµРјРѕРіРѕ Р°Р»С„Р°РІРёС‚Р°
+	//	text = text->ToLower();
+
+	//	// РџРѕРґСЃС‡С‘С‚ С‡Р°СЃС‚РѕС‚ РІ Р·Р°РґР°РЅРЅРѕРј С‚РµРєСЃС‚Рµ
+	//	double freaquancy[MAXALPHLEN] = { 0.0 };
+	//	int charsAmount = 0;
+	//	for (unsigned long i = 0; i < text->Length; i++) {
+	//		if (text[i] >= alph.firstchar && text[i] <= alph.lastchar) {
+	//			freaquancy[text[i] - alph.firstchar] += 1;
+	//			charsAmount++;
+	//		}
+	//	}
+	//	for (int i = 0; i < alph.length; i++)
+	//		freaquancy[i] /= charsAmount / 100;
+
+	//	// РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РјР°СЃСЃРёРІР° РёРЅРґРµРєСЃРѕРІ РґР»СЏ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёСЏ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅРѕРјСѓ РјР°СЃСЃРёРІСѓ РїРѕ С‡Р°СЃС‚РѕС‚Рµ
+	//	int newID[MAXALPHLEN]; for (int i = 0; i < alph.length; i++) newID[i] = i;
+	//	qsort(newID, alph.length, sizeof(int), compare);
+
+	//	// РџРѕРёСЃРє СЃРѕРѕС‚РІРµС‚СЃС‚РІРёР№
+	//	double eps, temp;
+	//	int loc, conformity[MAXALPHLEN], chosen[MAXALPHLEN] = { 0 };
+	//	for (int i = 0; i < alph.length; i++) {
+	//		eps = 100.0;
+	//		loc = i;
+	//		for (int j = 0; j < alph.length; j++)
+	//			if (!chosen[j] && fabs(freaquancy[j] - alph.freaquancy[newID[i]]) < eps)
+	//			{
+	//				eps = fabs(freaquancy[j] - alph.freaquancy[newID[i]]);
+	//				loc = j;
+	//			}
+	//		conformity[newID[i]] = loc;
+	//		chosen[loc] = 1;
+	//	}
+
+	//	String^ toFreaquancyTable;
+
+	//	for (int i = 0; i < alph.length; i++)
+	//		toFreaquancyTable += wchar_t(i + alph.firstchar) + "\t" + wchar_t(conformity[i] + alph.firstchar) +
+	//		"\t" + Convert::ToString(Math::Round(freaquancy[conformity[i]] * 100) / 100) + "%\r\n";
+
+	//	return toFreaquancyTable;
+	//}
 
 }

@@ -8,9 +8,9 @@ namespace LinguisticAnalysis {
 	using namespace System;
 	using namespace msclr::interop;
 
-	// Функция поиска соответствия слов в словаре
-	// Словарь находится в файле Configs/dictionary.dic, содержит 
-	// большое количество слов одного языка
+	// Р¤СѓРЅРєС†РёСЏ РїРѕРёСЃРєР° СЃРѕРѕС‚РІРµС‚СЃС‚РІРёСЏ СЃР»РѕРІ РІ СЃР»РѕРІР°СЂРµ
+	// РЎР»РѕРІР°СЂСЊ РЅР°С…РѕРґРёС‚СЃСЏ РІ С„Р°Р№Р»Рµ Configs/dictionary.dic, СЃРѕРґРµСЂР¶РёС‚ 
+	// Р±РѕР»СЊС€РѕРµ РєРѕР»РёС‡РµСЃС‚РІРѕ СЃР»РѕРІ РѕРґРЅРѕРіРѕ СЏР·С‹РєР°
 	String^ DictionaryAnalysis(String^ text)
 	{
 		const int WORDS_COUNT = 1000000;
@@ -24,7 +24,7 @@ namespace LinguisticAnalysis {
 		string converted_text = msclr::interop::marshal_as<string>(text);
 
 		smatch match;
-		regex re("[а-яА-Я-]+");
+		regex re("[Р°-СЏРђ-РЇ-]+");
 
 		while (regex_search(converted_text, match, re))
 		{

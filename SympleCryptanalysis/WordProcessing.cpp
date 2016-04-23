@@ -5,10 +5,11 @@
 #include <wctype.h>
 #include "gcroot.h"
 #include <msclr/marshal_cppstd.h>
+#include "IndexOfРЎoincidence.h"
 
 
-#define MAXALPHLEN 40    // Максимальная длина алфавита
-#define ARRAY_SIZE 1000  // Максимальная длина массива изменений
+#define MAXALPHLEN 40    // РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° Р°Р»С„Р°РІРёС‚Р°
+#define ARRAY_SIZE 1000  // РњР°РєСЃРёРјР°Р»СЊРЅР°СЏ РґР»РёРЅР° РјР°СЃСЃРёРІР° РёР·РјРµРЅРµРЅРёР№
 
 
 namespace WordProcessing {
@@ -17,21 +18,17 @@ namespace WordProcessing {
 	using namespace msclr::interop;
 
 
-	// Класс определяет используемый алфавит, 
-	// все данные о требуемом алфавите берутся и файла Configs/langsFile.lng
-	// В файле содержатся данные о положениях первого и последнего символа алфавита 
-	// нижнего регистра в Unicode таблице, количество символов в алфавите и частотное распределение
+	// РљР»Р°СЃСЃ РѕРїСЂРµРґРµР»СЏРµС‚ РёСЃРїРѕР»СЊР·СѓРµРјС‹Р№ Р°Р»С„Р°РІРёС‚
 	class Alphabit {
 	public:
 		int firstchar, lastchar, length;
 		double freaquancy[MAXALPHLEN] = { 0.0 };
-
+		
+		// РљРѕРЅСЃС‚СЂСѓРєС‚РѕСЂ РєР»Р°СЃСЃР°.
+		// Р’СЃРµ РґР°РЅРЅС‹Рµ Рѕ С‚СЂРµР±СѓРµРјРѕРј Р°Р»С„Р°РІРёС‚Рµ Р±РµСЂСѓС‚СЃСЏ Рё С„Р°Р№Р»Р° Configs/langsFile.lng
+		// Р’ С„Р°Р№Р»Рµ СЃРѕРґРµСЂР¶Р°С‚СЃСЏ РґР°РЅРЅС‹Рµ Рѕ РїРѕР»РѕР¶РµРЅРёСЏС… РїРµСЂРІРѕРіРѕ Рё РїРѕСЃР»РµРґРЅРµРіРѕ СЃРёРјРІРѕР»Р° Р°Р»С„Р°РІРёС‚Р° 
+		// РЅРёР¶РЅРµРіРѕ СЂРµРіРёСЃС‚СЂР° РІ Unicode С‚Р°Р±Р»РёС†Рµ, РєРѕР»РёС‡РµСЃС‚РІРѕ СЃРёРјРІРѕР»РѕРІ РІ Р°Р»С„Р°РІРёС‚Рµ Рё С‡Р°СЃС‚РѕС‚РЅРѕРµ СЂР°СЃРїСЂРµРґРµР»РµРЅРёРµ
 		Alphabit(String^ lang) {
-			getDataFor(lang);
-		}
-
-	private:
-		void getDataFor(String^ lang) {
 			using namespace std;
 			ifstream langsFile("Configs/langsFile.lng");
 			string str;
@@ -41,87 +38,72 @@ namespace WordProcessing {
 			langsFile.close();
 		}
 
-	};
-	Alphabit alph("rus"); // Объявление используемого алфавита
+		// Р¤СѓРЅРєС†РёСЏ С„РѕСЂРјРёСЂСѓРµС‚ Р±СѓРєРІСѓ РїРѕ СЃРѕРѕС‚РІРµС‚СЃС‚РІСѓСЋС‰РµР№ РµР№ РїРѕР·РёС†РёРё РІ Р°Р»С„Р°РІРёС‚Рµ
+		__declspec(dllexport) wchar_t getLetter(int num) {
+			return firstchar + ((num + length) % length);
+		}
+
+		// Р¤СѓРЅРєС†РёСЏ РїСЂРѕРІРµСЂСЏРµС‚ СЃРёРјРІРѕР» РЅР° СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРµ Р±СѓРєРІРµ
+		__declspec(dllexport) bool isLetter(int num) {
+			return num >= firstchar && num <= lastchar;
+		}
+
+	} alph("eng"); // РћР±СЉСЏРІР»РµРЅРёРµ РёСЃРїРѕР»СЊР·СѓРµРјРѕРіРѕ Р°Р»С„Р°РІРёС‚Р°
 
 
-						  // Класс управляет изменениями в тексте и таблице частот по ходу работы для возможности отката изменений
+	// РљР»Р°СЃСЃ СѓРїСЂР°РІР»СЏРµС‚ РёР·РјРµРЅРµРЅРёСЏРјРё РІ С‚РµРєСЃС‚Рµ РїРѕ С…РѕРґСѓ СЂР°Р±РѕС‚С‹ РґР»СЏ РІРѕР·РјРѕР¶РЅРѕСЃС‚Рё РѕС‚РєР°С‚Р° РёР·РјРµРЅРµРЅРёР№
 	class Changes {
-	public:
-		gcroot<array<System::String ^>^> textChanges = gcnew array<System::String^ >(ARRAY_SIZE);       // Массив, содержащий все варианты изменённого текста
-		gcroot<array<System::String ^>^> freaquancyChanges = gcnew array<System::String^ >(ARRAY_SIZE); // Массив, содержащий все варианты изменённой таблицы частот
-		wchar_t conformityChanges[ARRAY_SIZE][MAXALPHLEN] = { 0 };										// Массив, содержащие все варианты изменения соответствий частот
-		int changedConformityIndex[ARRAY_SIZE][MAXALPHLEN] = { 0 };                                     // Массив, содержащий все варианты изменённых соответствий частот
-		int indexChangesAmount[ARRAY_SIZE] = { 0 };                                                     // Массив, содержащий все варианты количества соответствий частот
-		int last = -1;                                                                                  // Переменная определяет позицию в массивах последних изменений 
+	
+	private:
 
-																										// Функция сохраняет изменения
-		int save_changes(String^ text, wchar_t *conformity, String^ freaquancyTable) {
+		gcroot<array<System::String ^>^> textChanges = gcnew array<System::String^ >(ARRAY_SIZE);       // РњР°СЃСЃРёРІ СЃРѕРґРµСЂР¶РёС‚ РІСЃРµ РёР·РјРµРЅРµРЅРёСЏ С‚РµРєСЃС‚Р°
+		int last = 0;                                                                                   // РџРµСЂРµРјРµРЅРЅРЅР°СЏ РѕРїСЂРµРґРµР»СЏРµС‚ РЅРѕРјРµСЂ РїРѕСЃР»РµРґРЅРµРіРѕ РёР·РјРµРЅРµРЅРёСЏ
 
+		// Р¤СѓРЅРєС†РёСЏ СЃРѕС…СЂР°РЅСЏРµС‚ РёР·РјРµРЅРµРЅРёСЏ																								
+		void save_changes(String^ old_text) {
+			textChanges[last % ARRAY_SIZE] = old_text;
 			last++;
 
-			textChanges[last % ARRAY_SIZE] = text;
-			freaquancyChanges[last % ARRAY_SIZE] = freaquancyTable;
-			memcpy(conformityChanges[last % ARRAY_SIZE], conformity, alph.length * sizeof(wchar_t));
-
-			if (last != 0) {
-				int changesAmount = 0;
-
-				for (int i = 0; i < alph.length; i++)
-					if (conformityChanges[last][i] != conformityChanges[last - 1][i]) {
-						changedConformityIndex[last][changesAmount] = i;
-						changesAmount++;
-					}
-
-				if (changesAmount == 0) { last--; return 0; }
-				indexChangesAmount[last] = changesAmount;
-			}
-			else {
-				for (int i = 0; i < alph.length; i++)
-					changedConformityIndex[last][i] = i;
-				indexChangesAmount[last] = alph.length;
-			}
-
-			return 1;
-
 		}
 
-		// Функция возвращает последние изменения для отката
-		int getLast(String^ *text, String^ *freaquancyTable)
-		{
-			if (last == -1) return 0;
-			*text = textChanges[last % ARRAY_SIZE];
-			if (last == 0) *freaquancyTable = freaquancyChanges[last % ARRAY_SIZE];
-			else *freaquancyTable = freaquancyChanges[(last - 1) % ARRAY_SIZE];
-			last--;
-			return 1;
-		}
+	public:
 
-		// Функция передаёт исходный текст
+		// Р¤СѓРЅРєС†РёСЏ РїРµСЂРµРґР°С‘С‚ РёСЃС…РѕРґРЅС‹Р№ С‚РµРєСЃС‚
 		String^ getFirstText() { return textChanges[0]->ToLower(); }
-	};
-	Changes textChanges; // Объявление переменной для хранения изменений
 
-						 // Функция сохраняет последние изменения
-	String^ ChangeTextUp(String^ text, String^ freaquancyTable) {
+		// Р¤СѓРЅРєС†РёСЏ РїРµСЂРµРґР°С‘С‚ РїРѕСЃР»РµРґРЅРёР№ С‚РµРєСЃС‚
+		String^ getLastText() { return textChanges[last]->ToLower(); }
 
-		wchar_t conformity[MAXALPHLEN];
-		array< String^ >^ freaquancies = freaquancyTable->Split('%', '\r', '\n');
-		for (int i = 0; i < alph.length; i++)
-			conformity[i] = freaquancies[i * 3][2];
+		//Р¤СѓРЅРєС†РёСЏ РѕС‚РєР°С‚С‹РІР°РµС‚ РїРѕСЃР»РµРґРЅРёРµ РёР·РјРµРЅРµРЅРёСЏ
+		String^ changeTextDown() {
 
-		if (!textChanges.save_changes(text, conformity, freaquancyTable)) return text;
+			last--;
+			return textChanges[last];
+		}
 
-		text = textChanges.getFirstText();
+		//Р¤СѓРЅРєС†РёСЏ СЃРѕС…СЂР°РЅСЏРµС‚ РїРѕСЃР»РµРґРЅРёРµ РёР·РјРµРЅРµРЅРёСЏ
+		String^ changeTextUp(String^ old_text) {
 
-		for (int i = 0; i < alph.length; i++)
-			text = text->Replace(wchar_t(i + alph.firstchar) + "", (conformity[i] + "")->ToUpper());
-
-
-		return text->ToLower();
-	}
+			String^ new_text = IndexOfРЎoincidence::preparingText(old_text);
+			save_changes(old_text);
+			return new_text;
+			
+		}
 
 
-	// Функция откатывает последние изменения
-	int ChangeDown(String^ *text, String^ *freaquancyTable) { return textChanges.getLast(text, freaquancyTable); }
+
+	} textChanges; // Р­РєР·РµРјРїР»СЏСЂ РєР»Р°СЃСЃР° С…СЂР°РЅСЏС‰РёР№ РІСЃРµ РёР·РјРµРЅРµРЅРёСЏ
+
+	//Р¤СѓРЅРєС†РёСЏ СЃРѕС…СЂР°РЅСЏРµС‚ РїРѕСЃР»РµРґРЅРёРµ РёР·РјРµРЅРµРЅРёСЏ
+	String^ changeTextUp(String^ old_text) { return textChanges.changeTextUp(old_text); }
+
+	//Р¤СѓРЅРєС†РёСЏ РѕС‚РєР°С‚С‹РІР°РµС‚ РїРѕСЃР»РµРґРЅРёРµ РёР·РјРµРЅРµРЅРёСЏ
+	String^ changeTextDown() { return textChanges.changeTextDown(); }
+	
+	// Р¤СѓРЅРєС†РёСЏ РїРµСЂРµРґР°С‘С‚ РёСЃС…РѕРґРЅС‹Р№ С‚РµРєСЃС‚
+	String^ getFirstText() { return textChanges.getFirstText();  }
+
+	// Р¤СѓРЅРєС†РёСЏ РїРµСЂРµРґР°С‘С‚ РїРѕСЃР»РµРґРЅРёР№ С‚РµРєСЃС‚
+	String^ getLastText() { return textChanges.getLastText(); }
+
 }

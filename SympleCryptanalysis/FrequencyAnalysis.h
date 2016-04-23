@@ -4,5 +4,6 @@ using namespace System;
 
 namespace FreaquancyAnalysis {
 
-	String^ CalcFreaquancy(String^ text);
+	// Функция частотного анализа текста
+	int CalcFreaquancy(String^ text);
 }

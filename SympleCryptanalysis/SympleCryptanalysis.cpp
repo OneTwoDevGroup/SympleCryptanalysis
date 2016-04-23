@@ -1,7 +1,7 @@
 #include "WordProcessing.h"
 #include "FrequencyAnalysis.h"
 #include "LinguisticAnalysis.h"
-#include "IndexOf—oincidence.h"
+#include "IndexOf√ëoincidence.h"
 #include "KasiskiExamination.h"
 #include "SympleCryptanalysis.h"
 
