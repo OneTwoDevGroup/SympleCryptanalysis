@@ -24,13 +24,13 @@
     <ClCompile Include="KasiskiExamination.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IndexOfСoincidence.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WordProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SympleCryptanalysis.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="IndexOfCoincidence.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -44,13 +44,13 @@
     <ClInclude Include="KasiskiExamination.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IndexOfСoincidence.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SympleCryptanalysis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WordProcessing.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IndexOfCoincidence.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

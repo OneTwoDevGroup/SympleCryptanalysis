@@ -29,7 +29,7 @@ namespace FreaquancyAnalysis {
 
 
 	// Функция частотного анализа текста
-	int CalcFreaquancy(String^ text) {
+	int calcFreaquancy(String^ text) {
 
 		// Подсчёт частот в заданном тексте
 		double freaquancy[MAXALPHLEN] = { 0.0 };
@@ -41,14 +41,14 @@ namespace FreaquancyAnalysis {
 			}
 		}
 		for (int i = 0; i < alph.length; i++)
-			freaquancy[i] /= charsAmount;
+			freaquancy[i] /= charsAmount / 100;
 
 		// Подбор сдвига
 		int difference, min_difference = MAXINT32, best_shift = 0;
 		for (int i = 0; i < alph.length; i++) {
 			difference = 0;
 			for (int j = 0; j < alph.length; j++) {
-				difference += abs(freaquancy[j] - alph.freaquancy[(j + i) % alph.length]);
+				difference += abs(freaquancy[(j + i) % alph.length] - alph.freaquancy[j]);
 			}
 			if (difference < min_difference) {
 				min_difference = difference;

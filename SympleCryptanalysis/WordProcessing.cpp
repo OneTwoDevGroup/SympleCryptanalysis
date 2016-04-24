@@ -5,7 +5,7 @@
 #include <wctype.h>
 #include "gcroot.h"
 #include <msclr/marshal_cppstd.h>
-#include "IndexOfСoincidence.h"
+#include "IndexOfCoincidence.h"
 
 
 #define MAXALPHLEN 40    // Максимальная длина алфавита
@@ -76,8 +76,7 @@ namespace WordProcessing {
 
 		//Функция откатывает последние изменения
 		String^ changeTextDown() {
-
-			last--;
+			if (last > 0) last--;
 			return textChanges[last];
 		}
 

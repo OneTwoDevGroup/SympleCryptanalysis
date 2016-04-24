@@ -137,7 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FrequencyAnalysis.cpp" />
-    <ClCompile Include="IndexOfСoincidence.cpp" />
+    <ClCompile Include="IndexOfCoincidence.cpp" />
     <ClCompile Include="KasiskiExamination.cpp" />
     <ClCompile Include="LinguisticAnalysis.cpp" />
     <ClCompile Include="SympleCryptanalysis.cpp" />
@@ -145,7 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FrequencyAnalysis.h" />
-    <ClInclude Include="IndexOfСoincidence.h" />
+    <ClInclude Include="IndexOfCoincidence.h" />
     <ClInclude Include="KasiskiExamination.h" />
     <ClInclude Include="LinguisticAnalysis.h" />
     <ClInclude Include="SympleCryptanalysis.h">
