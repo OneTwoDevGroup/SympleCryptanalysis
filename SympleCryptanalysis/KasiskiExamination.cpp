@@ -5,7 +5,7 @@
 #include "malloc.h"
 #define N 5000
 #define r 256// ASCII
-#define R 26 //Мощность русского языка
+#define R 26 //Мощность языка
 
 
 namespace KasiskiExamination {
@@ -21,12 +21,15 @@ namespace KasiskiExamination {
 		int** lenght_distance;								//в lenght_distane[][0] заносится длина совпадения, в lenght_distance[][1] расстояние между совпадениями
 		char **matched;										//массив с совпавшими значениями
 		int max_match_sum = 0;								//кол-во одинаковых совпадений
-		int max_match_ind=-1;									// индекс максимального совпадения кол-ва
+		int max_match_ind=-1;								// индекс максимального совпадения кол-ва
 		int* count_matched;									// массив кол-ва совпадений
 		int w = 0;											// номер совпадения
 		int max_lenght_matched = 0;							//максимальное совпадение по длине
-		int max_lenght_distance = 0;                         //максимальное расстояние между совпадениями
+		int max_lenght_distance = 0;                        //максимальное расстояние между совпадениями
 		int max_m = -1;										//индекс; максимального совпадения
+		int dopmax, maxind;									// множитель и текущая длина ключа
+		float best;											
+		bool flag = 1;
 		int i = 0, j, l, g, z, s;							//счетчики
 
 		//строка с шифром//место поиска
@@ -46,20 +49,20 @@ namespace KasiskiExamination {
 					s = 0;
 					for (l = j + 1; l < size; l++)			// l - ищем все символы Alf[i] в строке S[j+]
 					{
-						if (S[l] < 97)
+
+						if ((S[l] < 97) || (S[l]>122))
 						{
 							s++;
 						}
 						if (S[l] == alf[i])
-						{
-
+						{	
 							g = 0;
 							while (((l + g) < size) && ((j + g) < size) && ((S[l + g] == S[j + g])/*||( S[l+g]<97||S[j+g]<97)*/))
 							{
 								g++;						//g считаем сколько символов совпало
 
 							}
-							if (g > (size / 3000) + 2)
+							if (g > 3)
 							{
 								matched = (char**)realloc(matched, (sizeof(char*)*(w + 1)));
 								matched[w] = (char*)malloc(1);
@@ -116,16 +119,12 @@ namespace KasiskiExamination {
 			}
 		}
 
-		for (i = 0; i < w; i++)
-		{
-			printf("         %s", matched[i]);
-		}
-
 		float* h;
 		h = (float*)malloc(sizeof(float));
-		for (j = 2; j < max_lenght_distance; j++)
+		for (j = 2; j <max_lenght_distance; j++)
 		{
 			h = (float*)realloc(h, (j+1)*(sizeof(float)));
+			h[j] = 0;
 			for (i = 0; i < w; i++)
 			{
 				if ((lenght_distance[i][1] % j) == 0)
@@ -133,10 +132,10 @@ namespace KasiskiExamination {
 					if (lenght_distance[i][0]>4)
 					{
 						if (count_matched[i]>2 * max_match_sum / 3)
-							h[j] += 4.0*lenght_distance[i][0];
+							h[j] += 4.0*lenght_distance[i][0]*lenght_distance[i][0];
 						else
 						{
-							h[j] += 2.0*lenght_distance[i][0];
+							h[j] += 2.0*lenght_distance[i][0]*lenght_distance[i][0];
 						}
 					}
 					else
@@ -144,22 +143,39 @@ namespace KasiskiExamination {
 
 
 						if (count_matched[i]>2 * max_match_sum / 3)
-							h[j] += 2.0*lenght_distance[i][0];
+							h[j] += 2.0*lenght_distance[i][0]*lenght_distance[i][0];
 						else
-							h[j] += 1.0*lenght_distance[i][0];
+							h[j] += 1.0*lenght_distance[i][0]*lenght_distance[i][0];
 					}
 				}
 			}
 		}
-		float max=h[2];
-		int maxind=2;
-		for (j = 3; j < max_lenght_distance; j++)
+		
+		h[0] = 1;
+		best = 1.0;
+		maxind = 1;
+
+		while (TRUE)
 		{
-			if (h[j] > max)
+			dopmax = 0;
+			for (j = 2; j < max_lenght_distance; j++)
 			{
-				max = h[j];
-				maxind = j;
+				if (h[dopmax] < h[j])
+				{
+					dopmax = j;
+				}
 			}
+			if ((dopmax*maxind<max_lenght_distance)&&(best / h[dopmax*maxind] < 1.05))
+			{
+				maxind = dopmax*maxind;
+				best = h[maxind];
+			}
+			else
+			{
+				h[dopmax] = 1;
+			}
+			if (dopmax == 0)
+				break;
 		}
 
 		//ЗАЧИСТКА
