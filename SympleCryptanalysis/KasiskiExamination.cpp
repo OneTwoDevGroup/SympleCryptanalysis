@@ -171,6 +171,7 @@ namespace KasiskiExamination {
 		}
 		free(matched);
 		free(lenght_distance);
+		free(h);
 
 		return maxind;
 
