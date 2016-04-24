@@ -4,6 +4,6 @@ namespace KasiskiExamination {
 	using namespace System;
 
 	// Функция подбора длины ключа
-	float* keyLengthSearch(String^ text);
+	int keyLengthSearch(String^ text);
 
 }

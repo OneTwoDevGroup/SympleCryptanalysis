@@ -21,8 +21,8 @@ namespace IndexOfСoincidence {
 	String^ keySearch(String^ text) {
 		
 		// Определяем длину ключа
-		//int key_length = KasiskiExamination::keyLengthSearch(text);
-		int key_length = 4;
+		int key_length = KasiskiExamination::keyLengthSearch(text);
+	//	int key_length = 4;
 
 		// Задаём массив групп, на которые разбивается текст в зависимости от длины ключа
 		array<System::String ^>^ group = gcnew array<System::String^>(MAXKEYAMOUNT);
