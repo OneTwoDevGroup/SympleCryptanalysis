@@ -19,12 +19,12 @@ namespace LinguisticAnalysis {
 
 		using namespace std;
 
-		ifstream dictionary("Configs/dictionary.dic");
+		ifstream dictionary("Configs/english_dictionary.dic");
 
 		string converted_text = msclr::interop::marshal_as<string>(text);
 
 		smatch match;
-		regex re("[а-яА-Я-]+");
+		regex re("\\b[a-zA-Z'-]+\\b");
 
 		while (regex_search(converted_text, match, re))
 		{
