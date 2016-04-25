@@ -16,6 +16,7 @@ namespace LinguisticAnalysis {
 		const int WORDS_COUNT = 1000000;
 		array<System::String ^>^ words = gcnew array<System::String^ >(WORDS_COUNT);
 		int words_amount = 0;
+		int total_words = 0;
 
 		using namespace std;
 
@@ -30,6 +31,7 @@ namespace LinguisticAnalysis {
 		while (regex_search(converted_text, match, re))
 		{
 			string word = match.str();
+			total_words++;
 			long long index = 0; // сдвиг
 
 			string index_letter;
@@ -48,7 +50,7 @@ namespace LinguisticAnalysis {
 			dictionary.seekg(index); // переход по индексу
 
 			string dic_word;
-			while (getline(dictionary, dic_word) && dic_word != word);
+			while (getline(dictionary, dic_word) && dic_word != word && dic_word[0]==word[0]);
 			if (dic_word == word) {
 				words[words_amount] = msclr::interop::marshal_as<String^>(word);
 				words_amount++;
@@ -57,7 +59,10 @@ namespace LinguisticAnalysis {
 			converted_text = match.suffix().str();
 		}
 
-		String^ dictionaryConformity = "Found conformity in dictionary\r\n";
+		float wordsFound = (float)words_amount / total_words*100;
+		
+		String^ dictionaryConformity = wordsFound.ToString() + "% of words were found in the dictionary.\r\n\r\n";
+		dictionaryConformity += "Found conformity in dictionary\r\n";
 
 		for (int i = 0; i < words_amount; i++)
 			dictionaryConformity += words[i] + "\r\n";
