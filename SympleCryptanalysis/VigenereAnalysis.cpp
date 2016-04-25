@@ -237,7 +237,7 @@ namespace VigenereAnalysis {
 	// Функция дешифрует текст
 	String^ textPreparing(String^ text) {
 
-		String^ key = keySearch(text);				// Подбираем ключ
+		String^ key = keyDeducing(text);				// Подбираем ключ
 		Text::StringBuilder text_builder(text);		// Формируем изменяемую строку
 
 													// Заменяет символы текста в соответствии с ключом и квадратом Веженера

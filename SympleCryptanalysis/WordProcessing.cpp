@@ -83,7 +83,7 @@ namespace WordProcessing {
 		//Функция сохраняет последние изменения
 		String^ changeTextUp(String^ old_text) {
 
-			String^ new_text = VigenereAnalysis::preparingText(old_text);
+			String^ new_text = VigenereAnalysis::textPreparing(old_text);
 			save_changes(old_text);
 			return new_text;
 			

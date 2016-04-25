@@ -11,9 +11,9 @@ namespace VigenereAnalysis {
 	void IndexOfСoincidence();
 
 	// Функция подбирает ключ, основываясь на длине ключа, используя частотный анализ
-	String^ keySearch(String^ text);
+	String^ keyDeducing(String^ text);
 
 	// Функция дешифрует текст
-	String^ preparingText(String^ text);
+	String^ textPreparing(String^ text);
 
 }
