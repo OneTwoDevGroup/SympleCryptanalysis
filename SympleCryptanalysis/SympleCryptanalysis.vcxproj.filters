@@ -21,16 +21,13 @@
     <ClCompile Include="LinguisticAnalysis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="KasiskiExamination.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="WordProcessing.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="SympleCryptanalysis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="IndexOfCoincidence.cpp">
+    <ClCompile Include="VigenereAnalysis.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,16 +38,13 @@
     <ClInclude Include="LinguisticAnalysis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="KasiskiExamination.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="SympleCryptanalysis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="WordProcessing.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="IndexOfCoincidence.h">
+    <ClInclude Include="VigenereAnalysis.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

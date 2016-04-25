@@ -36,20 +36,28 @@ namespace SympleCryptanalysis {
 				}
 			}
 		private: System::Windows::Forms::RichTextBox^  TextBox;
-
-
-
-
-
-
-
-
-		private: System::Windows::Forms::Panel^  panel1;
-
-		private: System::Windows::Forms::Button^  ChangeTextUpButton;
-		private: System::Windows::Forms::Button^  ChangeTextDownButton;
-		private: System::Windows::Forms::Button^  FindInDictionaryButton;
 		private: System::Windows::Forms::TextBox^  DictionaryConformityText;
+		private: System::Windows::Forms::Panel^  panel1;
+		private: System::Windows::Forms::Button^  FindInDictionaryButton;
+		private: System::Windows::Forms::Button^  ChangeTextDownButton;
+		private: System::Windows::Forms::Button^  ChangeTextUpButton;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -78,8 +86,8 @@ namespace SympleCryptanalysis {
 			void InitializeComponent(void)
 			{
 				this->TextBox = (gcnew System::Windows::Forms::RichTextBox());
-				this->panel1 = (gcnew System::Windows::Forms::Panel());
 				this->DictionaryConformityText = (gcnew System::Windows::Forms::TextBox());
+				this->panel1 = (gcnew System::Windows::Forms::Panel());
 				this->FindInDictionaryButton = (gcnew System::Windows::Forms::Button());
 				this->ChangeTextDownButton = (gcnew System::Windows::Forms::Button());
 				this->ChangeTextUpButton = (gcnew System::Windows::Forms::Button());
@@ -101,54 +109,59 @@ namespace SympleCryptanalysis {
 				this->TextBox->Text = L"";
 				this->TextBox->TextChanged += gcnew System::EventHandler(this, &MyForm::TextBox_TextChanged);
 				// 
-				// panel1
-				// 
-				this->panel1->Anchor = static_cast<System::Windows::Forms::AnchorStyles>((System::Windows::Forms::AnchorStyles::Top | System::Windows::Forms::AnchorStyles::Right));
-				this->panel1->Controls->Add(this->DictionaryConformityText);
-				this->panel1->Controls->Add(this->FindInDictionaryButton);
-				this->panel1->Controls->Add(this->ChangeTextDownButton);
-				this->panel1->Controls->Add(this->ChangeTextUpButton);
-				this->panel1->Location = System::Drawing::Point(738, 0);
-				this->panel1->Name = L"panel1";
-				this->panel1->Size = System::Drawing::Size(246, 561);
-				this->panel1->TabIndex = 5;
-				// 
 				// DictionaryConformityText
 				// 
-				this->DictionaryConformityText->Anchor = System::Windows::Forms::AnchorStyles::Top;
-				this->DictionaryConformityText->Location = System::Drawing::Point(7, 121);
+				this->DictionaryConformityText->Dock = System::Windows::Forms::DockStyle::Right;
+				this->DictionaryConformityText->Location = System::Drawing::Point(755, 0);
 				this->DictionaryConformityText->Multiline = true;
 				this->DictionaryConformityText->Name = L"DictionaryConformityText";
 				this->DictionaryConformityText->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-				this->DictionaryConformityText->Size = System::Drawing::Size(229, 440);
-				this->DictionaryConformityText->TabIndex = 7;
+				this->DictionaryConformityText->Size = System::Drawing::Size(229, 561);
+				this->DictionaryConformityText->TabIndex = 11;
+				// 
+				// panel1
+				// 
+				this->panel1->Controls->Add(this->FindInDictionaryButton);
+				this->panel1->Controls->Add(this->ChangeTextDownButton);
+				this->panel1->Controls->Add(this->ChangeTextUpButton);
+				this->panel1->Dock = System::Windows::Forms::DockStyle::Fill;
+				this->panel1->Location = System::Drawing::Point(500, 0);
+				this->panel1->Name = L"panel1";
+				this->panel1->Size = System::Drawing::Size(255, 561);
+				this->panel1->TabIndex = 12;
 				// 
 				// FindInDictionaryButton
 				// 
-				this->FindInDictionaryButton->Location = System::Drawing::Point(7, 56);
+				this->FindInDictionaryButton->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->FindInDictionaryButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
+				this->FindInDictionaryButton->Location = System::Drawing::Point(53, 370);
 				this->FindInDictionaryButton->Name = L"FindInDictionaryButton";
-				this->FindInDictionaryButton->Size = System::Drawing::Size(94, 38);
-				this->FindInDictionaryButton->TabIndex = 6;
+				this->FindInDictionaryButton->Size = System::Drawing::Size(149, 38);
+				this->FindInDictionaryButton->TabIndex = 13;
 				this->FindInDictionaryButton->Text = L"Find In Dictionary";
 				this->FindInDictionaryButton->UseVisualStyleBackColor = true;
 				this->FindInDictionaryButton->Click += gcnew System::EventHandler(this, &MyForm::FindInDictionaryButton_Click);
 				// 
 				// ChangeTextDownButton
 				// 
-				this->ChangeTextDownButton->Location = System::Drawing::Point(141, 57);
+				this->ChangeTextDownButton->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->ChangeTextDownButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
+				this->ChangeTextDownButton->Location = System::Drawing::Point(53, 262);
 				this->ChangeTextDownButton->Name = L"ChangeTextDownButton";
-				this->ChangeTextDownButton->Size = System::Drawing::Size(95, 37);
-				this->ChangeTextDownButton->TabIndex = 5;
+				this->ChangeTextDownButton->Size = System::Drawing::Size(150, 37);
+				this->ChangeTextDownButton->TabIndex = 12;
 				this->ChangeTextDownButton->Text = L"Cancel Changes";
 				this->ChangeTextDownButton->UseVisualStyleBackColor = true;
 				this->ChangeTextDownButton->Click += gcnew System::EventHandler(this, &MyForm::ChangeTextDownButton_Click);
 				// 
 				// ChangeTextUpButton
 				// 
-				this->ChangeTextUpButton->Location = System::Drawing::Point(141, 14);
+				this->ChangeTextUpButton->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->ChangeTextUpButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
+				this->ChangeTextUpButton->Location = System::Drawing::Point(53, 153);
 				this->ChangeTextUpButton->Name = L"ChangeTextUpButton";
-				this->ChangeTextUpButton->Size = System::Drawing::Size(95, 37);
-				this->ChangeTextUpButton->TabIndex = 4;
+				this->ChangeTextUpButton->Size = System::Drawing::Size(150, 37);
+				this->ChangeTextUpButton->TabIndex = 11;
 				this->ChangeTextUpButton->Text = L"Change Text";
 				this->ChangeTextUpButton->UseVisualStyleBackColor = true;
 				this->ChangeTextUpButton->Click += gcnew System::EventHandler(this, &MyForm::ChangeTextUpButton_Click);
@@ -159,6 +172,7 @@ namespace SympleCryptanalysis {
 				this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 				this->ClientSize = System::Drawing::Size(984, 561);
 				this->Controls->Add(this->panel1);
+				this->Controls->Add(this->DictionaryConformityText);
 				this->Controls->Add(this->TextBox);
 				this->MinimumSize = System::Drawing::Size(1000, 600);
 				this->Name = L"MyForm";
@@ -166,8 +180,8 @@ namespace SympleCryptanalysis {
 				this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 				this->Resize += gcnew System::EventHandler(this, &MyForm::MyForm_Resize);
 				this->panel1->ResumeLayout(false);
-				this->panel1->PerformLayout();
 				this->ResumeLayout(false);
+				this->PerformLayout();
 
 			}
 #pragma endregion
@@ -182,11 +196,12 @@ namespace SympleCryptanalysis {
 		private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
 		}
 
+		
 		// Обработка нажатия кнопки изменения текста
 		private: System::Void ChangeTextUpButton_Click(System::Object^  sender, System::EventArgs^  e) {
 			TextBox->Text = WordProcessing::changeTextUp(TextBox->Text);
 		}
-		
+
 		// Обработка нажатия кнопки отката измений
 		private: System::Void ChangeTextDownButton_Click(System::Object^  sender, System::EventArgs^  e) {
 			TextBox->Text = WordProcessing::changeTextDown();
@@ -196,5 +211,5 @@ namespace SympleCryptanalysis {
 		private: System::Void FindInDictionaryButton_Click(System::Object^  sender, System::EventArgs^  e) {
 			DictionaryConformityText->Text = LinguisticAnalysis::DictionaryAnalysis(TextBox->Text);
 		}
-		};
-	}
+	};
+}

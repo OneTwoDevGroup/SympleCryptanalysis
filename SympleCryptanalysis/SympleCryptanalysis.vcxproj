@@ -137,20 +137,18 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="FrequencyAnalysis.cpp" />
-    <ClCompile Include="IndexOfCoincidence.cpp" />
-    <ClCompile Include="KasiskiExamination.cpp" />
     <ClCompile Include="LinguisticAnalysis.cpp" />
     <ClCompile Include="SympleCryptanalysis.cpp" />
+    <ClCompile Include="VigenereAnalysis.cpp" />
     <ClCompile Include="WordProcessing.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="FrequencyAnalysis.h" />
-    <ClInclude Include="IndexOfCoincidence.h" />
-    <ClInclude Include="KasiskiExamination.h" />
     <ClInclude Include="LinguisticAnalysis.h" />
     <ClInclude Include="SympleCryptanalysis.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="VigenereAnalysis.h" />
     <ClInclude Include="WordProcessing.h" />
   </ItemGroup>
   <ItemGroup>

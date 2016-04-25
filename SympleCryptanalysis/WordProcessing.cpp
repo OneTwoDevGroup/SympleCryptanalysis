@@ -5,8 +5,8 @@
 #include <wctype.h>
 #include "gcroot.h"
 #include <msclr/marshal_cppstd.h>
-#include "IndexOfCoincidence.h"
 
+#include "VigenereAnalysis.h"
 
 #define MAXALPHLEN 40    // Максимальная длина алфавита
 #define ARRAY_SIZE 1000  // Максимальная длина массива изменений
@@ -83,7 +83,7 @@ namespace WordProcessing {
 		//Функция сохраняет последние изменения
 		String^ changeTextUp(String^ old_text) {
 
-			String^ new_text = IndexOfСoincidence::preparingText(old_text);
+			String^ new_text = VigenereAnalysis::preparingText(old_text);
 			save_changes(old_text);
 			return new_text;
 			
