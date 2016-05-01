@@ -14,12 +14,12 @@
 #define MAXKEYAMOUNT 100
 
 namespace VigenereAnalysis {
-		
+
 	using namespace System;
 	WordProcessing::Alphabit alph("eng"); // Класс определяет используемый язык
 
 
-	// Функция подбора длины ключа
+										  // Функция подбора длины ключа
 	int KasiskiExamination(String^ text)
 	{
 		int size;
@@ -199,22 +199,23 @@ namespace VigenereAnalysis {
 		return maxind;
 	}
 
-	
+
 
 	// Функция находит длину ключа, используя метод индекса совпадений
 	void IndexOfСoincidence() {
 
 	}
 
+
 	// Функция подбирает ключ, основываясь на длине ключа, используя частотный анализ
-	String^ keyDeducing(String^ text) {
+	String^ keyDeducing(String^ text, int **conformity) {
 
 		// Определяем длину ключа
 		int key_length = KasiskiExamination(text);
 		//	int key_length = 4;
 
 		// Задаём массив групп, на которые разбивается текст в зависимости от длины ключа
-		array<System::String ^>^ group = gcnew array<System::String^>(MAXKEYAMOUNT);
+		array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
 
 		// Задаём переменную под хранение ключа
 		String^ key;
@@ -223,12 +224,43 @@ namespace VigenereAnalysis {
 		int not_letters = 0; // Опеределяет количество небуквенных символов, которые нужно пропустить
 		for (int j = 0; j < text->Length; j++) {
 			if (!alph.isLetter(text[j])) { not_letters++; continue; }
-			group[(j - not_letters) % key_length] += text[j];
+			groups[(j - not_letters) % key_length] += text[j];
 		}
+
+		double *text_frequency = FrequencyAnalysis::frequencyDetermination(groups[0]);
+		int shifts[MAXKEYAMOUNT];
+		for (int i = 1; i < key_length; i++) {
+
+			double *group_frequency = FrequencyAnalysis::frequencyDetermination(groups[i]);
+			long double max_conformity_coef = 0; int best_shift;
+
+			for (int shift = 0; shift < alph.length; shift++) {
+				long double conformity_coef = 0;
+				for (char letter = 0; letter < alph.length; letter++)
+					conformity_coef += text_frequency[letter] * group_frequency[(letter + shift) % alph.length];
+				
+				if (max_conformity_coef < conformity_coef) {
+					max_conformity_coef = conformity_coef;
+					best_shift = shift;
+				}
+			}
+
+			shifts[i] = best_shift;
+			for (char letter = 0; letter < alph.length; letter++)
+				text_frequency[letter] += group_frequency[(letter + best_shift) % alph.length];
+
+		}
+
+		for (int i = 0; i < alph.length; i++) text_frequency[i] /= key_length;
+
+
+		//memcpy(conformity, FrequencyAnalysis::conformityDetermination(text_frequency), sizeof(int) * MAXALPHLEN);
+		*conformity = FrequencyAnalysis::conformityDetermination(text_frequency);
 
 		// Цикл делает частотный анализ для каждой группы и формирует ключ
 		for (int i = 0; i < key_length; i++)
-			key += alph.getLetter(FreaquancyAnalysis::calcFreaquancy(group[i]));
+			//key += alph.getLetter(FrequencyAnalysis::shiftDeducing(groups[i], conformity));
+			key += alph.getLetter(shifts[i]);
 
 
 		return key;
@@ -237,14 +269,15 @@ namespace VigenereAnalysis {
 	// Функция дешифрует текст
 	String^ textPreparing(String^ text) {
 
-		String^ key = keyDeducing(text);				// Подбираем ключ
-		Text::StringBuilder text_builder(text);		// Формируем изменяемую строку
+		int **conformity = (int**)malloc(1);			// Таблицы соответствия букв шифротекста буквам исходного алфавита
+		String^ key = keyDeducing(text, conformity);	// Подбираем ключ
+		Text::StringBuilder text_builder(text);			// Формируем изменяемую строку
 
-													// Заменяет символы текста в соответствии с ключом и квадратом Веженера
+		// Заменяет символы текста в соответствии с ключом и квадратом Веженера
 		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
 		for (int j = 0; j < text->Length; j++) {
 			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
-			text_builder[j] = alph.getLetter(text_builder[j] - key[(j - not_letters) % key->Length]);
+			text_builder[j] = alph.getLetter((*conformity)[text_builder[j] - key[(j - not_letters) % key->Length]]);
 		}
 
 

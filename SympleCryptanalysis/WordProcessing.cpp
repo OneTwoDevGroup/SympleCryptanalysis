@@ -5,6 +5,7 @@
 #include <wctype.h>
 #include "gcroot.h"
 #include <msclr/marshal_cppstd.h>
+#include <algorithm>
 
 #include "VigenereAnalysis.h"
 
@@ -20,9 +21,24 @@ namespace WordProcessing {
 
 	// Класс определяет используемый алфавит
 	class Alphabit {
+	private:
+		void sort(double *frequency, int *frequency_indexing) {
+			
+			for (int i = 0; i < length - 1; i++) {
+				int max_id = i;
+				for (int j = i + 1; j < length; j++)
+					if (frequency[frequency_indexing[j]] > frequency[frequency_indexing[max_id]])
+						max_id = j;
+				int tmp = frequency_indexing[i];
+				frequency_indexing[i] = frequency_indexing[max_id];
+				frequency_indexing[max_id] = tmp;
+			}
+		}
+
 	public:
 		int firstchar, lastchar, length;
-		double freaquancy[MAXALPHLEN] = { 0.0 };
+		double frequency[MAXALPHLEN] = { 0.0 };
+		int freq_sorted_index[MAXALPHLEN] = { 0 };
 		
 		// Конструктор класса.
 		// Все данные о требуемом алфавите берутся и файла Configs/langsFile.lng
@@ -34,8 +50,10 @@ namespace WordProcessing {
 			string str;
 			while (getline(langsFile, str) && String::Compare(marshal_as<String^>(str), lang));
 			langsFile >> firstchar >> lastchar >> length;
-			for (int i = 0; i < length; i++) langsFile >> freaquancy[i];
+			for (int i = 0; i < length; i++) langsFile >> frequency[i];
 			langsFile.close();
+
+			formIndexing(frequency, freq_sorted_index);
 		}
 
 		// Функция формирует букву по соответствующей ей позиции в алфавите
@@ -46,6 +64,13 @@ namespace WordProcessing {
 		// Функция проверяет символ на соответствие букве
 		__declspec(dllexport) bool isLetter(int num) {
 			return num >= firstchar && num <= lastchar;
+		}
+
+		// Инициализация массива индексов для соответствия отсортированному массиву по частоте
+		__declspec(dllexport) void formIndexing(double *frequency, int *frequency_indexing) {
+			for (int i = 0; i < length; i++) frequency_indexing[i] = i;
+			sort(frequency, frequency_indexing);
+
 		}
 
 	} alph("eng"); // Объявление используемого алфавита
