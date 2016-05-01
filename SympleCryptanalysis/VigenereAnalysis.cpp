@@ -18,7 +18,7 @@ namespace VigenereAnalysis {
 
 	using namespace System;
 	WordProcessing::Alphabit alph("eng"); // Класс определяет используемый язык
-	int Index (String^ text,float*)
+	int* Index (String^ text)
 	{
 		unsigned char alf[R] = { 'А','Б','В','Г','Д','Е','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ъ','Ы','Ь','Ю','Я' };
 		unsigned	char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
@@ -58,26 +58,46 @@ namespace VigenereAnalysis {
 
 		float average;
 		float max = FLT_MAX;
-		int besti=-1;
-		for (i = 1; i < u; i++)
+		float mindx;
+		int besti[u] = {0};
+		for (i = 0; i < u; i++)
 		{
-			average = 0;
-			for (j = 0; j < i; j++)
+			for (j = i + 1; j < u; j++)
 			{
-				average += IS[i][j];
-			}
-			average /= j;
-			if (fabs(average / 0.055 - 1) < fabs(max / 0.055 - 1))
-			{
-				max = average;
-				besti = i;
+				mindx = 0;
+				for (k = 0; k<j; k++)
+				{
+					if (fabs(IS[i][j] - 0.55)>mindx)
+						mindx = fabs(IS[i][j] - 0.55);
+				}
+				if (mindx < max)
+				{
+					max = mindx;
+					besti[i] = j;
+				}
 			}
 		}
+		/*for (i = 1; i < u; i++)
+		{
+			mindx = 0;
+			for (j = 0; j < i; j++)
+			{
+				if (fabs(IS[i][j] - 0.55)>mindx)
+					mindx = fabs(IS[i][j] - 0.55);
+			}
+			
+			if (mindx <max)
+			{
+				max = mindx;
+				besti =i;
+			}
+		}*/
+
 
 		return besti;
 	}
 	// Функция подбора длины ключа
-	float* KasiskiExamination(String^ text)
+	int* KasiskiExamination(String^ text)
 	{
 		int size;
 		//char alf[R] = { 'a','b','c','d','e','f','h','i','j','k','l','m','n','o','p','r','s','t','u','w','v','q','z','g' ,'x' };//буквы английского алфавита
@@ -231,6 +251,7 @@ namespace VigenereAnalysis {
 				}
 			}
 		}
+		int besti[u];
 
 		/*h[0] = 1;
 		best = 1.0;
@@ -258,7 +279,19 @@ namespace VigenereAnalysis {
 			if (dopmax == 0)
 				break;
 		}*/
-
+		
+		float max;
+		for (i = 0; i < u; i++)
+		{
+			max = 0;
+			for (j = i+1; j < u;j++)
+				if (h[j]>max)
+				{
+					max = h[j];
+					maxind = j;
+				}
+			besti[i] = maxind;
+		}
 		//ЗАЧИСТКА
 		//free(count_matched);
 		for (i = 0; i < w; i++)
@@ -270,15 +303,48 @@ namespace VigenereAnalysis {
 		free(lenght_distance);
 		free(h);
 
-		return h;
+		return besti;
 	}
 
+	int* result(int* besti1, int *besti2)
+	{
+		int i, j, best,k,max1,max2;
+		float min;
+		int result[u];
+		for (k = 0; k < u; k++)
+		{
+			min = LONG_MAX;
+			best = 0;
+			max1 = 0;
+			max2 = 0;
+			for (i = 0; i < u; i++)
+			{
+				for (j = 0; j < u; j++)
+				{
+					if ((besti1[i] == besti2[j]) && (i + j < min))
+					{
+						if (besti1[i] && besti2[j])
+						{
+							min = i + j;
+							best = besti1[i];
+							max1 = i;
+							max2 = j;
+						}
+						
+					}
+				}
+			}
+			result[k] = best;
+			besti1[max1] = 0;
+			besti2[max2] = 0;
 
+
+		}
+		return result;
+	}
 
 	// Функция находит длину ключа, используя метод индекса совпадений
-	void IndexOfСoincidence() {
-
-	}
+	
 
 
 	// Функция подбирает ключ, основываясь на длине ключа, используя частотный анализ
@@ -287,7 +353,7 @@ namespace VigenereAnalysis {
 		// Определяем длину ключа
 		
 //		int key_length = KasiskiExamination(text);
-		int key_length =Index(text, KasiskiExamination(text));
+		int* key_length = result(KasiskiExamination(text), Index(text));
 		//	int key_length = 4;
 
 		// Задаём массив групп, на которые разбивается текст в зависимости от длины ключа
