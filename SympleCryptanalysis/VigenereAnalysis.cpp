@@ -366,12 +366,12 @@ namespace VigenereAnalysis {
 		int not_letters = 0; // Опеределяет количество небуквенных символов, которые нужно пропустить
 		for (int j = 0; j < text->Length; j++) {
 			if (!alph.isLetter(text[j])) { not_letters++; continue; }
-			groups[(j - not_letters) % key_length] += text[j];
+			groups[(j - not_letters) % *key_length] += text[j];
 		}
 
 		double *text_frequency = FrequencyAnalysis::frequencyDetermination(groups[0]);
 		int shifts[MAXKEYAMOUNT];
-		for (int i = 1; i < key_length; i++) {
+		for (int i = 1; i < *key_length; i++) {
 
 			double *group_frequency = FrequencyAnalysis::frequencyDetermination(groups[i]);
 			long double max_conformity_coef = 0; int best_shift;
@@ -393,14 +393,14 @@ namespace VigenereAnalysis {
 
 		}
 
-		for (int i = 0; i < alph.length; i++) text_frequency[i] /= key_length;
+		for (int i = 0; i < alph.length; i++) text_frequency[i] /= *key_length;
 
 
 		//memcpy(conformity, FrequencyAnalysis::conformityDetermination(text_frequency), sizeof(int) * MAXALPHLEN);
 		*conformity = FrequencyAnalysis::conformityDetermination(text_frequency);
 
 		// Цикл делает частотный анализ для каждой группы и формирует ключ
-		for (int i = 0; i < key_length; i++)
+		for (int i = 0; i < *key_length; i++)
 			//key += alph.getLetter(FrequencyAnalysis::shiftDeducing(groups[i], conformity));
 			key += alph.getLetter(shifts[i]);
 
