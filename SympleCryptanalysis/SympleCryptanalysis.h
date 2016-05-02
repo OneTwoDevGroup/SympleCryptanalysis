@@ -199,7 +199,7 @@ namespace SympleCryptanalysis {
 		
 		// Обработка нажатия кнопки изменения текста
 		private: System::Void ChangeTextUpButton_Click(System::Object^  sender, System::EventArgs^  e) {
-			TextBox->Text = WordProcessing::changeTextUp(TextBox->Text);
+			TextBox->Text = WordProcessing::changeTextUp(TextBox->Text->ToLower());
 		}
 
 		// Обработка нажатия кнопки отката измений

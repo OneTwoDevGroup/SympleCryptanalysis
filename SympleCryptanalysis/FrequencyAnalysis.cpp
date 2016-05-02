@@ -12,7 +12,7 @@
 
 #define MAXALPHLEN 40    // Максимальная длина алфавита
 
-WordProcessing::Alphabit alph("eng");
+WordProcessing::Alphabit alph("rus");
 
 
 
@@ -24,10 +24,10 @@ namespace FrequencyAnalysis {
 
 	// Поиск соответствий букв шифротекста буквам исходного алфавита 
 	int *conformityDetermination(double *frequency) {
-		
-		int *conformity = (int*)malloc(MAXALPHLEN *sizeof(int));
-		int sorted_freq_index[MAXALPHLEN]; 
-		
+
+		int *conformity = (int*)malloc(MAXALPHLEN * sizeof(int));
+		int sorted_freq_index[MAXALPHLEN];
+
 		alph.formIndexing(frequency, sorted_freq_index);
 
 		for (int i = 0; i < alph.length; i++)
@@ -139,7 +139,7 @@ namespace FrequencyAnalysis {
 	//	return first_conformity;
 	//}
 
-	
+
 
 
 

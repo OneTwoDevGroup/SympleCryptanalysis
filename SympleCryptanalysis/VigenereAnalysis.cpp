@@ -2,6 +2,8 @@
 #include <msclr/marshal.h>
 #include "string.h"
 #include "malloc.h"
+#include <fcntl.h>
+#include <io.h>
 
 #include "WordProcessing.h"
 #include "FrequencyAnalysis.h"
@@ -17,7 +19,7 @@
 namespace VigenereAnalysis {
 
 	using namespace System;
-	WordProcessing::Alphabit alph("eng"); // Класс определяет используемый язык
+	WordProcessing::Alphabit alph("rus"); // Класс определяет используемый язык
 	int* Index (String^ text)
 	{
 		unsigned char alf[R] = { 'А','Б','В','Г','Д','Е','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ъ','Ы','Ь','Ю','Я' };
@@ -348,12 +350,12 @@ namespace VigenereAnalysis {
 
 
 	// Функция подбирает ключ, основываясь на длине ключа, используя частотный анализ
-	String^ keyDeducing(String^ text, int **conformity) {
+	String^ keyDetermination(String^ text, int **conformity) {
 
 		// Определяем длину ключа
 		
 //		int key_length = KasiskiExamination(text);
-		int* key_length = result(KasiskiExamination(text), Index(text));
+		int key_length = *(result(KasiskiExamination(text), Index(text)));
 		//	int key_length = 4;
 
 		// Задаём массив групп, на которые разбивается текст в зависимости от длины ключа
@@ -366,12 +368,13 @@ namespace VigenereAnalysis {
 		int not_letters = 0; // Опеределяет количество небуквенных символов, которые нужно пропустить
 		for (int j = 0; j < text->Length; j++) {
 			if (!alph.isLetter(text[j])) { not_letters++; continue; }
-			groups[(j - not_letters) % *key_length] += text[j];
+			groups[(j - not_letters) % key_length] += text[j];
 		}
 
 		double *text_frequency = FrequencyAnalysis::frequencyDetermination(groups[0]);
+
 		int shifts[MAXKEYAMOUNT];
-		for (int i = 1; i < *key_length; i++) {
+		for (int i = 1; i < key_length; i++) {
 
 			double *group_frequency = FrequencyAnalysis::frequencyDetermination(groups[i]);
 			long double max_conformity_coef = 0; int best_shift;
@@ -380,7 +383,7 @@ namespace VigenereAnalysis {
 				long double conformity_coef = 0;
 				for (char letter = 0; letter < alph.length; letter++)
 					conformity_coef += text_frequency[letter] * group_frequency[(letter + shift) % alph.length];
-				
+
 				if (max_conformity_coef < conformity_coef) {
 					max_conformity_coef = conformity_coef;
 					best_shift = shift;
@@ -389,18 +392,27 @@ namespace VigenereAnalysis {
 
 			shifts[i] = best_shift;
 			for (char letter = 0; letter < alph.length; letter++)
-				text_frequency[letter] += group_frequency[(letter + best_shift) % alph.length];
+				text_frequency[letter] = (text_frequency[letter] + group_frequency[(letter + best_shift) % alph.length]) / 2;
 
 		}
 
-		for (int i = 0; i < alph.length; i++) text_frequency[i] /= *key_length;
 
 
-		//memcpy(conformity, FrequencyAnalysis::conformityDetermination(text_frequency), sizeof(int) * MAXALPHLEN);
+		// Отладочная информация
+		FILE *log_file = fopen("Configs/log.txt", "w+");
+		_setmode(_fileno(log_file), _O_U8TEXT);
+
+		fwprintf(log_file, L"Таблица частот для всего текста суммарно:\n");
+		for (int i = 0; i < alph.length; i++)
+			fwprintf(log_file, L"%lc - %lf\n", alph.getLetter(i), text_frequency[i]);
+		fclose(log_file);
+		// Отладочная информация
+
+
 		*conformity = FrequencyAnalysis::conformityDetermination(text_frequency);
 
 		// Цикл делает частотный анализ для каждой группы и формирует ключ
-		for (int i = 0; i < *key_length; i++)
+		for (int i = 0; i < key_length; i++)
 			//key += alph.getLetter(FrequencyAnalysis::shiftDeducing(groups[i], conformity));
 			key += alph.getLetter(shifts[i]);
 
@@ -412,16 +424,30 @@ namespace VigenereAnalysis {
 	String^ textPreparing(String^ text) {
 
 		int **conformity = (int**)malloc(1);			// Таблицы соответствия букв шифротекста буквам исходного алфавита
-		String^ key = keyDeducing(text, conformity);	// Подбираем ключ
+		String^ key = keyDetermination(text, conformity);	// Подбираем ключ
 		Text::StringBuilder text_builder(text);			// Формируем изменяемую строку
 
-		// Заменяет символы текста в соответствии с ключом и квадратом Веженера
+														// Заменяет символы текста в соответствии с ключом и квадратом Веженера
 		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
 		for (int j = 0; j < text->Length; j++) {
 			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
 			text_builder[j] = alph.getLetter((*conformity)[text_builder[j] - key[(j - not_letters) % key->Length]]);
 		}
 
+
+		// Отладочная информация
+		FILE *log_file = fopen("Configs/log.txt", "r+");
+		fseek(log_file, 0, SEEK_END);
+		_setmode(_fileno(log_file), _O_U8TEXT);
+
+		fwprintf(log_file, L"\nКлюч: %LS\n\n", PtrToStringChars(key));
+
+		fwprintf(log_file, L"Таблица моноалфавитного соответствия: \n");
+		for (int i = 0; i < alph.length; i++)
+			fwprintf(log_file, L"%lc - %lc\n", alph.getLetter(i), alph.getLetter((*conformity)[i]));
+
+		fclose(log_file);
+		// Отладочная информация
 
 		return text_builder.ToString();				// Возвращаем изменённую строку
 	}
