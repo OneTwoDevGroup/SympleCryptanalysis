@@ -354,9 +354,9 @@ namespace VigenereAnalysis {
 
 		// Определяем длину ключа
 		
-//		int key_length = KasiskiExamination(text);
-		int key_length = *(result(KasiskiExamination(text), Index(text)));
-		//	int key_length = 4;
+        //int key_length = KasiskiExamination(text)[0];
+		//int key_length = *(result(KasiskiExamination(text), Index(text)));
+		int key_length = 4;
 
 		// Задаём массив групп, на которые разбивается текст в зависимости от длины ключа
 		array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
@@ -431,7 +431,7 @@ namespace VigenereAnalysis {
 		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
 		for (int j = 0; j < text->Length; j++) {
 			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
-			text_builder[j] = alph.getLetter((*conformity)[text_builder[j] - key[(j - not_letters) % key->Length]]);
+			text_builder[j] = alph.getLetter((*conformity)[(alph.length + text_builder[j] - key[(j - not_letters) % key->Length])% alph.length]);
 		}
 
 
