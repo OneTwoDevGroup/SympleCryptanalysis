@@ -27,7 +27,7 @@ namespace VigenereAnalysis {
 //char alf[R] = { 'А','Б','В','Г','Д','Е','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ъ','Ы','Ь','Ю','Я' };
 unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','э','ъ','ы','ь','ю','я' };
 
-unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
+		unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
 		int i, j,l,k;
 		float IS[u][u];
 		float n = 0,f=0;
@@ -37,10 +37,10 @@ unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Mars
 			
 			for (k = 0; k < i; k++)
 			{
-				n = 0;
 				IS[i][k] = 0;
 				for (j = 0; j < R - 1; j++)
 				{
+					n = 0;
 					f = 0;
 					for (l = k; l < size; l += i)
 					{
@@ -57,8 +57,10 @@ unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Mars
 										  // Функция подбора длины ключа
 					}
 					IS[i][k] += f*(f - 1.0);
+					
 				}
 				IS[i][k] /= n*(n - 1.0);
+				
 			}
 		}
 
@@ -117,7 +119,7 @@ unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Mars
 	{
 		int size;
 		//char alf[R] = { 'a','b','c','d','e','f','h','i','j','k','l','m','n','o','p','r','s','t','u','w','v','q','z','g' ,'x' };//буквы английского алфавита
-	unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','э','ъ','ы','ь','ю','я' };
+		unsigned char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','э','ъ','ы','ь','ю','я' };
 		char buff[100];										//Для копирование строк
 		int** lenght_distance;								//в lenght_distane[][0] заносится длина совпадения, в lenght_distance[][1] расстояние между совпадениями
 		char **matched;										//массив с совпавшими значениями
@@ -136,7 +138,7 @@ unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Mars
 		int i = 0, j, l, g, z, s,k,f;							//счетчики
 
 															//строка с шифром//место поиска
-		unsigned char *S = ( unsigned char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
+		unsigned char *S =(unsigned char*) ( char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
 
 		i = 0;
 		size = strlen((const char*)S);
@@ -368,10 +370,12 @@ unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Mars
 	String^ keyDetermination(String^ text, int **conformity) {
 
 		// Определяем длину ключа
-		
-        //int key_length = KasiskiExamination(text)[0];
 		int* lenght = (result(KasiskiExamination(text), Index(text)));
-		int key_length = *(result(KasiskiExamination(text), Index(text)));
+		int i;
+        //int key_length = KasiskiExamination(text)[0];
+		for (i = 0; i < u; i++)
+			lenght++;
+			int key_length = *(result(KasiskiExamination(text), Index(text)));
 
 		// Задаём массив групп, на которые разбивается текст в зависимости от длины ключа
 		array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
