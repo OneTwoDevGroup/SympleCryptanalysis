@@ -30,36 +30,55 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 		unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
 		int i, j,l,k;
 		float IS[u][u];
-		float n = 0,f=0;
+		int n = 0,f=0,g;
 		int size = strlen((const char*)S);
 		for (i = 1; i < u; i++)
 		{
 			
 			for (k = 0; k < i; k++)
 			{
-				IS[i][k] = 0;
+				IS[i][k] = 0.0;
 				for (j = 0; j < R - 1; j++)
 				{
 					n = 0;
 					f = 0;
-					for (l = k; l < size; l += i)
+					l = 0;
+					g = i-k;
+					while(l < size)
 					{
-						while ( (l<size)&&((S[l] <MAXLOW) || (S[l]>MAXHIGH)))
+						while ((g < i)&& (l < size))
+						{
+							while ((l < size) && ((S[l] <MAXLOW) || (S[l]>MAXHIGH)))
+							{
+								l++;
+							}
+							g++;
+							l++;
+							
+						}
+						while ((l < size) && ((S[l] <MAXLOW) || (S[l]>MAXHIGH)))
 						{
 							l++;
 						}
-						if (((l<size))&&(S[l] == alf[j]))
+						g = 0;
+						if (((l < size)) && (S[l] == alf[j]))
 						{
-							f+=1.0;
+							n++;
+							f++;
 						}
-						n+=1.0;
+						else
+						{
+							n++;
+						}
+						
+
 
 										  // Функция подбора длины ключа
 					}
-					IS[i][k] += f*(f - 1.0);
+					IS[i][k] += f*(f - 1);
 					
 				}
-				IS[i][k] /= n*(n - 1.0);
+				IS[i][k] /= n*(n - 1);
 				
 			}
 		}
@@ -67,8 +86,8 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 		float average;
 		float max = FLT_MAX;
 		float mindx;
-		static int besti[u] = {0};
-		for (i = 0; i < u; i++)
+		static int besti2[u] = {0};
+		/*for (i = 0; i < u; i++)
 		{
 			max = MAXINT64;
 			for (j = 2; j < u; j++)
@@ -95,6 +114,7 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 				IS[besti[i]][0] = -1;
 			
 		}
+		*/
 		/*for (i = 1; i < u; i++)
 		{
 			mindx = 0;
@@ -110,9 +130,34 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 				besti =i;
 			}
 		}*/
+		for (i = 0; i < u; i++)
+		{
+			max = MAXINT64;
+			for (j = 2; j < u; j++)
+			{
+				mindx = 0;
+				for (k = 0; k<j; k++)
+				{
+					mindx += IS[j][k];
+					
+				}
+				mindx /= k;
+				if ((fabs(mindx-0.55) < max) && (IS[j][0]>-0.5))
+				{
+					max = fabs(mindx-0.55);
+
+					besti2[i] = j;
+
+				}
+
+			}
 
 
-		return besti;
+			IS[besti2[i]][0] = -1;
+
+		}
+		
+		return besti2;
 	}
 	// Функция подбора длины ключа
 	int* KasiskiExamination(String^ text)
@@ -269,7 +314,7 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 				}
 			}
 		}
-		static int besti[u];
+	static int besti[u];
 
 		/*h[0] = 1;
 		best = 1.0;
