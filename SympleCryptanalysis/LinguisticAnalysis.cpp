@@ -95,52 +95,63 @@ namespace LinguisticAnalysis {
 
 		string converted_text = msclr::interop::marshal_as<string>(text);
 		smatch match;
-		for (int i = 0; i < converted_text.length()- MAX_LEN; i++)
-		{
-			int spaces = 0;
-			string word;
-			for (int j = i; j < i + MAX_LEN; j++)
-				if (converted_text[j] != ' ')
-					word += converted_text[j];
-				else
-					spaces++;
-			total_words++;
-			long long index = 0; // сдвиг
+		string dic_word;
 
-			string index_letter;
-			string index_line;
-			indexes.clear();
-			indexes.seekg(0);
-			while (getline(indexes, index_letter)) // находим нужный сдвиг
-				if (index_letter[0] == word[0]) {
-					getline(indexes, index_line);
-					index += stoi(index_line, nullptr);
-					break;
-				}
-
-			dictionary.clear();
-			dictionary.seekg(0);
-			dictionary.seekg(index); // переход по индексу
-
-			string dic_word;
-
-			while (getline(dictionary, dic_word) && dic_word != word && dic_word[0] != word[0]+1)
-				if (word.find(dic_word)!=(-1)) {// функция возвращает -1 если не было совпадения
-					words[words_amount] = msclr::interop::marshal_as<String^>(dic_word);
-					words_amount++;
+		while (getline(dictionary, dic_word) /*&& dic_word != word && dic_word[0] != word[0] + 1*/)
+			if (converted_text.find(dic_word) != (-1)) {// функция возвращает -1 если не было совпадения
+				words[words_amount] = msclr::interop::marshal_as<String^>(dic_word);
+				words_amount++;
 			}
-		}
-
-		float wordsFound = (float)words_amount / total_words * 100;
-
-		/*String^ dictionaryConformity = wordsFound.ToString() + "% of words were found in the dictionary.\r\n\r\n";*/
-		String^ dictionaryConformity = "Found conformity in dictionary\r\n";
-
+		int wordsForStat = 0;
 		for (int i = 0; i < words_amount; i++)
-			dictionaryConformity += words[i] + "\r\n";
+		{
+			if (words[i]->Length > 3)
+				wordsForStat++;
+		}
+				float wordsFound = (float)words_amount / total_words * 100;
 
-		return dictionaryConformity;
+				String^ dictionaryConformity = wordsForStat.ToString() + " words (more than 3 characters) were found in the text.\r\n\r\n";
+				dictionaryConformity += "Found conformity in dictionary\r\n";
+
+				for (int i = 0; i < words_amount; i++)
+					dictionaryConformity += words[i] + "\r\n";
+
+				return dictionaryConformity;
 	}
 
-
+	/*array<System::String ^>^ PartitialMatches(String^ word)*/		// Возвращает массив слов (найденные совпадения)
+	String^ PartitialMatches(String^ word) {						// Возвращает строку-отчет (используется для отладки и вывода в текстовое поле)
+		const int WORDS_COUNT = 10000;
+		array<System::String ^>^ words = gcnew array<System::String^ >(WORDS_COUNT); // массив слов-совпадений
+		using namespace std;
+		string wordString = msclr::interop::marshal_as<string>(word);
+		ifstream dictionary("Configs/russian_dictionary.dic");
+		string dic_word;
+		int wordsNumber = 0;
+		int maxMatchedLetters = 0; // здесь можно указать минимальное колтчество совпадающих символов
+		while (getline(dictionary, dic_word)) { // полный перебор словаря
+			if (wordString.length() == dic_word.length()) {
+				int matchedLetters = 0;
+				for (int i = 0; i < wordString.length(); i++) {
+					if (wordString[i] == dic_word[i])
+						matchedLetters++;
+				}
+				if (matchedLetters > maxMatchedLetters) {
+					maxMatchedLetters = matchedLetters;
+					wordsNumber = 0; // переходим в начало массива слов-совпадений
+				}
+				if (matchedLetters == maxMatchedLetters) {
+					words[wordsNumber] = msclr::interop::marshal_as<String^>(dic_word);
+					wordsNumber++;
+				}
+			}
+		}
+		String^ foundMatches = wordsNumber.ToString() + " words with " + maxMatchedLetters + " matching letters:\r\n\r\n";
+		for (int i = 0; i < wordsNumber; i++)
+			foundMatches += words[i] + "\r\n";
+		if (!wordsNumber)
+			foundMatches = "No matches were found";
+		return foundMatches;
+		/*return words;*/
+	}
 }

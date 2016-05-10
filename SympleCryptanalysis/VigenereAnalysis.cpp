@@ -355,8 +355,8 @@ namespace VigenereAnalysis {
 		// Определяем длину ключа
 		
 //		int key_length = KasiskiExamination(text);
-		int key_length = *(result(KasiskiExamination(text), Index(text)));
-		//	int key_length = 4;
+		//int key_length = *(result(KasiskiExamination(text), Index(text)));
+		int key_length = 4;
 
 		// Задаём массив групп, на которые разбивается текст в зависимости от длины ключа
 		array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
