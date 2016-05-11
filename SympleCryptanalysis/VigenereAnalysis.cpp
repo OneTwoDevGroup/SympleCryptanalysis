@@ -12,6 +12,8 @@
 #define r 256// ASCII
 #define R 33 //Мощность языка
 #define u 20 // предполагаемая максимальная длина ключа
+#define MAXHIGH 255 // верхний предел в котором находятся буквы
+#define MAXLOW  224 // нижний
 
 #define MAXKEYLEN 100
 #define MAXKEYAMOUNT 100
@@ -22,63 +24,97 @@ namespace VigenereAnalysis {
 	WordProcessing::Alphabit alph("rus"); // Класс определяет используемый язык
 	int* Index (String^ text)
 	{
-		unsigned char alf[R] = { 'А','Б','В','Г','Д','Е','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ъ','Ы','Ь','Ю','Я' };
-		unsigned	char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
+//char alf[R] = { 'А','Б','В','Г','Д','Е','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ъ','Ы','Ь','Ю','Я' };
+unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','э','ъ','ы','ь','ю','я' };
+
+		unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
 		int i, j,l,k;
 		float IS[u][u];
-		float n = 0,f=0;
+		int n = 0,f=0,g;
 		int size = strlen((const char*)S);
 		for (i = 1; i < u; i++)
 		{
 			
 			for (k = 0; k < i; k++)
 			{
-				n = 0;
-				IS[i][k] = 0;
+				IS[i][k] = 0.0;
 				for (j = 0; j < R - 1; j++)
 				{
+					n = 0;
 					f = 0;
-					for (l = k; l < size; l += i)
+					l = 0;
+					g = i-k;
+					while(l < size)
 					{
-						while ( (l<size)&&((S[l] < 192) || (S[l]>223)))
+						while ((g < i)&& (l < size))
+						{
+							while ((l < size) && ((S[l] <MAXLOW) || (S[l]>MAXHIGH)))
+							{
+							l++;
+						}
+							g++;
+							l++;
+							
+						}
+						while ((l < size) && ((S[l] <MAXLOW) || (S[l]>MAXHIGH)))
 						{
 							l++;
 						}
-						if (((l<size))&&(S[l] == alf[j]))
+						g = 0;
+						if (((l < size)) && (S[l] == alf[j]))
 						{
+							n++;
 							f++;
 						}
+						else
+						{
 						n++;
+						}
+
+
 
 										  // Функция подбора длины ключа
 					}
 					IS[i][k] += f*(f - 1);
+					
 				}
 				IS[i][k] /= n*(n - 1);
+				
 			}
 		}
 
 		float average;
 		float max = FLT_MAX;
 		float mindx;
-		int besti[u] = {0};
-		for (i = 0; i < u; i++)
+		static int besti2[u] = {0};
+		/*for (i = 0; i < u; i++)
 		{
-			for (j = i + 1; j < u; j++)
+			max = MAXINT64;
+			for (j = 2; j < u; j++)
 			{
 				mindx = 0;
 				for (k = 0; k<j; k++)
 				{
-					if (fabs(IS[i][j] - 0.55)>mindx)
-						mindx = fabs(IS[i][j] - 0.55);
+
+					if (fabs(IS[j][k] - 0.55)>mindx)
+						if (IS[j][0]>-0.5)
+						mindx = fabs(IS[j][k] - 0.55);
 				}
-				if (mindx < max)
+				if ((mindx < max)&&(IS[j][0]>-0.5))
 				{
 					max = mindx;
+					
 					besti[i] = j;
+					
 				}
+
 			}
+			
+			
+				IS[besti[i]][0] = -1;
+			
 		}
+		*/
 		/*for (i = 1; i < u; i++)
 		{
 			mindx = 0;
@@ -94,19 +130,44 @@ namespace VigenereAnalysis {
 				besti =i;
 			}
 		}*/
+		for (i = 0; i < u; i++)
+		{
+			max = MAXINT64;
+			for (j = 2; j < u; j++)
+			{
+				mindx = 0;
+				for (k = 0; k<j; k++)
+				{
+					mindx += IS[j][k];
+					
+				}
+				mindx /= k;
+				if ((fabs(mindx-0.55) < max) && (IS[j][0]>-0.5))
+				{
+					max = fabs(mindx-0.55);
+
+					besti2[i] = j;
+
+				}
+
+			}
 
 
-		return besti;
+			IS[besti2[i]][0] = -1;
+
+		}
+
+		return besti2;
 	}
 	// Функция подбора длины ключа
 	int* KasiskiExamination(String^ text)
 	{
 		int size;
 		//char alf[R] = { 'a','b','c','d','e','f','h','i','j','k','l','m','n','o','p','r','s','t','u','w','v','q','z','g' ,'x' };//буквы английского алфавита
-		unsigned char alf[R] = { 'А','Б','В','Г','Д','Е','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ъ','Ы','Ь','Ю','Я' };
+		unsigned char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','э','ъ','ы','ь','ю','я' };
 		char buff[100];										//Для копирование строк
 		int** lenght_distance;								//в lenght_distane[][0] заносится длина совпадения, в lenght_distance[][1] расстояние между совпадениями
-		char **matched;		//массив с совпавшими значениями
+		char **matched;										//массив с совпавшими значениями
 		
 		
 		int max_match_sum = 0;								//кол-во одинаковых совпадений
@@ -122,7 +183,7 @@ namespace VigenereAnalysis {
 		int i = 0, j, l, g, z, s,k,f;							//счетчики
 
 															//строка с шифром//место поиска
-		unsigned	char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
+		unsigned char *S =(unsigned char*) ( char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
 
 		i = 0;
 		size = strlen((const char*)S);
@@ -139,7 +200,7 @@ namespace VigenereAnalysis {
 					s = 0;									//счетчик пробелов
 					for (l = j + 1; l < size; l++)			// l - ищем все символы Alf[i] в строке S[j+]
 					{
-						if ((S[l] < 192) || (S[l]>223))
+						if ((S[l] < MAXLOW) || (S[l]>MAXHIGH))
 						{
 							s++;
 						}
@@ -151,11 +212,11 @@ namespace VigenereAnalysis {
 							while (((l + g+f) < size) && ((j + g+k) < size) && ((S[l + g+f] == S[j + g+k])))
 							{
 								g++;						//g считаем сколько символов совпало
-								while (((l + g + f) < size) && ((j + g + k) < size)&& ((S[l + g + f] < 192) || (S[l + g + f]>223)))
+								while (((l + g + f) < size) && ((j + g + k) < size)&& ((S[l + g + f] < MAXLOW) || (S[l + g + f]>MAXHIGH)))
 								{
 									f++;
 								}
-								while (((l + g + f) < size) && ((j + g + k) < size)&& ((S[j + g + k] < 192) || (S[j + g + k]>223)))
+								while (((l + g + f) < size) && ((j + g + k) < size)&& ((S[j + g + k] < MAXLOW) || (S[j + g + k]>MAXHIGH)))
 								{
 									k++;
 								}
@@ -223,7 +284,7 @@ namespace VigenereAnalysis {
 		float* h;
 		h = (float*)malloc(sizeof(float));
 		
-		for (j = 2; j <max_lenght_distance; j++)
+		for (j = 2; j <u; j++)
 		{
 			h = (float*)realloc(h, (j + 1)*(sizeof(float)));
 			h[j] = 0;
@@ -231,7 +292,7 @@ namespace VigenereAnalysis {
 			{
 				if ((lenght_distance[i][1] % j) == 0)
 				{
-					h[j] ++;
+					h[j] +=1.0;
 					/*if (lenght_distance[i][0]>5)
 					{
 						if (count_matched[i]>2 * max_match_sum / 3)
@@ -253,7 +314,7 @@ namespace VigenereAnalysis {
 				}
 			}
 		}
-		int besti[u];
+	static int besti[u];
 
 		/*h[0] = 1;
 		best = 1.0;
@@ -285,14 +346,15 @@ namespace VigenereAnalysis {
 		float max;
 		for (i = 0; i < u; i++)
 		{
-			max = 0;
-			for (j = i+1; j < u;j++)
+			max = -0.5;
+			for (j = 2; j < u;j++)
 				if (h[j]>max)
 				{
 					max = h[j];
 					maxind = j;
 				}
 			besti[i] = maxind;
+			h[maxind] = -1;
 		}
 		//ЗАЧИСТКА
 		//free(count_matched);
@@ -312,7 +374,7 @@ namespace VigenereAnalysis {
 	{
 		int i, j, best,k,max1,max2;
 		float min;
-		int result[u];
+		static int result[u];
 		for (k = 0; k < u; k++)
 		{
 			min = LONG_MAX;
@@ -353,10 +415,12 @@ namespace VigenereAnalysis {
 	String^ keyDetermination(String^ text, int **conformity) {
 
 		// Определяем длину ключа
-		
-//		int key_length = KasiskiExamination(text);
-		//int key_length = *(result(KasiskiExamination(text), Index(text)));
-		int key_length = 4;
+		int* lenght = (result(KasiskiExamination(text), Index(text)));
+		int i;
+        //int key_length = KasiskiExamination(text)[0];
+		for (i = 0; i < u; i++)
+			lenght++;
+			int key_length = *(result(KasiskiExamination(text), Index(text)));
 
 		// Задаём массив групп, на которые разбивается текст в зависимости от длины ключа
 		array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
@@ -431,7 +495,7 @@ namespace VigenereAnalysis {
 		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
 		for (int j = 0; j < text->Length; j++) {
 			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
-			text_builder[j] = alph.getLetter((*conformity)[text_builder[j] - key[(j - not_letters) % key->Length]]);
+			text_builder[j] = alph.getLetter((*conformity)[(alph.length + text_builder[j] - key[(j - not_letters) % key->Length])% alph.length]);
 		}
 
 
