@@ -94,6 +94,7 @@ namespace LinguisticAnalysis {
 		ifstream indexes("Configs/russian_dictionary.inx"); // файл, в котором хранятся байтовые сдвиги
 
 		string converted_text = msclr::interop::marshal_as<string>(text);
+		int textLength = converted_text.length();
 		smatch match;
 		string dic_word;
 
@@ -109,8 +110,11 @@ namespace LinguisticAnalysis {
 				wordsForStat++;
 		}
 				float wordsFound = (float)words_amount / total_words * 100;
-
-				String^ dictionaryConformity = wordsForStat.ToString() + " words (more than 3 characters) were found in the text.\r\n\r\n";
+				double analysisResult = (float)wordsForStat / textLength;
+				bool result = 0;
+				if (analysisResult > 0.04)
+					result = 1;
+				String^ dictionaryConformity = wordsForStat.ToString() + " words (more than 3 characters) were found in the text. Result: " + result.ToString() + "\r\n\r\n";
 				dictionaryConformity += "Found conformity in dictionary\r\n";
 
 				for (int i = 0; i < words_amount; i++)
@@ -153,5 +157,41 @@ namespace LinguisticAnalysis {
 			foundMatches = "No matches were found";
 		return foundMatches;
 		/*return words;*/
+	}
+
+	bool CheckPlainText(String^ text)
+	{
+		const int WORDS_COUNT = 1000000;
+		array<System::String ^>^ words = gcnew array<System::String^ >(WORDS_COUNT);
+		int words_amount = 0;
+		int total_words = 0;
+
+		using namespace std;
+
+		ifstream dictionary("Configs/russian_dictionary.dic");
+		ifstream indexes("Configs/russian_dictionary.inx"); // файл, в котором хранятся байтовые сдвиги
+
+		string converted_text = msclr::interop::marshal_as<string>(text);
+		int textLength = converted_text.length();
+		smatch match;
+		string dic_word;
+
+		while (getline(dictionary, dic_word) /*&& dic_word != word && dic_word[0] != word[0] + 1*/)
+			if (converted_text.find(dic_word) != (-1)) {// функция возвращает -1 если не было совпадения
+				words[words_amount] = msclr::interop::marshal_as<String^>(dic_word);
+				words_amount++;
+			}
+		int wordsForStat = 0;
+		for (int i = 0; i < words_amount; i++)
+		{
+			if (words[i]->Length > 3)
+				wordsForStat++;
+		}
+		float wordsFound = (float)words_amount / total_words * 100;
+		double analysisResult = (float)wordsForStat / textLength;
+		bool result = 0;
+		if (analysisResult > 0.04)
+			result = 1;
+		return result;
 	}
 }

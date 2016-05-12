@@ -416,11 +416,11 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 
 		// Определяем длину ключа
 		int* lenght = (result(KasiskiExamination(text), Index(text)));
-		int i;
-        //int key_length = KasiskiExamination(text)[0];
-		for (i = 0; i < u; i++)
-			lenght++;
-			int key_length = *(result(KasiskiExamination(text), Index(text)));
+		//int i;
+        int key_length = lenght[0];
+		//for (i = 0; i < u; i++)
+		//	lenght++;
+		//	int key_length = *(result(KasiskiExamination(text), Index(text)));
 
 		// Задаём массив групп, на которые разбивается текст в зависимости от длины ключа
 		array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
