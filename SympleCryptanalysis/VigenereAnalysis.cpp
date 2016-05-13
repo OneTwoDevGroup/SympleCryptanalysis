@@ -45,7 +45,7 @@ namespace VigenereAnalysis {
 	int* Index (String^ text)
 	{
 //char alf[R] = { 'А','Б','В','Г','Д','Е','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ъ','Ы','Ь','Ю','Я' };
-unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','э','ъ','ы','ь','ю','я' };
+		unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','э','ъ','ы','ь','ю','я' };
 
 		unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
 		int i, j,l,k;
@@ -90,16 +90,11 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 						{
 						n++;
 						}
-
-
-
 										  // Функция подбора длины ключа
 					}
-					IS[i][k] += f*(f - 1);
-					
+					IS[i][k] += f*(f - 1);	
 				}
 				IS[i][k] /= n*(n - 1);
-				
 			}
 		}
 
@@ -156,27 +151,20 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 			for (j = 2; j < u; j++)
 			{
 				mindx = 0;
-				for (k = 0; k<j; k++)
+				for (k = 0; k < j; k++)
 				{
-					mindx += fabs(IS[j][k]-55.0);
-					
+					mindx += fabs(IS[j][k] -0.0550);
+
 				}
 				mindx /= k;
 				if ((mindx < max) && (IS[j][0]>-0.5))
 				{
 					max = mindx;
-
 					besti2[i] = j;
-
 				}
-
 			}
-
-
 			IS[besti2[i]][0] = -1;
-
 		}
-
 		return besti2;
 	}
 	// Функция подбора длины ключа
@@ -188,11 +176,9 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 		char buff[100];										//Для копирование строк
 		int** lenght_distance;								//в lenght_distane[][0] заносится длина совпадения, в lenght_distance[][1] расстояние между совпадениями
 		char **matched;										//массив с совпавшими значениями
-		
-		
 		int max_match_sum = 0;								//кол-во одинаковых совпадений
 		int max_match_ind = -1;								// индекс максимального совпадения кол-ва
-		//int* count_matched;									// массив кол-ва совпадений
+		//int* count_matched;								// массив кол-ва совпадений
 		int w = 0;											// номер совпадения
 		int max_lenght_matched = 0;							//максимальное совпадение по длине
 		int max_lenght_distance = 0;                        //максимальное расстояние между совпадениями
@@ -220,7 +206,7 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 					s = 0;									//счетчик пробелов
 					for (l = j + 1; l < size; l++)			// l - ищем все символы Alf[i] в строке S[j+]
 					{
-						if ((S[l] < MAXLOW) || (S[l]>MAXHIGH))
+						if ((S[l] < MAXLOW) || (S[l]>MAXHIGH))//отбрасываем пробельные символы
 						{
 							s++;
 						}
@@ -232,15 +218,14 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 							while (((l + g+f) < size) && ((j + g+k) < size) && ((S[l + g+f] == S[j + g+k])))
 							{
 								g++;						//g считаем сколько символов совпало
-								while (((l + g + f) < size) && ((j + g + k) < size)&& ((S[l + g + f] < MAXLOW) || (S[l + g + f]>MAXHIGH)))
+								while (((l + g + f) < size) && ((j + g + k) < size)&& ((S[l + g + f] < MAXLOW) || (S[l + g + f]>MAXHIGH))) // отбрасываем пробельные символы
 								{
 									f++;
 								}
-								while (((l + g + f) < size) && ((j + g + k) < size)&& ((S[j + g + k] < MAXLOW) || (S[j + g + k]>MAXHIGH)))
+								while (((l + g + f) < size) && ((j + g + k) < size)&& ((S[j + g + k] < MAXLOW) || (S[j + g + k]>MAXHIGH))) // отбрасываем пробельные символы
 								{
 									k++;
 								}
-
 							}
 							if (g > 3)
 							{
@@ -258,7 +243,6 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 								lenght_distance[w][1] = l - j - s;											// расстояние между совпадениями
 								w++;																		//счетчик совпадений
 							}
-						
 						}
 					}
 				}
@@ -301,12 +285,12 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 			}
 		}*/
 
-		float* h;
-		h = (float*)malloc(sizeof(float));
-		
+//		float* h;
+//		h = (float*)malloc(sizeof(float));
+		float h[u];
 		for (j = 2; j <u; j++)
 		{
-			h = (float*)realloc(h, (j + 1)*(sizeof(float)));
+			//h = (float*)realloc(h, (j + 1)*(sizeof(float)));
 			h[j] = 0;
 			for (i = 0; i < w; i++)
 			{
@@ -385,7 +369,7 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 		}
 		free(matched);
 		free(lenght_distance);
-		free(h);
+		//free(h);
 
 		return besti;
 	}
@@ -421,16 +405,12 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 			result[k] = best;
 			besti1[max1] = 0;
 			besti2[max2] = 0;
-
-
 		}
 		return result;
 	}
 
 	// Разбиение текста на группы, согласно найденной длине ключа
 	void splitIntoGroups(String^ text, int key_length, array<System::String ^>^ groups) {
-		
-
 		int not_letters = 0; // Опеределяет количество небуквенных символов, которые нужно пропустить
 		for (int j = 0; j < text->Length; j++) {
 			if (!alph.isLetter(text[j])) { not_letters++; continue; }
