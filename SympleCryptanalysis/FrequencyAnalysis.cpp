@@ -21,9 +21,41 @@ namespace FrequencyAnalysis {
 	using namespace System;
 	using namespace msclr::interop;
 
+	// Подсчёт количества каждой буквы в тексте
+	int *lettersAmount(String^ text) {
+
+		int *letters_amount = (int*)malloc(MAXALPHLEN * sizeof(int));
+
+		for (int i = 0; i < alph.length; i++) letters_amount[i] = 0;
+
+		for (unsigned long i = 0; i < text->Length; i++) {
+			if (alph.isLetter(text[i]))	letters_amount[text[i] - alph.firstchar]++;
+		}
+
+		return letters_amount;
+	}
+
+	// Подсчёт частот букв в заданном тексте
+	double *frequencyDetermination(String^ text = nullptr, int *letters_amount = NULL) {
+
+		double *frequency = (double*)malloc(MAXALPHLEN * sizeof(double));
+
+		if (!letters_amount) letters_amount = lettersAmount(text);
+
+		int total_amount = 0;
+		for (int i = 0; i < alph.length; i++) total_amount += letters_amount[i];
+
+
+		for (int i = 0; i < alph.length; i++)
+			frequency[i] /= total_amount;
+
+		return frequency;
+	}
 
 	// Поиск соответствий букв шифротекста буквам исходного алфавита 
-	int *conformityDetermination(double *frequency) {
+	int *conformityDetermination(String^ text = nullptr, double *frequency = NULL, int *letters_amount = NULL) {
+
+		if (!frequency) frequency = frequencyDetermination(text, letters_amount);
 
 		int *conformity = (int*)malloc(MAXALPHLEN * sizeof(int));
 		int sorted_freq_index[MAXALPHLEN];
@@ -34,29 +66,6 @@ namespace FrequencyAnalysis {
 			conformity[alph.freq_sorted_index[i]] = sorted_freq_index[i];
 
 		return conformity;
-	}
-
-	// Подсчёт частот букв в заданном тексте
-	double *frequencyDetermination(String^ text) {
-
-		double *frequency = (double*)malloc(MAXALPHLEN * sizeof(double));
-		for (int i = 0; i < alph.length; i++) frequency[i] = 0.0;
-
-		int charsAmount = 0;
-
-		text = text->ToLower();
-
-		for (unsigned long i = 0; i < text->Length; i++) {
-			if (text[i] >= alph.firstchar && text[i] <= alph.lastchar) {
-				frequency[text[i] - alph.firstchar] += 1;
-				charsAmount++;
-			}
-		}
-
-		for (int i = 0; i < alph.length; i++)
-			frequency[i] /= (double)charsAmount / 100;
-
-		return frequency;
 	}
 
 	// Функция нахождения наилучшего сдвига в алфавите
