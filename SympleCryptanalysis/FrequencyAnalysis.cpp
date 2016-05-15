@@ -47,7 +47,7 @@ namespace FrequencyAnalysis {
 
 
 		for (int i = 0; i < alph.length; i++)
-			frequency[i] /= total_amount;
+			frequency[i] = (double)letters_amount[i] / (double)total_amount;
 
 		return frequency;
 	}
@@ -62,8 +62,20 @@ namespace FrequencyAnalysis {
 
 		alph.formIndexing(frequency, sorted_freq_index);
 
+		//for (int i = 0; i < alph.length; i++) sorted_freq_index[i] = i;
+
+		//for (int i = 0; i < alph.length - 1; i++) {
+		//	int max_id = i;
+		//	for (int j = i + 1; j < alph.length; j++)
+		//		if (frequency[sorted_freq_index[j]] > frequency[sorted_freq_index[max_id]])
+		//			max_id = j;
+		//	int tmp = sorted_freq_index[i];
+		//	sorted_freq_index[i] = sorted_freq_index[max_id];
+		//	sorted_freq_index[max_id] = tmp;
+		//}
+
 		for (int i = 0; i < alph.length; i++)
-			conformity[alph.freq_sorted_index[i]] = sorted_freq_index[i];
+			conformity[sorted_freq_index[i]] = alph.freq_sorted_index[i];
 
 		return conformity;
 	}

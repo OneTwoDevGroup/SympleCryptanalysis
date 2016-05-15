@@ -41,36 +41,7 @@ namespace SympleCryptanalysis {
 		private: System::Windows::Forms::Button^  FindInDictionaryButton;
 		private: System::Windows::Forms::Button^  ChangeTextDownButton;
 		private: System::Windows::Forms::Button^  ChangeTextUpButton;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-		protected:
-
-		protected:
-
-		protected:
+		private: System::Windows::Forms::TextBox^  ConformityTable;
 
 		private:
 			/// <summary>
@@ -91,6 +62,7 @@ namespace SympleCryptanalysis {
 				this->FindInDictionaryButton = (gcnew System::Windows::Forms::Button());
 				this->ChangeTextDownButton = (gcnew System::Windows::Forms::Button());
 				this->ChangeTextUpButton = (gcnew System::Windows::Forms::Button());
+				this->ConformityTable = (gcnew System::Windows::Forms::TextBox());
 				this->panel1->SuspendLayout();
 				this->SuspendLayout();
 				// 
@@ -112,7 +84,7 @@ namespace SympleCryptanalysis {
 				// DictionaryConformityText
 				// 
 				this->DictionaryConformityText->Dock = System::Windows::Forms::DockStyle::Right;
-				this->DictionaryConformityText->Location = System::Drawing::Point(755, 0);
+				this->DictionaryConformityText->Location = System::Drawing::Point(897, 0);
 				this->DictionaryConformityText->Multiline = true;
 				this->DictionaryConformityText->Name = L"DictionaryConformityText";
 				this->DictionaryConformityText->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
@@ -127,14 +99,14 @@ namespace SympleCryptanalysis {
 				this->panel1->Dock = System::Windows::Forms::DockStyle::Fill;
 				this->panel1->Location = System::Drawing::Point(500, 0);
 				this->panel1->Name = L"panel1";
-				this->panel1->Size = System::Drawing::Size(255, 561);
+				this->panel1->Size = System::Drawing::Size(397, 561);
 				this->panel1->TabIndex = 12;
 				// 
 				// FindInDictionaryButton
 				// 
 				this->FindInDictionaryButton->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->FindInDictionaryButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->FindInDictionaryButton->Location = System::Drawing::Point(53, 370);
+				this->FindInDictionaryButton->Location = System::Drawing::Point(124, 370);
 				this->FindInDictionaryButton->Name = L"FindInDictionaryButton";
 				this->FindInDictionaryButton->Size = System::Drawing::Size(149, 38);
 				this->FindInDictionaryButton->TabIndex = 13;
@@ -146,7 +118,7 @@ namespace SympleCryptanalysis {
 				// 
 				this->ChangeTextDownButton->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->ChangeTextDownButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->ChangeTextDownButton->Location = System::Drawing::Point(53, 262);
+				this->ChangeTextDownButton->Location = System::Drawing::Point(124, 262);
 				this->ChangeTextDownButton->Name = L"ChangeTextDownButton";
 				this->ChangeTextDownButton->Size = System::Drawing::Size(150, 37);
 				this->ChangeTextDownButton->TabIndex = 12;
@@ -158,7 +130,7 @@ namespace SympleCryptanalysis {
 				// 
 				this->ChangeTextUpButton->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->ChangeTextUpButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->ChangeTextUpButton->Location = System::Drawing::Point(53, 153);
+				this->ChangeTextUpButton->Location = System::Drawing::Point(124, 153);
 				this->ChangeTextUpButton->Name = L"ChangeTextUpButton";
 				this->ChangeTextUpButton->Size = System::Drawing::Size(150, 37);
 				this->ChangeTextUpButton->TabIndex = 11;
@@ -166,14 +138,24 @@ namespace SympleCryptanalysis {
 				this->ChangeTextUpButton->UseVisualStyleBackColor = true;
 				this->ChangeTextUpButton->Click += gcnew System::EventHandler(this, &MyForm::ChangeTextUpButton_Click);
 				// 
+				// ConformityTable
+				// 
+				this->ConformityTable->Dock = System::Windows::Forms::DockStyle::Right;
+				this->ConformityTable->Location = System::Drawing::Point(1126, 0);
+				this->ConformityTable->Multiline = true;
+				this->ConformityTable->Name = L"ConformityTable";
+				this->ConformityTable->Size = System::Drawing::Size(100, 561);
+				this->ConformityTable->TabIndex = 13;
+				// 
 				// MyForm
 				// 
 				this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 				this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-				this->ClientSize = System::Drawing::Size(984, 561);
+				this->ClientSize = System::Drawing::Size(1226, 561);
 				this->Controls->Add(this->panel1);
 				this->Controls->Add(this->DictionaryConformityText);
 				this->Controls->Add(this->TextBox);
+				this->Controls->Add(this->ConformityTable);
 				this->MinimumSize = System::Drawing::Size(1000, 600);
 				this->Name = L"MyForm";
 				this->Text = L"SympleCryptanalysis";
@@ -199,12 +181,18 @@ namespace SympleCryptanalysis {
 		
 		// Обработка нажатия кнопки изменения текста
 		private: System::Void ChangeTextUpButton_Click(System::Object^  sender, System::EventArgs^  e) {
-			TextBox->Text = WordProcessing::changeTextUp(TextBox->Text->ToLower());
+			String^ conformity_table; String^ text = TextBox->Text->ToLower();
+			WordProcessing::changeTextUp(&text, &conformity_table);
+			TextBox->Text = text;
+			ConformityTable->Text = conformity_table;
 		}
 
 		// Обработка нажатия кнопки отката измений
 		private: System::Void ChangeTextDownButton_Click(System::Object^  sender, System::EventArgs^  e) {
-			TextBox->Text = WordProcessing::changeTextDown();
+			String^ conformity_table; String^ text;
+			WordProcessing::changeTextDown(&text, &conformity_table);
+			TextBox->Text = text;
+			ConformityTable->Text = conformity_table;
 		}
 
 		// Обработка нажатия кнопки поиска по словарю

@@ -7,7 +7,9 @@
 #include <msclr/marshal_cppstd.h>
 #include <algorithm>
 
+//#include "SympleCryptanalysis.h"
 #include "VigenereAnalysis.h"
+
 
 #define MAXALPHLEN 40    // Максимальная длина алфавита
 #define ARRAY_SIZE 1000  // Максимальная длина массива изменений
@@ -33,7 +35,7 @@ namespace WordProcessing {
 				frequency_indexing[i] = frequency_indexing[max_id];
 				frequency_indexing[max_id] = tmp;
 			}
-		}
+ 		}
 
 	public:
 		int firstchar, lastchar, length;
@@ -82,11 +84,13 @@ namespace WordProcessing {
 	private:
 
 		gcroot<array<System::String ^>^> textChanges = gcnew array<System::String^ >(ARRAY_SIZE);       // Массив содержит все изменения текста
+		int conformityChanges[ARRAY_SIZE][MAXALPHLEN];
 		int last = 0;                                                                                   // Переменнная определяет номер последнего изменения
 
 		// Функция сохраняет изменения																								
-		void save_changes(String^ old_text) {
-			textChanges[last % ARRAY_SIZE] = old_text;
+		void save_changes(String^ text, int *conformity = NULL) {
+			textChanges[last % ARRAY_SIZE] = text;
+			if (conformity) memcpy(conformityChanges[last % ARRAY_SIZE], conformity, MAXALPHLEN * sizeof(int));
 			last++;
 
 		}
@@ -100,17 +104,43 @@ namespace WordProcessing {
 		String^ getLastText() { return textChanges[last]->ToLower(); }
 
 		//Функция откатывает последние изменения
-		String^ changeTextDown() {
+		String^ changeTextDown(String^ *text, String^ *conformity_table) {
 			if (last > 0) last--;
-			return textChanges[last];
+			*text = textChanges[last];
+			for (int i = 0; i < alph.length; i++) {
+				*conformity_table += alph.getLetter(conformityChanges[last][i]) + " - " + alph.getLetter(i) + "\r\n";
+			}
+			return *text;
 		}
 
 		//Функция сохраняет последние изменения
-		String^ changeTextUp(String^ old_text) {
+		String^ changeTextUp(String^ *text, String^ *conformity_table, int *conformity_changes = NULL) {
+			
+			String^ old_text = *text;
+			int **conformity = (int**)malloc(MAXALPHLEN * sizeof(int));
 
-			String^ new_text = VigenereAnalysis::textPreparing(old_text);
-			save_changes(old_text);
-			return new_text;
+			if (conformity_changes) {
+							
+
+				for (int i = 0; i < alph.length; i++) 
+					if (conformity_changes[i]) {
+						*conformity[i] = conformity_changes[i];
+						*text = (*text)->Replace(wchar_t(i + alph.firstchar) + "", (*conformity[i] + "")->ToUpper());
+					}
+				
+				save_changes(old_text);
+			}
+			else {
+
+				VigenereAnalysis::textPreparing(text, conformity);
+				save_changes(old_text, *conformity);
+
+				for (int i = 0; i < alph.length; i++) {
+					*conformity_table += alph.getLetter((*conformity)[i]) + " - " + alph.getLetter(i) + "\r\n";
+				}
+			}
+
+			return *text;
 			
 		}
 
@@ -119,10 +149,10 @@ namespace WordProcessing {
 	} textChanges; // Экземпляр класса хранящий все изменения
 
 	//Функция сохраняет последние изменения
-	String^ changeTextUp(String^ old_text) { return textChanges.changeTextUp(old_text); }
+	String^ changeTextUp(String^ *text, String^ *conformity_table) { return textChanges.changeTextUp(text, conformity_table); }
 
 	//Функция откатывает последние изменения
-	String^ changeTextDown() { return textChanges.changeTextDown(); }
+	String^ changeTextDown(String^ *text, String^ *conformity_table) { return textChanges.changeTextDown(text, conformity_table); }
 	
 	// Функция передаёт исходный текст
 	String^ getFirstText() { return textChanges.getFirstText();  }

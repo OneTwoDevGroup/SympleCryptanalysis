@@ -10,6 +10,7 @@
 
 #include "WordProcessing.h"
 #include "FrequencyAnalysis.h"
+#include "LinguisticAnalysis.h"
 
 #define N 5000
 #define r 256// ASCII
@@ -24,7 +25,6 @@
 // Константы определяют размер кэша для биномиальных коэффициентов
 #define BCR_N_MAX 10000
 #define BCR_K_MAX 10000
-
 
 unsigned bcr_cache[BCR_N_MAX][BCR_K_MAX] = { 0 };
 // Функция вычисляет биномиальный коэффициент
@@ -450,15 +450,15 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 			int *group_letters_amount = FrequencyAnalysis::lettersAmount(groups[i]);
 
 			for (char letter = 0; letter < alph.length; letter++)
-				letters_amount[letter] += group_letters_amount[(letter + shift) % alph.length];
+				letters_amount[letter] += group_letters_amount[(letter - shift) % alph.length];
 		}
 
 		return FrequencyAnalysis::conformityDetermination(nullptr, NULL, letters_amount);
 
 	}
 
-	// Подбор ключа
-	String^ keyDetermination(array<System::String ^>^ groups, int key_length) {
+	// Поиск сдвигов
+	String ^keyDetermination(array<System::String ^>^ groups, int key_length) {
 
 		double conformoty_probability[u][MAXALPHLEN][MAXALPHLEN] = { 0 };
 
@@ -517,35 +517,36 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 		int shifts[MAXKEYAMOUNT] = { 0 };
 
 
-		//for (int l = 0; l < key_length; l++) {
+		for (int l = 1; l < key_length; l++) {
 
-		//	double max_coef = 0; int best_shift;
+			double max_coef = 0; int best_shift;
 
-		//	for (int shift = 0; shift < alph.length; shift++) {
-		//		
-		//		double coef = 0;
-		//		
-		//		for (int k = 0; k < key_length; k++)
-		//			coef += shift_probobility[k][l][shift];
+			for (int shift = 0; shift < alph.length; shift++) {
+				
+				double coef = 0;
+				
+				//for (int k = 0; k < l; k++)
+				//	coef += shift_probobility[k][l][(shift + shifts[k]) % alph.length];
+				coef += shift_probobility[l][0][shift];
 
-		//		if (max_coef < coef) {
-		//			max_coef = coef;
-		//			best_shift = shift;
-		//		}
+				if (max_coef < coef) {
+					max_coef = coef;
+					best_shift = shift;
+				}
 
-		//	}
+			}
 
-		//	shifts[l] = best_shift;
+			shifts[l] = best_shift;
 
-		//}
+		}
 
 
 
-		//array<System::String ^>^ keys = gcnew array<System::String^>(MAXKEYAMOUNT);
+		array<System::String ^>^ keys = gcnew array<System::String^>(MAXKEYAMOUNT);
 
-		//for (int shift = 0; shift < alph.length; shift++)
-		//	for (int i = 0; i < key_length; i++)
-		//		keys[shift] += alph.getLetter(shifts[i] + shift);
+		for (int shift = 0; shift < alph.length; shift++)
+			for (int i = 0; i < key_length; i++)
+				keys[shift] += alph.getLetter(shifts[i] + shift);
 
 		
 		std::ifstream dictionary("Configs/russian_dictionary.dic");
@@ -689,33 +690,185 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 	//	return key;
 	//}
 
+	int *multiGrammStatisctic(String^ text) {
 
-	// Функция дешифрует текст
-	String^ textPreparing(String^ text) {
+		const int sample_size = 100;
+		const double min_freq = 0.0001;
+		const int size = 50000;
+		const int grams = 3;
+		
+		int *conformities = (int *)malloc(MAXALPHLEN * sizeof(int));
+		for (int i = 0; i < MAXALPHLEN; i++) conformities[i] = 0;
+		
+		int multigrams_amount[size] = { 0 };
+		int letters_amount = 0, link = 0, j, digit;
+		
+		for (int i = 0; i < text->Length - 1; i++) {
+			if (!alph.isLetter(text[i])) continue;
+			
+			link = 0;
+			j = i;
+			digit = grams - 1;
 
-		// Определяем длину ключа
-		int* lenght = (result(KasiskiExamination(text), Index(text)));
-		int key_length = result(KasiskiExamination(text), Index(text))[0];
+			while (j < text->Length && digit >= 0) {
+				while (j < text->Length && !alph.isLetter(text[j])) j++;
+				link += (text[j] - alph.firstchar) * pow(alph.length, digit);
+				digit--;
+				j++;
+			}
 
-		// Разбиваем текст на группы
-		array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
-		splitIntoGroups(text, key_length, groups);
-		
-		// Подбираем ключ
-		String^ key = keyDetermination(groups, key_length);				
-		
-		// Таблицы соответствия букв шифротекста буквам исходного алфавита
-		int *conformity = conformityDetermination(groups, key);			
-		
+			if (digit > 0) break;
+			multigrams_amount[link]++;
+			letters_amount += grams;
+		}
+
+		array<String^>^ multigrams = gcnew array<System::String^>(sample_size);
+		double freq[sample_size];
+		int counter = -1;
+
+		for (int i = 0; i < size; i++) {
+			double frequency = (double)multigrams_amount[i] / (double)letters_amount;
+			if (frequency > min_freq) {
+				int code = i;
+				counter++;
+				if (counter == sample_size) break;
+				for (int j = 0; j < grams; j++) {
+					multigrams[counter] += alph.getLetter(code % alph.length);
+					code /= alph.length;
+				}
+
+				freq[counter] = frequency;
+			}
+		}
+
+		for (int i = 1; i < sample_size; i++) {
+			
+			int temp = freq[i];
+			String ^temp_str = multigrams[i];
+
+			for (int j = i - 1; j >= 0; j--) {
+				if (freq[j] < temp) break;
+
+				freq[j + 1] = freq[j];
+				freq[j] = temp;
+
+				multigrams[j + 1] = multigrams[j];
+				multigrams[j] = temp_str;
+			}
+		}
+
+		IO::StreamReader^ threegrams_stat = IO::File::OpenText(L"Configs/threegrams_stat.txt");
+		String^ multigram;
+		for (int i = 0; i < sample_size; i++) {
+			multigram = threegrams_stat->ReadLine();
+			for (int j = 0; j < 3; j++)
+				conformities[multigrams[i][j] - alph.firstchar] = multigram[j] - alph.firstchar;
+		}
+
+		return conformities;
+
+	}
+
+	String^ shiftLettersInText(String^ text, String^ key) {
+
 		// Формируем изменяемую строку
-		Text::StringBuilder text_builder(text);			
+		Text::StringBuilder text_builder(text);
 
 		// Заменяет символы текста в соответствии с ключом и квадратом Веженера
 		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
 		for (int j = 0; j < text->Length; j++) {
 			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
-			text_builder[j] = alph.getLetter(conformity[(alph.length + text_builder[j] - key[(j - not_letters) % key->Length] + key[0]) % alph.length]);
+			text_builder[j] = alph.getLetter(text_builder[j] - alph.firstchar - key[(j - not_letters) % key->Length] + key[0]);
 		}
+
+		return text_builder.ToString();				// Возвращаем изменённую строку
+	}
+
+	String^ replaceLettersInText(String^ text, int *conformity) {
+		
+		// Формируем изменяемую строку
+		Text::StringBuilder text_builder(text);
+
+		// Заменяет символы текста в соответствии с ключом и квадратом Веженера
+		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
+		for (int j = 0; j < text->Length; j++) {
+			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
+			text_builder[j] = alph.getLetter(conformity[text_builder[j] - alph.firstchar]);
+		}
+		
+		return text_builder.ToString();				// Возвращаем изменённую строку
+	}
+
+	void swap(int *arr, int a, int b) {
+		
+		//FILE *log_file = fopen("Configs/log.txt", "r+");
+		//fseek(log_file, 0, SEEK_END);
+		//fprintf(log_file, "%d - %d\n", a, b);
+		//fclose(log_file);
+
+		arr[a] ^= arr[b];
+		arr[b] ^= arr[a];
+		arr[a] ^= arr[b];
+	}
+
+	//bool tryToSwapConformity(int *conformity, int n, String^ text, String^ key) {
+
+	//	if (n == 20) 
+	//		if (LinguisticAnalysis::CheckPlainText(changeText(text, conformity, key))) return true;
+	//		else return false;
+
+	//	for (int i = 1; i < n - 20; i++) {
+	//		
+	//		swap(conformity, n - 1, n - i - 1);
+	//		
+	//		if (tryToSwapConformity(conformity, n - 1, text, key)) return true;
+	//		
+	//		swap(conformity, n - 1, n - i - 1);
+	//	}
+
+	//	return false;
+	//}
+
+	// Функция дешифрует текст
+	String^ textPreparing(String^ *text, int **conformity) {
+
+		// Определяем длину ключа
+		int* lenght = (result(KasiskiExamination(*text), Index(*text)));
+		int key_length = result(KasiskiExamination(*text), Index(*text))[0];
+
+		// Разбиваем текст на группы
+		array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
+		splitIntoGroups(*text, key_length, groups);
+
+		//int *shifts = shiftsDetermination(groups, key_length);
+		
+
+		
+		
+		// Подбираем ключ
+		String^ key = keyDetermination(groups, key_length);
+
+		*text = shiftLettersInText(*text, key);
+
+		//int *conformity = multiGrammStatisctic(text);
+
+		//Таблицы соответствия букв шифротекста буквам исходного алфавита
+		//int *conformity = conformityDetermination(groups, key);	
+		
+		*conformity = FrequencyAnalysis::conformityDetermination(*text);
+
+		//fclose(log_file);
+
+		//if (!(LinguisticAnalysis::CheckPlainText(new_text))) {
+		//	
+		//	tryToSwapConformity(conformity, alph.length, text, key);
+		//	text = changeText(text, conformity, key);
+		//}
+		
+		*text = replaceLettersInText(*text, *conformity);
+
+		
+
 
 
 		// Отладочная информация
@@ -727,11 +880,13 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 
 		fwprintf(log_file, L"Таблица моноалфавитного соответствия: \n");
 		for (int i = 0; i < alph.length; i++)
-			fwprintf(log_file, L"%lc - %lc\n", alph.getLetter(i), alph.getLetter(conformity[i]));
+			for (int j = 0; j < alph.length; j++)
+				if ((*conformity)[j] == i)
+					fwprintf(log_file, L"%lc - %lc\n", alph.getLetter(j), alph.getLetter((*conformity)[j]));
 
 		fclose(log_file);
 		// Отладочная информация
 
-		return text_builder.ToString();				// Возвращаем изменённую строку
+		return *text;
 	}
 }

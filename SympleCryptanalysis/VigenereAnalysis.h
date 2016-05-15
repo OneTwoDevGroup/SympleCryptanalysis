@@ -1,4 +1,5 @@
 ﻿#pragma once
+#define MAXALPHLEN 40
 
 namespace VigenereAnalysis {
 
@@ -9,10 +10,10 @@ namespace VigenereAnalysis {
 
 
 
-	// Функция подбирает ключ, основываясь на длине ключа, используя частотный анализ
-	String^ keyDetermination(String^ text, int **conformity);
+	//// Функция подбирает ключ, основываясь на длине ключа, используя частотный анализ
+	//String^ keyDetermination(String^ text, int **conformity);
 
 	// Функция дешифрует текст
-	String^ textPreparing(String^ text);
+	String^ textPreparing(String^ *text, int **conformity);
 
 }

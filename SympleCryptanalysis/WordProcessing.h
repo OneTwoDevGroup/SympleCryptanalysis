@@ -26,10 +26,10 @@ namespace WordProcessing {
 	};
 
 	//Функция сохраняет последние изменения
-	String^ changeTextUp(String^ old_text);
+	String^ changeTextUp(String^ *old_text, String^ *conformity_table);
 
 	//Функция откатывает последние изменения
-	String^ changeTextDown();
+	String^ changeTextDown(String^ *text, String^ *conformity_table);
 
 	// Функция передаёт исходный текст
 	String^ getFirstText();
