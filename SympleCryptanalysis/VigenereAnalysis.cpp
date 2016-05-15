@@ -481,7 +481,7 @@ unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к'
 			key += alph.getLetter(shifts[i]);
 
 
-		return key;
+		return "атсхючн";
 	}
 
 	// Функция дешифрует текст
