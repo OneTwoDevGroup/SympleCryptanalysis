@@ -1,4 +1,5 @@
 #pragma once
+#include "stdio.h"
 
 #define MAXALPHLEN 40    // Максимальная длина алфавита
 
@@ -26,7 +27,7 @@ namespace WordProcessing {
 	};
 
 	//Функция сохраняет последние изменения
-	String^ changeTextUp(String^ *old_text, String^ *conformity_table);
+	String^ changeTextUp(String^ *old_text, String^ *conformity_table, int* conformity_changes = NULL);
 
 	//Функция откатывает последние изменения
 	String^ changeTextDown(String^ *text, String^ *conformity_table);

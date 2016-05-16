@@ -195,7 +195,7 @@ namespace SympleCryptanalysis {
 
 		// Обработка нажатия кнопки отката измений
 		private: System::Void ChangeTextDownButton_Click(System::Object^  sender, System::EventArgs^  e) {
-			String^ conformity_table; String^ text;
+			String^ conformity_table; String^ text ;
 			WordProcessing::changeTextDown(&text, &conformity_table);
 			TextBox->Text = text;
 			ConformityTable->Text = conformity_table;
@@ -203,7 +203,10 @@ namespace SympleCryptanalysis {
 
 		// Обработка нажатия кнопки поиска по словарю
 		private: System::Void FindInDictionaryButton_Click(System::Object^  sender, System::EventArgs^  e) {
-			DictionaryConformityText->Text = LinguisticAnalysis::DictionaryAnalysis(TextBox->Text);
+			String^ conformity_table; String^ text = TextBox->Text->ToLower();
+			DictionaryConformityText->Text = LinguisticAnalysis::DictionaryAnalysis(&text, &conformity_table);
+			TextBox->Text = text;
+			ConformityTable->Text = conformity_table;
 		}
 	};
 }

@@ -2,6 +2,7 @@
 #include <string>
 #include <msclr/marshal_cppstd.h>
 #include <regex>
+#include "WordProcessing.h"
 #define MAX_LEN 20
 
 //namespace LinguisticAnalysis {
@@ -135,7 +136,7 @@ namespace LinguisticAnalysis {
 		//return 0;
 	}
 
-	String^ PartitialMatchesChanges(String^ word) {						// Возвращает строку-отчет (используется для отладки и вывода в текстовое поле)
+	String^ PartitialMatchesChanges(String^ word, int matchesNum) {						// Возвращает строку-отчет (используется для отладки и вывода в текстовое поле)
 		const int WORDS_COUNT = 10000;
 		array<System::String ^>^ words = gcnew array<System::String^ >(WORDS_COUNT); // массив слов-совпадений
 		using namespace std;
@@ -161,39 +162,54 @@ namespace LinguisticAnalysis {
 				}
 			}
 		}
-		if (word->Length - maxMatchedLetters == 1) {
+		if (word->Length - maxMatchedLetters < matchesNum+1) {
 			return words[0];
 		}
 		else return "0";
 	}
 
-	String^ DictionaryBasedChange(String^ text, int stringLength, int wordLength) {
+	String^ DictionaryBasedChange(String^ *text, String^ *conformity_table, int stringLength, int wordLength, int matchesNum) {
 		using namespace std;
+		int* conformity_new = (int*)malloc(MAXALPHLEN * sizeof(int));
+		for (int i = 0; i < MAXALPHLEN; i++)
+			conformity_new[i] = -1;
 		int statistics = 0;
-		string convertedText = msclr::interop::marshal_as<string>(text);
-		string word;
-		String ^temp;
-		string result;
+		//string convertedText = msclr::interop::marshal_as<string>(*text);
+		//string word;
+		String^ word;
+		String^ result;
 		for (int j = 0; j < stringLength - wordLength; j++) {
-			word = convertedText.substr(j, wordLength);
-			String^ tempWord = PartitialMatchesChanges(msclr::interop::marshal_as<String^>(word));
-			string tempString = msclr::interop::marshal_as<string>(tempWord);
-			if (tempString[0] != '0') {
+			//word = convertedText.substr(j, wordLength);
+			word = (*text)->Substring(j+1, wordLength);
+			//String^ tempWord = PartitialMatchesChanges(msclr::interop::marshal_as<String^>(word), matchesNum);
+			String^ tempWord = PartitialMatchesChanges(word, matchesNum);
+			//string tempString = msclr::interop::marshal_as<string>(tempWord);
+			if (tempWord[0] != '0') {
 				for (int i = 0; i < wordLength; i++)
-					if (word[i] != tempString[i]) {
-						result = result + word + "\r\n" + tempString + "\r\n";
-						result = result + word[i] + " -> " + tempString[i] + "\r\n";
+					if (word[i] != tempWord[i]) {
+						int tempInte = word[i]-1072;
+						int tempInte2 = tempWord[i] - 1072;
+						conformity_new[word[i]-1072] = tempWord[i]-1072;
+						conformity_new[tempWord[i] - 1072] = word[i] - 1072;
+						result = result + word + "\r\n" + tempWord + "\r\n";
+						result = result + word[i] + " -> " + tempWord[i] + "\r\n";
 					}
 			}
+			
 			//statistics += PartitialMatches(tempWord, matchesNum);
 		}
-		return msclr::interop::marshal_as<String^>(result);
+		String^ temp;
+		for (int i = 0; i < 32; i++)
+			temp += conformity_new[i].ToString() + " ";
+
+		WordProcessing::changeTextUp(text, conformity_table, conformity_new);
+		return result;
 	}
 
 	// Функция поиска соответствия слов в словаре
 	// Словарь находится в файле Configs/dictionary.dic, содержит 
 	// большое количество слов одного языка
-	String^ DictionaryAnalysis(String^ text)
+	String^ DictionaryAnalysis(String^ *text, String^ *conformity_table)
 	{
 		//const int WORDS_COUNT = 1000000;
 		//array<System::String ^>^ words = gcnew array<System::String^ >(WORDS_COUNT);
@@ -233,7 +249,7 @@ namespace LinguisticAnalysis {
 		//			dictionaryConformity += words[i] + "\r\n";
 
 		//		return dictionaryConformity;
-		String^ temp = DictionaryBasedChange(text, 20, 6);
+		String^ temp = DictionaryBasedChange(text, conformity_table, 20, 6, 2);
 		return temp;
 	}
 
