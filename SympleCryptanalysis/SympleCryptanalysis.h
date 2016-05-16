@@ -1,5 +1,7 @@
 #pragma once
 
+#include "malloc.h"
+
 namespace SympleCryptanalysis {
 
 
@@ -47,6 +49,12 @@ namespace SympleCryptanalysis {
 		private: System::Windows::Forms::ComboBox^  keys_list;
 
 		private: System::Windows::Forms::ComboBox^  key_lengths_list;
+		private: System::Windows::Forms::Label^  replaceable_symbol_label;
+		private: System::Windows::Forms::Label^  replacing_symbol_label;
+		private: System::Windows::Forms::TextBox^  replaceable_symbol;
+		private: System::Windows::Forms::TextBox^  replacing_symbol;
+		private: System::Windows::Forms::Label^  key_label;
+		private: System::Windows::Forms::Label^  key_len_label;
 
 
 
@@ -69,6 +77,12 @@ namespace SympleCryptanalysis {
 				this->TextBox = (gcnew System::Windows::Forms::RichTextBox());
 				this->DictionaryConformityText = (gcnew System::Windows::Forms::TextBox());
 				this->buttons_panel = (gcnew System::Windows::Forms::Panel());
+				this->replaceable_symbol_label = (gcnew System::Windows::Forms::Label());
+				this->replacing_symbol_label = (gcnew System::Windows::Forms::Label());
+				this->replaceable_symbol = (gcnew System::Windows::Forms::TextBox());
+				this->replacing_symbol = (gcnew System::Windows::Forms::TextBox());
+				this->key_label = (gcnew System::Windows::Forms::Label());
+				this->key_len_label = (gcnew System::Windows::Forms::Label());
 				this->key_lengths_list = (gcnew System::Windows::Forms::ComboBox());
 				this->keys_list = (gcnew System::Windows::Forms::ComboBox());
 				this->FindInDictionaryButton = (gcnew System::Windows::Forms::Button());
@@ -104,6 +118,12 @@ namespace SympleCryptanalysis {
 				// 
 				// buttons_panel
 				// 
+				this->buttons_panel->Controls->Add(this->replaceable_symbol_label);
+				this->buttons_panel->Controls->Add(this->replacing_symbol_label);
+				this->buttons_panel->Controls->Add(this->replaceable_symbol);
+				this->buttons_panel->Controls->Add(this->replacing_symbol);
+				this->buttons_panel->Controls->Add(this->key_label);
+				this->buttons_panel->Controls->Add(this->key_len_label);
 				this->buttons_panel->Controls->Add(this->key_lengths_list);
 				this->buttons_panel->Controls->Add(this->keys_list);
 				this->buttons_panel->Controls->Add(this->FindInDictionaryButton);
@@ -115,10 +135,64 @@ namespace SympleCryptanalysis {
 				this->buttons_panel->Size = System::Drawing::Size(397, 561);
 				this->buttons_panel->TabIndex = 12;
 				// 
+				// replaceable_symbol_label
+				// 
+				this->replaceable_symbol_label->AutoSize = true;
+				this->replaceable_symbol_label->Location = System::Drawing::Point(255, 176);
+				this->replaceable_symbol_label->Name = L"replaceable_symbol_label";
+				this->replaceable_symbol_label->Size = System::Drawing::Size(97, 13);
+				this->replaceable_symbol_label->TabIndex = 21;
+				this->replaceable_symbol_label->Text = L"replaceable symbol";
+				// 
+				// replacing_symbol_label
+				// 
+				this->replacing_symbol_label->AutoSize = true;
+				this->replacing_symbol_label->Location = System::Drawing::Point(61, 176);
+				this->replacing_symbol_label->Name = L"replacing_symbol_label";
+				this->replacing_symbol_label->Size = System::Drawing::Size(85, 13);
+				this->replacing_symbol_label->TabIndex = 20;
+				this->replacing_symbol_label->Text = L"replacing symbol";
+				// 
+				// replaceable_symbol
+				// 
+				this->replaceable_symbol->Location = System::Drawing::Point(244, 192);
+				this->replaceable_symbol->Name = L"replaceable_symbol";
+				this->replaceable_symbol->Size = System::Drawing::Size(121, 20);
+				this->replaceable_symbol->TabIndex = 19;
+				this->replaceable_symbol->TextChanged += gcnew System::EventHandler(this, &MyForm::replaceable_symbol_TextChanged);
+				this->replaceable_symbol->Enter += gcnew System::EventHandler(this, &MyForm::replaceable_symbol_Enter);
+				// 
+				// replacing_symbol
+				// 
+				this->replacing_symbol->Location = System::Drawing::Point(38, 192);
+				this->replacing_symbol->Name = L"replacing_symbol";
+				this->replacing_symbol->Size = System::Drawing::Size(129, 20);
+				this->replacing_symbol->TabIndex = 18;
+				this->replacing_symbol->TextChanged += gcnew System::EventHandler(this, &MyForm::replacing_symbol_TextChanged);
+				this->replacing_symbol->Enter += gcnew System::EventHandler(this, &MyForm::replacing_symbol_Enter);
+				// 
+				// key_label
+				// 
+				this->key_label->AutoSize = true;
+				this->key_label->Location = System::Drawing::Point(290, 39);
+				this->key_label->Name = L"key_label";
+				this->key_label->Size = System::Drawing::Size(24, 13);
+				this->key_label->TabIndex = 17;
+				this->key_label->Text = L"key";
+				// 
+				// key_len_label
+				// 
+				this->key_len_label->AutoSize = true;
+				this->key_len_label->Location = System::Drawing::Point(78, 39);
+				this->key_len_label->Name = L"key_len_label";
+				this->key_len_label->Size = System::Drawing::Size(56, 13);
+				this->key_len_label->TabIndex = 16;
+				this->key_len_label->Text = L"key length";
+				// 
 				// key_lengths_list
 				// 
 				this->key_lengths_list->FormattingEnabled = true;
-				this->key_lengths_list->Location = System::Drawing::Point(47, 56);
+				this->key_lengths_list->Location = System::Drawing::Point(38, 55);
 				this->key_lengths_list->Name = L"key_lengths_list";
 				this->key_lengths_list->Size = System::Drawing::Size(129, 21);
 				this->key_lengths_list->TabIndex = 15;
@@ -128,7 +202,7 @@ namespace SympleCryptanalysis {
 				// keys_list
 				// 
 				this->keys_list->FormattingEnabled = true;
-				this->keys_list->Location = System::Drawing::Point(253, 56);
+				this->keys_list->Location = System::Drawing::Point(244, 55);
 				this->keys_list->Name = L"keys_list";
 				this->keys_list->Size = System::Drawing::Size(121, 21);
 				this->keys_list->TabIndex = 14;
@@ -195,6 +269,7 @@ namespace SympleCryptanalysis {
 				this->Text = L"SympleCryptanalysis";
 				this->Resize += gcnew System::EventHandler(this, &MyForm::MyForm_Resize);
 				this->buttons_panel->ResumeLayout(false);
+				this->buttons_panel->PerformLayout();
 				this->ResumeLayout(false);
 				this->PerformLayout();
 
@@ -270,5 +345,47 @@ namespace SympleCryptanalysis {
 			TextBox->Text = text;
 			ConformityTable->Text = conformity_table;
 		}
+
+		private: System::Void replacing_symbol_Enter(System::Object^  sender, System::EventArgs^  e) {
+
+		}
+		private: System::Void replaceable_symbol_Enter(System::Object^  sender, System::EventArgs^  e) {
+
+		}
+	private: System::Void replacing_symbol_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+		//WordProcessing::Alphabit alph("rus");
+		//if (replacing_symbol->Text != L"" && replaceable_symbol->Text != L"" &&
+		//	alph.isLetter(replacing_symbol->Text[0]) && alph.isLetter(replaceable_symbol->Text[0])) {
+
+		//	int* conformity = (int*)malloc(MAXALPHLEN * sizeof(int));
+
+		//	for (int i = 0; i < alph.length; i++) conformity[i] = -1;
+
+		//	conformity[replacing_symbol->Text[0] - alph.firstchar] = replaceable_symbol->Text[0] - alph.firstchar;
+		//	conformity[replaceable_symbol->Text[0] - alph.firstchar] = replacing_symbol->Text[0] - alph.firstchar;
+
+		//	String^ conformity_table; String^ text = TextBox->Text->ToLower();
+		//	WordProcessing::changeTextUp(&text, &conformity_table, &conformity);
+		//	TextBox->Text = text; ConformityTable->Text = conformity_table;
+		//}
+	}
+
+	private: System::Void replaceable_symbol_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+		WordProcessing::Alphabit alph("rus");
+		if (replacing_symbol->Text != L"" && replaceable_symbol->Text != L"" &&
+			alph.isLetter(replacing_symbol->Text[0]) && alph.isLetter(replaceable_symbol->Text[0])) {
+
+			int* conformity = (int*)malloc(MAXALPHLEN * sizeof(int));
+
+			for (int i = 0; i < alph.length; i++) conformity[i] = -1;
+
+			conformity[replacing_symbol->Text[0] - alph.firstchar] = replaceable_symbol->Text[0] - alph.firstchar;
+			conformity[replaceable_symbol->Text[0] - alph.firstchar] = replacing_symbol->Text[0] - alph.firstchar;
+
+			String^ conformity_table; String^ text = TextBox->Text->ToLower();
+			WordProcessing::changeTextUp(&text, &conformity_table, &conformity);
+			TextBox->Text = text; ConformityTable->Text = conformity_table;
+		}
+	}
 };
 }

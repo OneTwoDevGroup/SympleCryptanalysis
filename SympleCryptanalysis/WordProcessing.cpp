@@ -125,9 +125,9 @@ namespace WordProcessing {
 							
 				for (int i = 0; i < alph.length; i++) 
 					if ((*conformity)[i]!=-1)
-						*text = (*text)->Replace(alph.getLetter(i) + "", alph.getLetter((*conformity)[i]) + "");
+						*text = (*text)->Replace(alph.getLetter(i) + "", (alph.getLetter((*conformity)[i]) + "")->ToUpper());
 	
-				
+				*text = (*text)->ToLower();
 				save_changes(old_text, conformity);
 
 				for (int i = 0; i < alph.length; i++)
