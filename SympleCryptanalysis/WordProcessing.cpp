@@ -88,9 +88,12 @@ namespace WordProcessing {
 		int last = 0;                                                                                   // Переменнная определяет номер последнего изменения
 
 		// Функция сохраняет изменения																								
-		void save_changes(String^ text, int *conformity = NULL) {
+		void save_changes(String^ text, int **conformity) {
 			textChanges[last % ARRAY_SIZE] = text;
-			if (conformity) memcpy(conformityChanges[last % ARRAY_SIZE], conformity, MAXALPHLEN * sizeof(int));
+			for (int i = 0; i < alph.length; i++) {
+				if ((*conformity)[i] == -1)	(*conformity)[i] = last > 0 ? conformityChanges[(last - 1) % ARRAY_SIZE][i] : i;
+				conformityChanges[last % ARRAY_SIZE][i] = (*conformity)[i];
+			} 
 			last++;
 
 		}
@@ -114,26 +117,27 @@ namespace WordProcessing {
 		}
 
 		//Функция сохраняет последние изменения
-		String^ changeTextUp(String^ *text, String^ *conformity_table, int *conformity_changes = NULL) {
+		String^ changeTextUp(String^ *text, String^ *conformity_table, int **conformity = NULL) {
 			
 			String^ old_text = *text;
 
-			if (conformity_changes) {
+			if (conformity) {
 							
-				int *conformity = (int*)malloc(MAXALPHLEN * sizeof(int));
 				for (int i = 0; i < alph.length; i++) 
-					if (conformity_changes[i]!=-1) {
-						conformity[i] = conformity_changes[i];
-						*text = (*text)->Replace(alph.getLetter(i) + "", alph.getLetter(conformity_changes[i]) + "");
-					}
+					if ((*conformity)[i]!=-1)
+						*text = (*text)->Replace(alph.getLetter(i) + "", alph.getLetter((*conformity)[i]) + "");
+	
 				
-				save_changes(old_text);
+				save_changes(old_text, conformity);
+
+				for (int i = 0; i < alph.length; i++)
+					*conformity_table += alph.getLetter((*conformity)[i]) + " - " + alph.getLetter(i) + "\r\n";
 			}
 			else {
 				int **conformity = (int**)malloc(MAXALPHLEN * sizeof(int));
 
 				VigenereAnalysis::textPreparing(text, conformity);
-				save_changes(old_text, *conformity);
+				save_changes(old_text, conformity);
 
 				for (int i = 0; i < alph.length; i++) {
 					*conformity_table += alph.getLetter((*conformity)[i]) + " - " + alph.getLetter(i) + "\r\n";
@@ -149,7 +153,7 @@ namespace WordProcessing {
 	} textChanges; // Экземпляр класса хранящий все изменения
 
 	//Функция сохраняет последние изменения
-	String^ changeTextUp(String^ *text, String^ *conformity_table, int *conformity_changes = NULL) { return textChanges.changeTextUp(text, conformity_table, conformity_changes); }
+	String^ changeTextUp(String^ *text, String^ *conformity_table, int **conformity = NULL) { return textChanges.changeTextUp(text, conformity_table, conformity); }
 
 	//Функция откатывает последние изменения
 	String^ changeTextDown(String^ *text, String^ *conformity_table) { return textChanges.changeTextDown(text, conformity_table); }

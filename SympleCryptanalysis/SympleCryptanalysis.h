@@ -42,6 +42,7 @@ namespace SympleCryptanalysis {
 		private: System::Windows::Forms::Button^  ChangeTextDownButton;
 		private: System::Windows::Forms::Button^  ChangeTextUpButton;
 		private: System::Windows::Forms::TextBox^  ConformityTable;
+		private: System::Windows::Forms::ListBox^  listBox1;
 
 		private:
 			/// <summary>
@@ -63,6 +64,7 @@ namespace SympleCryptanalysis {
 				this->ChangeTextDownButton = (gcnew System::Windows::Forms::Button());
 				this->ChangeTextUpButton = (gcnew System::Windows::Forms::Button());
 				this->ConformityTable = (gcnew System::Windows::Forms::TextBox());
+				this->listBox1 = (gcnew System::Windows::Forms::ListBox());
 				this->panel1->SuspendLayout();
 				this->SuspendLayout();
 				// 
@@ -79,7 +81,6 @@ namespace SympleCryptanalysis {
 				this->TextBox->Size = System::Drawing::Size(500, 561);
 				this->TextBox->TabIndex = 1;
 				this->TextBox->Text = L"";
-				this->TextBox->TextChanged += gcnew System::EventHandler(this, &MyForm::TextBox_TextChanged);
 				// 
 				// DictionaryConformityText
 				// 
@@ -141,17 +142,28 @@ namespace SympleCryptanalysis {
 				// ConformityTable
 				// 
 				this->ConformityTable->Dock = System::Windows::Forms::DockStyle::Right;
+				this->ConformityTable->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+					static_cast<System::Byte>(204)));
 				this->ConformityTable->Location = System::Drawing::Point(1126, 0);
 				this->ConformityTable->Multiline = true;
 				this->ConformityTable->Name = L"ConformityTable";
 				this->ConformityTable->Size = System::Drawing::Size(100, 561);
 				this->ConformityTable->TabIndex = 13;
 				// 
+				// listBox1
+				// 
+				this->listBox1->FormattingEnabled = true;
+				this->listBox1->Location = System::Drawing::Point(266, 172);
+				this->listBox1->Name = L"listBox1";
+				this->listBox1->Size = System::Drawing::Size(8, 4);
+				this->listBox1->TabIndex = 14;
+				// 
 				// MyForm
 				// 
 				this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 				this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
 				this->ClientSize = System::Drawing::Size(1226, 561);
+				this->Controls->Add(this->listBox1);
 				this->Controls->Add(this->panel1);
 				this->Controls->Add(this->DictionaryConformityText);
 				this->Controls->Add(this->TextBox);
@@ -159,7 +171,6 @@ namespace SympleCryptanalysis {
 				this->MinimumSize = System::Drawing::Size(1000, 600);
 				this->Name = L"MyForm";
 				this->Text = L"SympleCryptanalysis";
-				this->Load += gcnew System::EventHandler(this, &MyForm::MyForm_Load);
 				this->Resize += gcnew System::EventHandler(this, &MyForm::MyForm_Resize);
 				this->panel1->ResumeLayout(false);
 				this->ResumeLayout(false);
@@ -167,16 +178,11 @@ namespace SympleCryptanalysis {
 
 			}
 #pragma endregion
+		
 		private: System::Void MyForm_Resize(System::Object^  sender, System::EventArgs^  e) {
 			TextBox->Size = System::Drawing::Size(MyForm::Size.Width / 2, TextBox->Size.Height);
 		}
-		private: System::Void TextBox_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-			// TODO: Analysis
-		}
-		private: System::Void tableLayoutPanel1_Paint(System::Object^  sender, System::Windows::Forms::PaintEventArgs^  e) {
-		}
-		private: System::Void MyForm_Load(System::Object^  sender, System::EventArgs^  e) {
-		}
+
 
 		
 		// Обработка нажатия кнопки изменения текста

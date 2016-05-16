@@ -201,7 +201,7 @@ namespace LinguisticAnalysis {
 		for (int i = 0; i < 32; i++)
 			temp += conformity_new[i].ToString() + " ";
 
-		WordProcessing::changeTextUp(text, conformity_table, conformity_new);
+		WordProcessing::changeTextUp(text, conformity_table, &conformity_new);
 		return result;
 	}
 
