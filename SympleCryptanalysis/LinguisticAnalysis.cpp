@@ -174,16 +174,17 @@ namespace LinguisticAnalysis {
 		for (int i = 0; i < MAXALPHLEN; i++)
 			conformity_new[i] = -1;
 		int statistics = 0;
-		//string convertedText = msclr::interop::marshal_as<string>(*text);
-		//string word;
-		String^ word;
 		String^ result;
 		for (int j = 0; j < stringLength - wordLength; j++) {
-			//word = convertedText.substr(j, wordLength);
-			word = (*text)->Substring(j+1, wordLength);
-			//String^ tempWord = PartitialMatchesChanges(msclr::interop::marshal_as<String^>(word), matchesNum);
+			String^ word;
+			int spaceNum = 0;
+			for (int k = 0; k < wordLength+spaceNum; k++)
+				if ((*text)[j + k] != ' ')
+					word += (*text)[j + k-spaceNum];
+				else
+					spaceNum++;
+			//word = (*text)->Substring(j+1, wordLength);
 			String^ tempWord = PartitialMatchesChanges(word, matchesNum);
-			//string tempString = msclr::interop::marshal_as<string>(tempWord);
 			if (tempWord[0] != '0') {
 				for (int i = 0; i < wordLength; i++)
 					if (word[i] != tempWord[i]) {
@@ -195,8 +196,6 @@ namespace LinguisticAnalysis {
 						result = result + word[i] + " -> " + tempWord[i] + "\r\n";
 					}
 			}
-			
-			//statistics += PartitialMatches(tempWord, matchesNum);
 		}
 		String^ temp;
 		for (int i = 0; i < 32; i++)
@@ -249,7 +248,7 @@ namespace LinguisticAnalysis {
 		//			dictionaryConformity += words[i] + "\r\n";
 
 		//		return dictionaryConformity;
-		String^ temp = DictionaryBasedChange(text, conformity_table, 20, 6, 2);
+		String^ temp = DictionaryBasedChange(text, conformity_table, 20, 6, 1);
 		return temp;
 	}
 
