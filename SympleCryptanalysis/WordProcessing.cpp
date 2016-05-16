@@ -101,7 +101,7 @@ namespace WordProcessing {
 	public:
 
 		// Функция передаёт исходный текст
-		String^ getFirstText() { return textChanges[0]->ToLower(); }
+		String^ getFirstText(String^ text = nullptr) { return (last != 0 || text == nullptr) ? textChanges[0]->ToLower() : text; }
 
 		// Функция передаёт последний текст
 		String^ getLastText() { return textChanges[last]->ToLower(); }
@@ -135,7 +135,7 @@ namespace WordProcessing {
 			}
 			else {
 				int **conformity = (int**)malloc(MAXALPHLEN * sizeof(int));
-
+				*text = getFirstText(*text);
 				VigenereAnalysis::textPreparing(text, conformity, key);
 				save_changes(old_text, conformity);
 
