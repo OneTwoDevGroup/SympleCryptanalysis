@@ -27,7 +27,7 @@ namespace WordProcessing {
 	};
 
 	//Функция сохраняет последние изменения
-	String^ changeTextUp(String^ *old_text, String^ *conformity_table, int **conformity = NULL);
+	String^ changeTextUp(String^ *text, String^ *conformity_table, int **conformity = NULL, String ^key = nullptr);
 
 	//Функция откатывает последние изменения
 	String^ changeTextDown(String^ *text, String^ *conformity_table);

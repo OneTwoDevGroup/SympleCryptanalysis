@@ -438,7 +438,7 @@ namespace VigenereAnalysis {
 	}
 
 	// Поиск сдвигов
-	String ^keyDetermination(array<System::String ^>^ groups, int key_length) {
+	String ^keyDetermination(array<System::String ^>^ *keys, array<System::String ^>^ groups, int key_length) {
 
 		double conformoty_probability[u][MAXALPHLEN][MAXALPHLEN] = { 0 };
 
@@ -494,39 +494,39 @@ namespace VigenereAnalysis {
 					shift_probobility[k][l][shift] /= sum_shift_probobility;
 			}
 
-		int shifts[MAXKEYAMOUNT] = { 0 };
+		//int shifts[MAXKEYAMOUNT] = { 0 };
 
 
-		for (int l = 1; l < key_length; l++) {
+		//for (int l = 1; l < key_length; l++) {
 
-			double max_coef = 0; int best_shift;
+		//	double max_coef = 0; int best_shift;
 
-			for (int shift = 0; shift < alph.length; shift++) {
-				
-				double coef = 0;
-				
-				//for (int k = 0; k < l; k++)
-				//	coef += shift_probobility[k][l][(shift + shifts[k]) % alph.length];
-				coef += shift_probobility[l][0][shift];
+		//	for (int shift = 0; shift < alph.length; shift++) {
+		//		
+		//		double coef = 0;
+		//		
+		//		//for (int k = 0; k < l; k++)
+		//		//	coef += shift_probobility[k][l][(shift + shifts[k]) % alph.length];
+		//		coef += shift_probobility[l][0][shift];
 
-				if (max_coef < coef) {
-					max_coef = coef;
-					best_shift = shift;
-				}
+		//		if (max_coef < coef) {
+		//			max_coef = coef;
+		//			best_shift = shift;
+		//		}
 
-			}
+		//	}
 
-			shifts[l] = best_shift;
+		//	shifts[l] = best_shift;
 
-		}
+		//}
 
 
 
-		array<System::String ^>^ keys = gcnew array<System::String^>(MAXKEYAMOUNT);
+		//array<System::String ^>^ keys = gcnew array<System::String^>(MAXKEYAMOUNT);
 
-		for (int shift = 0; shift < alph.length; shift++)
-			for (int i = 0; i < key_length; i++)
-				keys[shift] += alph.getLetter(shifts[i] + shift);
+		//for (int shift = 0; shift < alph.length; shift++)
+		//	for (int i = 0; i < key_length; i++)
+		//		keys[shift] += alph.getLetter(shifts[i] + shift);
 
 		
 		std::ifstream dictionary("Configs/russian_dictionary.dic");
@@ -564,7 +564,7 @@ namespace VigenereAnalysis {
 
 		}
 
-		double eps = 0;
+		double eps = 0.9;
 		dictionary.clear();
 		dictionary.seekg(0, std::ios::beg);
 
@@ -588,7 +588,7 @@ namespace VigenereAnalysis {
 
 		}
 
-		
+		*keys = best_words;
 
 		return best_words[0];
 	}
@@ -810,24 +810,28 @@ namespace VigenereAnalysis {
 	//}
 
 	// Функция дешифрует текст
-	String^ textPreparing(String^ *text, int **conformity) {
+	String^ textPreparing(String^ *text, int **conformity, String^ key = nullptr) {
 
-		// Определяем длину ключа
-		int* lenght = (result(KasiskiExamination(*text), Index(*text)));
-		int key_length = result(KasiskiExamination(*text), Index(*text))[0];
+		if (key == nullptr) {
+			// Определяем длину ключа
+			int* lenght = (result(KasiskiExamination(*text), Index(*text)));
+			int key_length = result(KasiskiExamination(*text), Index(*text))[0];
 
-		// Разбиваем текст на группы
-		array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
-		splitIntoGroups(*text, key_length, groups);
+			// Разбиваем текст на группы
+			array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
+			splitIntoGroups(*text, key_length, groups);
 
-		//int *shifts = shiftsDetermination(groups, key_length);
+			//int *shifts = shiftsDetermination(groups, key_length);
+
+
+
+
+			// Подбираем ключ
+			array<System::String ^>^ keys = gcnew array<System::String^>(MAXKEYAMOUNT);
+			key = keyDetermination(&keys, groups, key_length);
+		}
 		
-
 		
-		
-		// Подбираем ключ
-		String^ key = keyDetermination(groups, key_length);
-
 		*text = shiftLettersInText(*text, key);
 
 		//int *conformity = multiGrammStatisctic(text);
