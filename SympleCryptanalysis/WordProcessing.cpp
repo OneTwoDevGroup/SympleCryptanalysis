@@ -117,20 +117,20 @@ namespace WordProcessing {
 		String^ changeTextUp(String^ *text, String^ *conformity_table, int *conformity_changes = NULL) {
 			
 			String^ old_text = *text;
-			int **conformity = (int**)malloc(MAXALPHLEN * sizeof(int));
 
 			if (conformity_changes) {
 							
-
+				int *conformity = (int*)malloc(MAXALPHLEN * sizeof(int));
 				for (int i = 0; i < alph.length; i++) 
-					if (conformity_changes[i]) {
-						*conformity[i] = conformity_changes[i];
-						*text = (*text)->Replace(wchar_t(i + alph.firstchar) + "", (*conformity[i] + "")->ToUpper());
+					if (conformity_changes[i]!=-1) {
+						conformity[i] = conformity_changes[i];
+						*text = (*text)->Replace(alph.getLetter(i) + "", alph.getLetter(conformity_changes[i]) + "");
 					}
 				
 				save_changes(old_text);
 			}
 			else {
+				int **conformity = (int**)malloc(MAXALPHLEN * sizeof(int));
 
 				VigenereAnalysis::textPreparing(text, conformity);
 				save_changes(old_text, *conformity);
@@ -149,7 +149,7 @@ namespace WordProcessing {
 	} textChanges; // Экземпляр класса хранящий все изменения
 
 	//Функция сохраняет последние изменения
-	String^ changeTextUp(String^ *text, String^ *conformity_table) { return textChanges.changeTextUp(text, conformity_table); }
+	String^ changeTextUp(String^ *text, String^ *conformity_table, int *conformity_changes = NULL) { return textChanges.changeTextUp(text, conformity_table, conformity_changes); }
 
 	//Функция откатывает последние изменения
 	String^ changeTextDown(String^ *text, String^ *conformity_table) { return textChanges.changeTextDown(text, conformity_table); }
