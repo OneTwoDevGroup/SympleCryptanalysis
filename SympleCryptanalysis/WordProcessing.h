@@ -37,4 +37,7 @@ namespace WordProcessing {
 
 	// Функция передаёт последний текст
 	String^ getLastText();
+
+	// Функция передаёт последнюю таблицу соответствий
+	int *getLastConformity();
 }

@@ -102,18 +102,18 @@ namespace SympleCryptanalysis {
 					static_cast<System::Byte>(204)));
 				this->TextBox->Location = System::Drawing::Point(0, 0);
 				this->TextBox->Name = L"TextBox";
-				this->TextBox->Size = System::Drawing::Size(500, 561);
+				this->TextBox->Size = System::Drawing::Size(650, 561);
 				this->TextBox->TabIndex = 1;
 				this->TextBox->Text = L"";
 				// 
 				// DictionaryConformityText
 				// 
 				this->DictionaryConformityText->Dock = System::Windows::Forms::DockStyle::Right;
-				this->DictionaryConformityText->Location = System::Drawing::Point(897, 0);
+				this->DictionaryConformityText->Location = System::Drawing::Point(980, 0);
 				this->DictionaryConformityText->Multiline = true;
 				this->DictionaryConformityText->Name = L"DictionaryConformityText";
 				this->DictionaryConformityText->ScrollBars = System::Windows::Forms::ScrollBars::Vertical;
-				this->DictionaryConformityText->Size = System::Drawing::Size(229, 561);
+				this->DictionaryConformityText->Size = System::Drawing::Size(204, 561);
 				this->DictionaryConformityText->TabIndex = 11;
 				// 
 				// buttons_panel
@@ -130,15 +130,16 @@ namespace SympleCryptanalysis {
 				this->buttons_panel->Controls->Add(this->ChangeTextDownButton);
 				this->buttons_panel->Controls->Add(this->ChangeTextUpButton);
 				this->buttons_panel->Dock = System::Windows::Forms::DockStyle::Fill;
-				this->buttons_panel->Location = System::Drawing::Point(500, 0);
+				this->buttons_panel->Location = System::Drawing::Point(650, 0);
 				this->buttons_panel->Name = L"buttons_panel";
-				this->buttons_panel->Size = System::Drawing::Size(397, 561);
+				this->buttons_panel->Size = System::Drawing::Size(330, 561);
 				this->buttons_panel->TabIndex = 12;
 				// 
 				// replaceable_symbol_label
 				// 
+				this->replaceable_symbol_label->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->replaceable_symbol_label->AutoSize = true;
-				this->replaceable_symbol_label->Location = System::Drawing::Point(255, 176);
+				this->replaceable_symbol_label->Location = System::Drawing::Point(167, 176);
 				this->replaceable_symbol_label->Name = L"replaceable_symbol_label";
 				this->replaceable_symbol_label->Size = System::Drawing::Size(97, 13);
 				this->replaceable_symbol_label->TabIndex = 21;
@@ -146,8 +147,9 @@ namespace SympleCryptanalysis {
 				// 
 				// replacing_symbol_label
 				// 
+				this->replacing_symbol_label->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->replacing_symbol_label->AutoSize = true;
-				this->replacing_symbol_label->Location = System::Drawing::Point(61, 176);
+				this->replacing_symbol_label->Location = System::Drawing::Point(62, 176);
 				this->replacing_symbol_label->Name = L"replacing_symbol_label";
 				this->replacing_symbol_label->Size = System::Drawing::Size(85, 13);
 				this->replacing_symbol_label->TabIndex = 20;
@@ -155,26 +157,29 @@ namespace SympleCryptanalysis {
 				// 
 				// replaceable_symbol
 				// 
-				this->replaceable_symbol->Location = System::Drawing::Point(244, 192);
+				this->replaceable_symbol->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->replaceable_symbol->Location = System::Drawing::Point(170, 204);
 				this->replaceable_symbol->Name = L"replaceable_symbol";
-				this->replaceable_symbol->Size = System::Drawing::Size(121, 20);
+				this->replaceable_symbol->Size = System::Drawing::Size(86, 20);
 				this->replaceable_symbol->TabIndex = 19;
 				this->replaceable_symbol->TextChanged += gcnew System::EventHandler(this, &MyForm::replaceable_symbol_TextChanged);
 				this->replaceable_symbol->Enter += gcnew System::EventHandler(this, &MyForm::replaceable_symbol_Enter);
 				// 
 				// replacing_symbol
 				// 
-				this->replacing_symbol->Location = System::Drawing::Point(38, 192);
+				this->replacing_symbol->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->replacing_symbol->Location = System::Drawing::Point(61, 204);
 				this->replacing_symbol->Name = L"replacing_symbol";
-				this->replacing_symbol->Size = System::Drawing::Size(129, 20);
+				this->replacing_symbol->Size = System::Drawing::Size(86, 20);
 				this->replacing_symbol->TabIndex = 18;
 				this->replacing_symbol->TextChanged += gcnew System::EventHandler(this, &MyForm::replacing_symbol_TextChanged);
 				this->replacing_symbol->Enter += gcnew System::EventHandler(this, &MyForm::replacing_symbol_Enter);
 				// 
 				// key_label
 				// 
+				this->key_label->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->key_label->AutoSize = true;
-				this->key_label->Location = System::Drawing::Point(290, 39);
+				this->key_label->Location = System::Drawing::Point(202, 48);
 				this->key_label->Name = L"key_label";
 				this->key_label->Size = System::Drawing::Size(24, 13);
 				this->key_label->TabIndex = 17;
@@ -182,8 +187,9 @@ namespace SympleCryptanalysis {
 				// 
 				// key_len_label
 				// 
+				this->key_len_label->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->key_len_label->AutoSize = true;
-				this->key_len_label->Location = System::Drawing::Point(78, 39);
+				this->key_len_label->Location = System::Drawing::Point(77, 48);
 				this->key_len_label->Name = L"key_len_label";
 				this->key_len_label->Size = System::Drawing::Size(56, 13);
 				this->key_len_label->TabIndex = 16;
@@ -191,20 +197,22 @@ namespace SympleCryptanalysis {
 				// 
 				// key_lengths_list
 				// 
+				this->key_lengths_list->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->key_lengths_list->FormattingEnabled = true;
-				this->key_lengths_list->Location = System::Drawing::Point(38, 55);
+				this->key_lengths_list->Location = System::Drawing::Point(61, 77);
 				this->key_lengths_list->Name = L"key_lengths_list";
-				this->key_lengths_list->Size = System::Drawing::Size(129, 21);
+				this->key_lengths_list->Size = System::Drawing::Size(86, 21);
 				this->key_lengths_list->TabIndex = 15;
 				this->key_lengths_list->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::key_lengths_SelectedIndexChanged);
 				this->key_lengths_list->Click += gcnew System::EventHandler(this, &MyForm::key_lengths_Click);
 				// 
 				// keys_list
 				// 
+				this->keys_list->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->keys_list->FormattingEnabled = true;
-				this->keys_list->Location = System::Drawing::Point(244, 55);
+				this->keys_list->Location = System::Drawing::Point(170, 77);
 				this->keys_list->Name = L"keys_list";
-				this->keys_list->Size = System::Drawing::Size(121, 21);
+				this->keys_list->Size = System::Drawing::Size(86, 21);
 				this->keys_list->TabIndex = 14;
 				this->keys_list->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::keys_list_SelectedIndexChanged);
 				// 
@@ -212,7 +220,7 @@ namespace SympleCryptanalysis {
 				// 
 				this->FindInDictionaryButton->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->FindInDictionaryButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->FindInDictionaryButton->Location = System::Drawing::Point(125, 501);
+				this->FindInDictionaryButton->Location = System::Drawing::Point(80, 453);
 				this->FindInDictionaryButton->Name = L"FindInDictionaryButton";
 				this->FindInDictionaryButton->Size = System::Drawing::Size(150, 38);
 				this->FindInDictionaryButton->TabIndex = 13;
@@ -224,7 +232,7 @@ namespace SympleCryptanalysis {
 				// 
 				this->ChangeTextDownButton->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->ChangeTextDownButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->ChangeTextDownButton->Location = System::Drawing::Point(125, 423);
+				this->ChangeTextDownButton->Location = System::Drawing::Point(80, 362);
 				this->ChangeTextDownButton->Name = L"ChangeTextDownButton";
 				this->ChangeTextDownButton->Size = System::Drawing::Size(150, 37);
 				this->ChangeTextDownButton->TabIndex = 12;
@@ -236,20 +244,21 @@ namespace SympleCryptanalysis {
 				// 
 				this->ChangeTextUpButton->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->ChangeTextUpButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->ChangeTextUpButton->Location = System::Drawing::Point(125, 343);
+				this->ChangeTextUpButton->Location = System::Drawing::Point(80, 331);
 				this->ChangeTextUpButton->Name = L"ChangeTextUpButton";
 				this->ChangeTextUpButton->Size = System::Drawing::Size(150, 37);
 				this->ChangeTextUpButton->TabIndex = 11;
 				this->ChangeTextUpButton->Text = L"Change Text";
 				this->ChangeTextUpButton->UseVisualStyleBackColor = true;
+				this->ChangeTextUpButton->Visible = false;
 				this->ChangeTextUpButton->Click += gcnew System::EventHandler(this, &MyForm::ChangeTextUpButton_Click);
 				// 
 				// ConformityTable
 				// 
 				this->ConformityTable->Dock = System::Windows::Forms::DockStyle::Right;
-				this->ConformityTable->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				this->ConformityTable->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					static_cast<System::Byte>(204)));
-				this->ConformityTable->Location = System::Drawing::Point(1126, 0);
+				this->ConformityTable->Location = System::Drawing::Point(1184, 0);
 				this->ConformityTable->Multiline = true;
 				this->ConformityTable->Name = L"ConformityTable";
 				this->ConformityTable->Size = System::Drawing::Size(100, 561);
@@ -259,7 +268,7 @@ namespace SympleCryptanalysis {
 				// 
 				this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
 				this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-				this->ClientSize = System::Drawing::Size(1226, 561);
+				this->ClientSize = System::Drawing::Size(1284, 561);
 				this->Controls->Add(this->buttons_panel);
 				this->Controls->Add(this->DictionaryConformityText);
 				this->Controls->Add(this->TextBox);
@@ -278,6 +287,7 @@ namespace SympleCryptanalysis {
 		
 		private: System::Void MyForm_Resize(System::Object^  sender, System::EventArgs^  e) {
 			TextBox->Size = System::Drawing::Size(MyForm::Size.Width / 2, TextBox->Size.Height);
+			buttons_panel->Size = System::Drawing::Size(MyForm::Size.Width / 4, buttons_panel->Size.Height);
 		}
 
 
@@ -289,6 +299,7 @@ namespace SympleCryptanalysis {
 			WordProcessing::changeTextUp(&text, &conformity_table);
 			TextBox->Text = text;
 			ConformityTable->Text = conformity_table;
+
 		}
 
 		// Обработка нажатия кнопки отката измений
@@ -336,7 +347,7 @@ namespace SympleCryptanalysis {
 			array<System::String ^>^ keys = gcnew array<System::String^>(100);
 			keyDetermination(&keys, groups, key_length);
 
-			int i = 0; while (keys[i]) { keys_list->Items->Add(keys[i]); i++; }
+			int i = 0; while (i < 20 && keys[i]) { keys_list->Items->Add(keys[i]); i++; }
 		}
 
 		private: System::Void keys_list_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
@@ -375,9 +386,19 @@ namespace SympleCryptanalysis {
 		if (replacing_symbol->Text != L"" && replaceable_symbol->Text != L"" &&
 			alph.isLetter(replacing_symbol->Text[0]) && alph.isLetter(replaceable_symbol->Text[0])) {
 
-			int* conformity = (int*)malloc(MAXALPHLEN * sizeof(int));
+			//int* conformity = WordProcessing::getLastConformity();
 
+			int *conformity = (int*)malloc(sizeof(int) * MAXALPHLEN);
 			for (int i = 0; i < alph.length; i++) conformity[i] = -1;
+
+			
+			//int changedSign = conformity[replacing_symbol->Text[0] - alph.firstchar];
+			//
+			//for (int j = 0; j < MAXALPHLEN; j++)
+			//	if (conformity[j] == replaceable_symbol->Text[0] - alph.firstchar)
+			//		conformity[j] = changedSign;
+			//conformity[replacing_symbol->Text[0] - alph.firstchar] = replaceable_symbol->Text[0] - alph.firstchar;
+
 
 			conformity[replacing_symbol->Text[0] - alph.firstchar] = replaceable_symbol->Text[0] - alph.firstchar;
 			conformity[replaceable_symbol->Text[0] - alph.firstchar] = replacing_symbol->Text[0] - alph.firstchar;
