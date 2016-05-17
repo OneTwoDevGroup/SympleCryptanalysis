@@ -457,7 +457,7 @@ namespace VigenereAnalysis {
 									
 								}*/
 								flag = 0;
-							}
+						}
 						}
 						if (flag)
 						{
@@ -877,18 +877,26 @@ namespace VigenereAnalysis {
 String^ replaceLettersInText(String^ text, int *conformity) 
 {
 
-	// Формируем изменяемую строку
-	Text::StringBuilder text_builder(text);
+	String^ shiftLettersInText(String^ text, String^ key, int *conformity) {
 
-	// Заменяет символы текста в соответствии с ключом и квадратом Веженера
-	int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
-	for (int j = 0; j < text->Length; j++) {
-		if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
-		text_builder[j] = alph.getLetter(conformity[text_builder[j] - alph.firstchar]);
+		//int back_conformity[MAXALPHLEN]; 
+		//for (int i = 0; i < alph.length; i++) back_conformity[conformity[i]] = i;
+
+		// Формируем изменяемую строку
+		Text::StringBuilder text_builder(text);
+
+		// Заменяет символы текста в соответствии с ключом и квадратом Веженера
+		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
+		for (int j = 0; j < text->Length; j++) {
+			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
+			text_builder[j] = alph.getLetter( 
+				conformity[text_builder[j] - alph.firstchar] - 
+				(key[(j - not_letters) % key->Length] - key[0])
+			);
+		}
+
+		return text_builder.ToString();				// Возвращаем изменённую строку
 	}
-
-	return text_builder.ToString();				// Возвращаем изменённую строку
-}
 static float frequensy[R][R];
 float multiGrammStatisctic(String^ text,int* conformitis) 
 {
@@ -946,7 +954,7 @@ float multiGrammStatisctic(String^ text,int* conformitis)
 					feature += count[i][j] * log(frequensy[i][j]);
 			}
 		}
-	
+
 		
 		return feature;
 		
@@ -1049,7 +1057,7 @@ int* ratio(String^ text, int* conformits)
 }
 	
 		String^ shiftLettersInText(String^ text, String^ key) {
-
+		
 		// Формируем изменяемую строку
 		Text::StringBuilder text_builder(text);
 
@@ -1059,7 +1067,7 @@ int* ratio(String^ text, int* conformits)
 			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
 			text_builder[j] = alph.getLetter(text_builder[j] - alph.firstchar - key[(j - not_letters) % key->Length] + key[0]);
 		}
-
+		
 		return text_builder.ToString();				// Возвращаем изменённую строку
 	}
 
@@ -1119,7 +1127,7 @@ int* ratio(String^ text, int* conformits)
 		}
 		
 		
-		*text = shiftLettersInText(*text, key);
+		//*text = shiftLettersInText(*text, key);
 
 		//int *conformity = multiGrammStatisctic(text);
 
@@ -1138,8 +1146,9 @@ int* ratio(String^ text, int* conformits)
 		//}
 		*conformity = ratio(*text, *conformity);
 		*text = replaceLettersInText(*text, *conformity);
-
 		
+		*text = shiftLettersInText(*text, key, *conformity);
+
 		
 
 

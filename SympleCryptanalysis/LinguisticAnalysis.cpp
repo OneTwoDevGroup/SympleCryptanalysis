@@ -3,7 +3,10 @@
 #include <msclr/marshal_cppstd.h>
 #include <regex>
 #include "WordProcessing.h"
+#include <time.h>
 #define MAX_LEN 20
+
+
 
 //namespace LinguisticAnalysis {
 //
@@ -79,6 +82,13 @@ namespace LinguisticAnalysis {
 	using namespace System;
 	using namespace msclr::interop;
 
+	// ---------------------------Заголовки функций-------------------------------
+	array<System::String ^>^ GetWordsWithLen(int length);
+
+
+
+	//-----------------------------------------------------------------------------
+
 /*array<System::String ^>^ PartitialMatches(String^ word)*/		// Возвращает массив слов (найденные совпадения)
 	//int PartitialMatches(String^ word, int minMatches)
 	String^ PartitialMatches(String^ word, int minMatches) {						// Возвращает строку-отчет (используется для отладки и вывода в текстовое поле)
@@ -136,15 +146,38 @@ namespace LinguisticAnalysis {
 		//return 0;
 	}
 
-	String^ PartitialMatchesChanges(String^ word, int matchesNum) {						// Возвращает строку-отчет (используется для отладки и вывода в текстовое поле)
+	String^ PartitialMatchesChanges(String^ word, int matchesNum) {	// Возвращает строку-отчет (используется для отладки и вывода в текстовое поле)
 		const int WORDS_COUNT = 10000;
 		array<System::String ^>^ words = gcnew array<System::String^ >(WORDS_COUNT); // массив слов-совпадений
 		using namespace std;
 		string wordString = msclr::interop::marshal_as<string>(word);
-		ifstream dictionary("Configs/russian_dictionary.dic");
+		ifstream dictionary("Configs/testDic.txt");
+		ifstream indexes("Configs/test.txt");
 		string dic_word;
 		int wordsNumber = 0;
 		int maxMatchedLetters = 0; // здесь можно указать минимальное колтчество совпадающих символов
+		
+		indexes.clear();
+		indexes.seekg(0);
+		string index_letter;
+		string index_line;
+		int index = 0;
+		indexes.clear();
+		indexes.seekg(0);
+		
+		while (getline(indexes, index_letter)) { // находим нужный сдвиг
+			int length = stoi(index_letter, nullptr);
+			if (length == word->Length) {
+				getline(indexes, index_line);
+				index += stoi(index_line, nullptr);
+				break;
+			}
+		}
+		indexes.close();
+		dictionary.clear();
+		dictionary.seekg(0);
+		dictionary.seekg(index);
+
 		while (getline(dictionary, dic_word)) { // полный перебор словаря
 			if (wordString.length() == dic_word.length()) {
 				int matchedLetters = 0;
@@ -161,28 +194,23 @@ namespace LinguisticAnalysis {
 					wordsNumber++;
 				}
 			}
+			else break;
 		}
 		if (word->Length - maxMatchedLetters < matchesNum+1) {
-			return words[0];
+			return words[13];
 		}
 		else return "0";
 	}
 
 	String^ DictionaryBasedChange(String^ *text, String^ *conformity_table, int stringLength, int wordLength, int matchesNum) {
-		//int * conformity_new = WordProcessing::getLastConformity();
-
-		//String^ temp;
-		//for (int i = 0; i < 32; i++)
-		//	temp += conformity_new[i].ToString() + " ";
-
-
+		using namespace std;
 		int* conformity_new = (int*)malloc(MAXALPHLEN * sizeof(int));
 		for (int i = 0; i < MAXALPHLEN; i++)
 			conformity_new[i] = -1;
 		int statistics = 0;
 		String^ result;
+		String^ word;
 		for (int j = 0; j < stringLength - wordLength; j++) {
-			String^ word;
 			int spaceNum = 0;
 			for (int k = 0; k < wordLength+spaceNum; k++)
 				if ((*text)[j + k] != ' ')
@@ -190,35 +218,24 @@ namespace LinguisticAnalysis {
 				else
 					spaceNum++;
 			//word = (*text)->Substring(j+1, wordLength);
-			String^ dicWord = PartitialMatchesChanges(word, matchesNum);
-			if (dicWord[0] != '0') {
+			String^ tempWord = PartitialMatchesChanges(word, matchesNum);
+			if (tempWord[0] != '0') {
 				for (int i = 0; i < wordLength; i++)
-					if (word[i] != dicWord[i]) {
-						//int changedSign = conformity_new[word[i] - 1072];
-						
-						/*for (int j = 0; j < MAXALPHLEN; j++)
-							if (conformity_new[j] == dicWord[i] - 1072)
-								conformity_new[j] = changedSign;
-						conformity_new[word[i] - 1072] = dicWord[i] - 1072;*/
-						
-						conformity_new[word[i] - 1072] = dicWord[i] - 1072;
-						conformity_new[dicWord[i] - 1072] = word[i] - 1072;
-												
-
-						result = result + word + "\r\n" + dicWord + "\r\n";
-						result = result + word[i] + " -> " + dicWord[i] + "\r\n";
+					if (word[i] != tempWord[i]) {
+						int tempInte = word[i]-1072;
+						int tempInte2 = tempWord[i] - 1072;
+						conformity_new[word[i]-1072] = tempWord[i]-1072;
+						conformity_new[tempWord[i] - 1072] = word[i] - 1072;
+						result = result + word + "\r\n" + tempWord + "\r\n";
+						result = result + word[i] + " -> " + tempWord[i] + "\r\n";
+						WordProcessing::changeTextUp(text, conformity_table, &conformity_new);
 					}
 			}
 		}
-
-		WordProcessing::changeTextUp(text, conformity_table, &conformity_new);
-
-
-		String ^temp = "";
+		String^ temp;
 		for (int i = 0; i < 32; i++)
 			temp += conformity_new[i].ToString() + " ";
 
-		
 		return result;
 	}
 
@@ -265,7 +282,11 @@ namespace LinguisticAnalysis {
 		//			dictionaryConformity += words[i] + "\r\n";
 
 		//		return dictionaryConformity;
-		String^ temp = DictionaryBasedChange(text, conformity_table, 6, 5, 3);
+		GetWordsWithLen(7);
+		time_t t = clock();
+		String^ temp = DictionaryBasedChange(text, conformity_table, 20, 7, 5);
+		time_t t2 = clock() - t;
+		temp = temp + "\r\n" + "\r\n" + t2.ToString();
 		return temp;
 	}
 
@@ -305,5 +326,49 @@ namespace LinguisticAnalysis {
 		if (analysisResult > 0.04)
 			result = 1;
 		return result;
+	}
+
+	array<System::String ^>^ GetWordsWithLen(int length) {
+		const int WORDS_COUNT = 1000000;
+		array<System::String ^>^ words = gcnew array<System::String^ >(WORDS_COUNT);
+
+		using namespace std;
+
+		ifstream dictionary("Configs/testDic.txt");
+		ifstream indexes("Configs/test.txt");
+
+		indexes.clear();
+		indexes.seekg(0);
+		string index_letter;
+		string index_line;
+		int index = 0;
+		indexes.clear();
+		indexes.seekg(0);
+		bool isLengthFound = 0;
+		while (getline(indexes, index_letter)) { // находим нужный сдвиг
+			int lengthInd = stoi(index_letter, nullptr);
+			if (lengthInd == length) {
+				isLengthFound = 1;
+				getline(indexes, index_line);
+				index += stoi(index_line, nullptr);
+				break;
+			}
+		}
+		if (isLengthFound) {
+			indexes.close();
+			dictionary.clear();
+			dictionary.seekg(0);
+			dictionary.seekg(index);
+
+			string dic_word;
+			int i = 0;
+			while (getline(dictionary, dic_word) && dic_word.length() == length) {
+				words[i] = msclr::interop::marshal_as<String^>(dic_word);
+				i++;
+			}
+			words[i] = "";
+			return words;
+		}
+		else return nullptr;
 	}
 }
