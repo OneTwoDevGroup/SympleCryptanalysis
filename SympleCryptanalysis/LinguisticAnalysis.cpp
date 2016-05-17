@@ -6,6 +6,8 @@
 #include <time.h>
 #define MAX_LEN 20
 
+
+
 //namespace LinguisticAnalysis {
 //
 //	using namespace System;
@@ -79,6 +81,13 @@ namespace LinguisticAnalysis {
 
 	using namespace System;
 	using namespace msclr::interop;
+
+	// ---------------------------Заголовки функций-------------------------------
+	array<System::String ^>^ GetWordsWithLen(int length);
+
+
+
+	//-----------------------------------------------------------------------------
 
 /*array<System::String ^>^ PartitialMatches(String^ word)*/		// Возвращает массив слов (найденные совпадения)
 	//int PartitialMatches(String^ word, int minMatches)
@@ -273,6 +282,7 @@ namespace LinguisticAnalysis {
 		//			dictionaryConformity += words[i] + "\r\n";
 
 		//		return dictionaryConformity;
+		GetWordsWithLen(7);
 		time_t t = clock();
 		String^ temp = DictionaryBasedChange(text, conformity_table, 20, 7, 5);
 		time_t t2 = clock() - t;
@@ -316,5 +326,49 @@ namespace LinguisticAnalysis {
 		if (analysisResult > 0.04)
 			result = 1;
 		return result;
+	}
+
+	array<System::String ^>^ GetWordsWithLen(int length) {
+		const int WORDS_COUNT = 1000000;
+		array<System::String ^>^ words = gcnew array<System::String^ >(WORDS_COUNT);
+
+		using namespace std;
+
+		ifstream dictionary("Configs/testDic.txt");
+		ifstream indexes("Configs/test.txt");
+
+		indexes.clear();
+		indexes.seekg(0);
+		string index_letter;
+		string index_line;
+		int index = 0;
+		indexes.clear();
+		indexes.seekg(0);
+		bool isLengthFound = 0;
+		while (getline(indexes, index_letter)) { // находим нужный сдвиг
+			int lengthInd = stoi(index_letter, nullptr);
+			if (lengthInd == length) {
+				isLengthFound = 1;
+				getline(indexes, index_line);
+				index += stoi(index_line, nullptr);
+				break;
+			}
+		}
+		if (isLengthFound) {
+			indexes.close();
+			dictionary.clear();
+			dictionary.seekg(0);
+			dictionary.seekg(index);
+
+			string dic_word;
+			int i = 0;
+			while (getline(dictionary, dic_word) && dic_word.length() == length) {
+				words[i] = msclr::interop::marshal_as<String^>(dic_word);
+				i++;
+			}
+			words[i] = "";
+			return words;
+		}
+		else return nullptr;
 	}
 }
