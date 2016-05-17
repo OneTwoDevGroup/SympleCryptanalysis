@@ -874,8 +874,7 @@ namespace VigenereAnalysis {
 		return conformities;
 
 	}*/
-String^ replaceLettersInText(String^ text, int *conformity) 
-{
+
 
 	String^ shiftLettersInText(String^ text, String^ key, int *conformity) {
 
@@ -897,11 +896,26 @@ String^ replaceLettersInText(String^ text, int *conformity)
 
 		return text_builder.ToString();				// Возвращаем изменённую строку
 	}
+	String^ replaceLettersInText(String^ text, int *conformity)
+	{
+
+		// Формируем изменяемую строку
+		Text::StringBuilder text_builder(text);
+
+		// Заменяет символы текста в соответствии с ключом и квадратом Веженера
+		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
+		for (int j = 0; j < text->Length; j++) {
+			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
+			text_builder[j] = alph.getLetter(conformity[text_builder[j] - alph.firstchar]);
+		}
+
+		return text_builder.ToString();				// Возвращаем изменённую строку
+	}
 static float frequensy[R][R];
-float multiGrammStatisctic(String^ text,int* conformitis) 
+float multiGrammStatisctic(String^ text,int* conformitis,String^key) 
 {
 	String^ newtext;
-	newtext = replaceLettersInText(text, conformitis);
+	newtext = shiftLettersInText(text,  key, conformitis);
 	unsigned char *S = (unsigned char*)(char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(newtext);
 	int count[R][R] = { 0 };
 	int  j, k;
@@ -960,7 +974,7 @@ float multiGrammStatisctic(String^ text,int* conformitis)
 		
 
 }
-int* ratio(String^ text, int* conformits)
+int* ratio(String^ text, int* conformits,String^key)
 {
 
 	String^ temp;
@@ -1006,7 +1020,7 @@ int* ratio(String^ text, int* conformits)
 				//frequensy[i][j] << fp1;
 			}
 		}fclose(fp1);
-		double feature = multiGrammStatisctic(text, conformits);
+		double feature = multiGrammStatisctic(text, conformits, key);
 
 		for (j = 0; j < 8000;j++)
 		{ 
@@ -1026,7 +1040,7 @@ int* ratio(String^ text, int* conformits)
 			pot = newconformits[random1];
 					newconformits[random1] =newconformits[ random2];
 					newconformits[random2] =pot;
-					float newfeature = multiGrammStatisctic(text, newconformits);
+					float newfeature = multiGrammStatisctic(text, newconformits, key);
 					if (feature < newfeature)
 					{
 						feature = newfeature;
@@ -1144,12 +1158,12 @@ int* ratio(String^ text, int* conformits)
 		//	tryToSwapConformity(conformity, alph.length, text, key);
 		//	text = changeText(text, conformity, key);
 		//}
-		*conformity = ratio(*text, *conformity);
-		*text = replaceLettersInText(*text, *conformity);
 		
-		*text = shiftLettersInText(*text, key, *conformity);
+		
+		
 
-		
+		//*conformity = ratio(*text, *conformity,key);
+		*text = shiftLettersInText(*text, key, *conformity);
 
 
 
