@@ -14,7 +14,7 @@
 
 #define N 5000
 #define r 256// ASCII
-#define R 33 //Мощность языка
+#define R 32 //Мощность языка
 #define u 20 // предполагаемая максимальная длина ключа
 #define MAXHIGH 255 // верхний предел в котором находятся буквы
 #define MAXLOW  224 // нижний
@@ -42,6 +42,7 @@ namespace VigenereAnalysis {
 
 	using namespace System;
 	WordProcessing::Alphabit alph("rus"); // Класс определяет используемый язык
+	double amount_probolity[u][MAXALPHLEN][MAXALPHLEN] = { 0 };
 	int* Index (String^ text)
 	{
 //char alf[R] = { 'А','Б','В','Г','Д','Е','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ъ','Ы','Ь','Ю','Я' };
@@ -373,6 +374,88 @@ namespace VigenereAnalysis {
 
 		return besti;
 	}
+	int *freq(String^word, int lenghtkey)
+	{
+		int i, j, k, dist;
+		double new_amount_probolity[R][R] = { 0 };
+		for (i = 0; i < R; i++)
+			for (j = 0; j < R; j++)
+				new_amount_probolity[i][j] = 1;
+
+		double probolity[R][R] = { 0 };
+		double sum = 0;
+		for (i = 0; i < R; i++)
+			for (j = 0; j < R; j++)
+			{
+
+				for (k = 0;  k < lenghtkey; k++)
+				{
+					dist = i + word[0] - word[k];
+					if (dist < 0)
+						dist += 32;
+					dist %= 32;
+					new_amount_probolity[i][j] *= amount_probolity[k][j][dist];
+				}
+			}
+		for (i = 0; i < R; i++)
+			for (j = 0; j < R; j++)
+			{
+				sum = 0;
+				for (k = 0; k <R ; k++)
+				{
+					sum += new_amount_probolity[k][j];
+
+				}
+				probolity[i][j] = new_amount_probolity[i][j] / sum;
+			}
+	unsigned 	char ind[R][2];
+		for (i = 0; i < R; i++)
+		{
+			ind[i][0] = 255;
+			ind[i][1] = 255;
+		}
+		int z;
+		bool flag = 1;
+		double max = -1;
+		for (k = 0; k < R; k++)
+		{
+			 max = -1;
+			for (i = 0; i < R; i++)
+			{
+				for (j = 0; j < R; j++)
+				{
+					if (max < probolity[i][j])
+					{
+						flag = 1;
+						for (z = 0; z < R; z++)
+						{
+							if ((ind[z][0] == i) || (ind[z][1] == j))
+								flag = 0;
+						}
+						if (flag)
+						{
+							max = probolity[i][j];
+							ind[k][0] = i;
+							ind[k][1] = j;
+						}
+					}
+				}
+
+			}
+		}
+		for (i = 0; i < R; i++)
+		{
+			ind[i][0] += 192;
+			ind[i][1] += 192;
+		}
+		int*conformity = (int*)malloc(sizeof(int)*MAXALPHLEN);
+		for (i = 0; i < R; i++)
+		{
+			conformity[ind[i][1]-192] = ind[i][0]-192;
+		}
+		return conformity;
+
+	}
 
 	int* result(int* besti1, int *besti2)
 	{
@@ -438,7 +521,7 @@ namespace VigenereAnalysis {
 	}
 
 	// Поиск сдвигов
-	static double amount_probolity[u][MAXALPHLEN][MAXALPHLEN] = { 0 };
+	
 	String ^keyDetermination(array<System::String ^>^ *keys, array<System::String ^>^ groups, int key_length) {
 
 		double conformoty_probability[u][MAXALPHLEN][MAXALPHLEN] = { 0 };
@@ -459,7 +542,8 @@ namespace VigenereAnalysis {
 
 				double sum_amount_probolity = 0;
 
-				for (int m = 0; m < alph.length; m++) sum_amount_probolity += amount_probolity[k][j][m];
+				for (int m = 0; m < alph.length; m++) 
+					sum_amount_probolity += amount_probolity[k][j][m];
 
 				for (int i = 0; i < alph.length; i++)
 					conformoty_probability[k][i][j] = amount_probolity[k][j][i] / sum_amount_probolity;
@@ -590,47 +674,12 @@ namespace VigenereAnalysis {
 		}
 
 		*keys = best_words;
-
+		
 		return best_words[0];
+		
 	}
 	
-	double *freq(String^word, int lenghtkey)
-	{
-		int i, j, k,dist;
-		double new_amount_probolity[R][R] = { 0 };
-		for (i = 0; i < R; i++)
-			for (j = 0; j < R; j++)
-			new_amount_probolity[i][j] = 1;
 	
-		double probolity[R][R] = { 0 };
-		double sum = 0;
-		for (i = 0; i < R; i++)
-			for (j = 0; j < R; j++)
-			{
-				
-				for (k = 0; k++; k < lenghtkey)
-				{
-					dist = i + word[0] - word[k];
-					if (dist < 0)
-						dist += 32;
-					dist %= 32;
-					new_amount_probolity[i][j] *= amount_probolity[k][j][dist];
-				}
-			}
-		for (i = 0; i < R; i++)
-			for (j = 0; j < R; j++)
-			{
-				sum = 0;
-				for (k = 0; k++; k <R)
-				{
-					sum += new_amount_probolity[k][j];
-					
-				}
-				probolity[i][j] = new_amount_probolity[i][j] / sum;
-			}
-		return probolity[0];
-
-	}
 
 	//// Функция подбирает ключ, основываясь на длине ключа, используя частотный анализ
 	//String^ keyDetermination(String^ text, int **conformity) {
@@ -866,6 +915,7 @@ namespace VigenereAnalysis {
 			// Подбираем ключ
 			array<System::String ^>^ keys = gcnew array<System::String^>(MAXKEYAMOUNT);
 			key = keyDetermination(&keys, groups, key_length);
+			
 		}
 		
 		
@@ -876,8 +926,8 @@ namespace VigenereAnalysis {
 		//Таблицы соответствия букв шифротекста буквам исходного алфавита
 		//int *conformity = conformityDetermination(groups, key);	
 		
-		*conformity = FrequencyAnalysis::conformityDetermination(*text);
-
+		//*conformity = FrequencyAnalysis::conformityDetermination(*text);
+		*conformity = freq(key, key->Length);
 		//fclose(log_file);
 
 		//if (!(LinguisticAnalysis::CheckPlainText(new_text))) {
