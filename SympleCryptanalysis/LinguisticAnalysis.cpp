@@ -169,7 +169,13 @@ namespace LinguisticAnalysis {
 	}
 
 	String^ DictionaryBasedChange(String^ *text, String^ *conformity_table, int stringLength, int wordLength, int matchesNum) {
-		using namespace std;
+		//int * conformity_new = WordProcessing::getLastConformity();
+
+		//String^ temp;
+		//for (int i = 0; i < 32; i++)
+		//	temp += conformity_new[i].ToString() + " ";
+
+
 		int* conformity_new = (int*)malloc(MAXALPHLEN * sizeof(int));
 		for (int i = 0; i < MAXALPHLEN; i++)
 			conformity_new[i] = -1;
@@ -180,28 +186,39 @@ namespace LinguisticAnalysis {
 			int spaceNum = 0;
 			for (int k = 0; k < wordLength+spaceNum; k++)
 				if ((*text)[j + k] != ' ')
-					word += (*text)[j + k-spaceNum];
+					word += (*text)[j + k];
 				else
 					spaceNum++;
 			//word = (*text)->Substring(j+1, wordLength);
-			String^ tempWord = PartitialMatchesChanges(word, matchesNum);
-			if (tempWord[0] != '0') {
+			String^ dicWord = PartitialMatchesChanges(word, matchesNum);
+			if (dicWord[0] != '0') {
 				for (int i = 0; i < wordLength; i++)
-					if (word[i] != tempWord[i]) {
-						int tempInte = word[i]-1072;
-						int tempInte2 = tempWord[i] - 1072;
-						conformity_new[word[i]-1072] = tempWord[i]-1072;
-						conformity_new[tempWord[i] - 1072] = word[i] - 1072;
-						result = result + word + "\r\n" + tempWord + "\r\n";
-						result = result + word[i] + " -> " + tempWord[i] + "\r\n";
+					if (word[i] != dicWord[i]) {
+						//int changedSign = conformity_new[word[i] - 1072];
+						
+						/*for (int j = 0; j < MAXALPHLEN; j++)
+							if (conformity_new[j] == dicWord[i] - 1072)
+								conformity_new[j] = changedSign;
+						conformity_new[word[i] - 1072] = dicWord[i] - 1072;*/
+						
+						conformity_new[word[i] - 1072] = dicWord[i] - 1072;
+						conformity_new[dicWord[i] - 1072] = word[i] - 1072;
+												
+
+						result = result + word + "\r\n" + dicWord + "\r\n";
+						result = result + word[i] + " -> " + dicWord[i] + "\r\n";
 					}
 			}
 		}
-		String^ temp;
+
+		WordProcessing::changeTextUp(text, conformity_table, &conformity_new);
+
+
+		String ^temp = "";
 		for (int i = 0; i < 32; i++)
 			temp += conformity_new[i].ToString() + " ";
 
-		WordProcessing::changeTextUp(text, conformity_table, &conformity_new);
+		
 		return result;
 	}
 
@@ -248,7 +265,7 @@ namespace LinguisticAnalysis {
 		//			dictionaryConformity += words[i] + "\r\n";
 
 		//		return dictionaryConformity;
-		String^ temp = DictionaryBasedChange(text, conformity_table, 20, 6, 1);
+		String^ temp = DictionaryBasedChange(text, conformity_table, 6, 5, 3);
 		return temp;
 	}
 

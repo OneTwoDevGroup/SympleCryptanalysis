@@ -85,33 +85,35 @@ namespace WordProcessing {
 
 		gcroot<array<System::String ^>^> textChanges = gcnew array<System::String^ >(ARRAY_SIZE);       // Массив содержит все изменения текста
 		int conformityChanges[ARRAY_SIZE][MAXALPHLEN];
-		int last = 0;                                                                                   // Переменнная определяет номер последнего изменения
+		int amount = 0;                                                                                   // Переменнная определяет номер последнего изменения
 
 		// Функция сохраняет изменения																								
 		void save_changes(String^ text, int **conformity) {
-			textChanges[last % ARRAY_SIZE] = text;
+			textChanges[amount % ARRAY_SIZE] = text;
 			for (int i = 0; i < alph.length; i++) {
-				if ((*conformity)[i] == -1)	(*conformity)[i] = last > 0 ? conformityChanges[(last - 1) % ARRAY_SIZE][i] : i;
-				conformityChanges[last % ARRAY_SIZE][i] = (*conformity)[i];
+				if ((*conformity)[i] == -1)	(*conformity)[i] = amount > 0 ? conformityChanges[(amount - 1) % ARRAY_SIZE][i] : i;
+				conformityChanges[amount % ARRAY_SIZE][i] = (*conformity)[i];
 			} 
-			last++;
+			amount++;
 
 		}
 
 	public:
 
 		// Функция передаёт исходный текст
-		String^ getFirstText(String^ text = nullptr) { return (last != 0 || text == nullptr) ? textChanges[0]->ToLower() : text; }
+		String^ getFirstText(String^ text = nullptr) { return (amount != 0 || text == nullptr) ? textChanges[0]->ToLower() : text; }
 
 		// Функция передаёт последний текст
-		String^ getLastText() { return textChanges[last]->ToLower(); }
+		String^ getLastText() { return textChanges[amount - 1]->ToLower(); }
+
+		int *getLastConformity() { return (amount != 0) ? conformityChanges[amount - 1] : NULL; }
 
 		//Функция откатывает последние изменения
 		String^ changeTextDown(String^ *text, String^ *conformity_table) {
-			if (last > 0) last--;
-			*text = textChanges[last];
+			if (amount > 0) amount--;
+			*text = textChanges[amount];
 			for (int i = 0; i < alph.length; i++) {
-				*conformity_table += alph.getLetter(conformityChanges[last][i]) + " - " + alph.getLetter(i) + "\r\n";
+				*conformity_table += alph.getLetter(conformityChanges[amount][i]) + " - " + alph.getLetter(i) + "\r\n";
 			}
 			return *text;
 		}
@@ -122,7 +124,7 @@ namespace WordProcessing {
 			String^ old_text = *text;
 
 			if (conformity) {
-							
+				//*text = getFirstText(*text);
 				for (int i = 0; i < alph.length; i++) 
 					if ((*conformity)[i]!=-1)
 						*text = (*text)->Replace(alph.getLetter(i) + "", (alph.getLetter((*conformity)[i]) + "")->ToUpper());
@@ -150,20 +152,22 @@ namespace WordProcessing {
 
 
 
-	} textChanges; // Экземпляр класса хранящий все изменения
+	} Changes; // Экземпляр класса хранящий все изменения
 
 	//Функция сохраняет последние изменения
 	String^ changeTextUp(String^ *text, String^ *conformity_table, int **conformity = NULL, String ^key = nullptr) { 
-		return textChanges.changeTextUp(text, conformity_table, conformity, key); 
+		return Changes.changeTextUp(text, conformity_table, conformity, key); 
 	}
 
 	//Функция откатывает последние изменения
-	String^ changeTextDown(String^ *text, String^ *conformity_table) { return textChanges.changeTextDown(text, conformity_table); }
+	String^ changeTextDown(String^ *text, String^ *conformity_table) { return Changes.changeTextDown(text, conformity_table); }
 	
 	// Функция передаёт исходный текст
-	String^ getFirstText() { return textChanges.getFirstText();  }
+	String^ getFirstText() { return Changes.getFirstText();  }
 
 	// Функция передаёт последний текст
-	String^ getLastText() { return textChanges.getLastText(); }
+	String^ getLastText() { return Changes.getLastText(); }
+
+	int *getLastConformity() { return Changes.getLastConformity(); }
 
 }

@@ -220,7 +220,7 @@ namespace SympleCryptanalysis {
 				// 
 				this->FindInDictionaryButton->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->FindInDictionaryButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->FindInDictionaryButton->Location = System::Drawing::Point(80, 490);
+				this->FindInDictionaryButton->Location = System::Drawing::Point(80, 453);
 				this->FindInDictionaryButton->Name = L"FindInDictionaryButton";
 				this->FindInDictionaryButton->Size = System::Drawing::Size(150, 38);
 				this->FindInDictionaryButton->TabIndex = 13;
@@ -232,7 +232,7 @@ namespace SympleCryptanalysis {
 				// 
 				this->ChangeTextDownButton->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->ChangeTextDownButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->ChangeTextDownButton->Location = System::Drawing::Point(80, 414);
+				this->ChangeTextDownButton->Location = System::Drawing::Point(80, 362);
 				this->ChangeTextDownButton->Name = L"ChangeTextDownButton";
 				this->ChangeTextDownButton->Size = System::Drawing::Size(150, 37);
 				this->ChangeTextDownButton->TabIndex = 12;
@@ -250,12 +250,13 @@ namespace SympleCryptanalysis {
 				this->ChangeTextUpButton->TabIndex = 11;
 				this->ChangeTextUpButton->Text = L"Change Text";
 				this->ChangeTextUpButton->UseVisualStyleBackColor = true;
+				this->ChangeTextUpButton->Visible = false;
 				this->ChangeTextUpButton->Click += gcnew System::EventHandler(this, &MyForm::ChangeTextUpButton_Click);
 				// 
 				// ConformityTable
 				// 
 				this->ConformityTable->Dock = System::Windows::Forms::DockStyle::Right;
-				this->ConformityTable->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
+				this->ConformityTable->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 9.75F, System::Drawing::FontStyle::Regular, System::Drawing::GraphicsUnit::Point,
 					static_cast<System::Byte>(204)));
 				this->ConformityTable->Location = System::Drawing::Point(1184, 0);
 				this->ConformityTable->Multiline = true;
@@ -298,6 +299,7 @@ namespace SympleCryptanalysis {
 			WordProcessing::changeTextUp(&text, &conformity_table);
 			TextBox->Text = text;
 			ConformityTable->Text = conformity_table;
+
 		}
 
 		// Обработка нажатия кнопки отката измений
@@ -384,9 +386,19 @@ namespace SympleCryptanalysis {
 		if (replacing_symbol->Text != L"" && replaceable_symbol->Text != L"" &&
 			alph.isLetter(replacing_symbol->Text[0]) && alph.isLetter(replaceable_symbol->Text[0])) {
 
-			int* conformity = (int*)malloc(MAXALPHLEN * sizeof(int));
+			//int* conformity = WordProcessing::getLastConformity();
 
+			int *conformity = (int*)malloc(sizeof(int) * MAXALPHLEN);
 			for (int i = 0; i < alph.length; i++) conformity[i] = -1;
+
+			
+			//int changedSign = conformity[replacing_symbol->Text[0] - alph.firstchar];
+			//
+			//for (int j = 0; j < MAXALPHLEN; j++)
+			//	if (conformity[j] == replaceable_symbol->Text[0] - alph.firstchar)
+			//		conformity[j] = changedSign;
+			//conformity[replacing_symbol->Text[0] - alph.firstchar] = replaceable_symbol->Text[0] - alph.firstchar;
+
 
 			conformity[replacing_symbol->Text[0] - alph.firstchar] = replaceable_symbol->Text[0] - alph.firstchar;
 			conformity[replaceable_symbol->Text[0] - alph.firstchar] = replacing_symbol->Text[0] - alph.firstchar;
