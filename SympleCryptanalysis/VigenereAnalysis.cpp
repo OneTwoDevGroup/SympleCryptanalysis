@@ -835,7 +835,10 @@ namespace VigenereAnalysis {
 
 	}
 
-	String^ shiftLettersInText(String^ text, String^ key) {
+	String^ shiftLettersInText(String^ text, String^ key, int *conformity) {
+
+		//int back_conformity[MAXALPHLEN]; 
+		//for (int i = 0; i < alph.length; i++) back_conformity[conformity[i]] = i;
 
 		// Формируем изменяемую строку
 		Text::StringBuilder text_builder(text);
@@ -844,7 +847,10 @@ namespace VigenereAnalysis {
 		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
 		for (int j = 0; j < text->Length; j++) {
 			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
-			text_builder[j] = alph.getLetter(text_builder[j] - alph.firstchar - key[(j - not_letters) % key->Length] + key[0]);
+			text_builder[j] = alph.getLetter( 
+				conformity[text_builder[j] - alph.firstchar] - 
+				(key[(j - not_letters) % key->Length] - key[0])
+			);
 		}
 
 		return text_builder.ToString();				// Возвращаем изменённую строку
@@ -919,7 +925,7 @@ namespace VigenereAnalysis {
 		}
 		
 		
-		*text = shiftLettersInText(*text, key);
+		//*text = shiftLettersInText(*text, key);
 
 		//int *conformity = multiGrammStatisctic(text);
 
@@ -936,7 +942,7 @@ namespace VigenereAnalysis {
 		//	text = changeText(text, conformity, key);
 		//}
 		
-		*text = replaceLettersInText(*text, *conformity);
+		*text = shiftLettersInText(*text, key, *conformity);
 
 		
 
