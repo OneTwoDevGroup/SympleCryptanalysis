@@ -188,7 +188,7 @@ namespace LinguisticAnalysis {
 			else break;
 		}
 		if (word->Length - maxMatchedLetters < matchesNum+1) {
-			return words[0];
+			return words[13];
 		}
 		else return "0";
 	}
@@ -208,7 +208,7 @@ namespace LinguisticAnalysis {
 					word += (*text)[j + k];
 				else
 					spaceNum++;
-			word = (*text)->Substring(j+1, wordLength);
+			//word = (*text)->Substring(j+1, wordLength);
 			String^ tempWord = PartitialMatchesChanges(word, matchesNum);
 			if (tempWord[0] != '0') {
 				for (int i = 0; i < wordLength; i++)
@@ -274,7 +274,7 @@ namespace LinguisticAnalysis {
 
 		//		return dictionaryConformity;
 		time_t t = clock();
-		String^ temp = DictionaryBasedChange(text, conformity_table, 20, 6, 1);
+		String^ temp = DictionaryBasedChange(text, conformity_table, 20, 7, 5);
 		time_t t2 = clock() - t;
 		temp = temp + "\r\n" + "\r\n" + t2.ToString();
 		return temp;
