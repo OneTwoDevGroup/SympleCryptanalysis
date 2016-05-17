@@ -438,11 +438,12 @@ namespace VigenereAnalysis {
 	}
 
 	// Поиск сдвигов
+	static double amount_probolity[u][MAXALPHLEN][MAXALPHLEN] = { 0 };
 	String ^keyDetermination(array<System::String ^>^ *keys, array<System::String ^>^ groups, int key_length) {
 
 		double conformoty_probability[u][MAXALPHLEN][MAXALPHLEN] = { 0 };
 
-		double amount_probolity[MAXALPHLEN][MAXALPHLEN] = { 0 };
+
 
 		double shift_probobility[u][u][MAXALPHLEN];
 
@@ -452,16 +453,16 @@ namespace VigenereAnalysis {
 
 			for (int j = 0; j < alph.length; j++) {
 				for (int i = 0; i < alph.length; i++) {
-					amount_probolity[j][i] = bcr(groups[k]->Length, group_frequency[j]) * pow(alph.frequency[i] / 100, group_frequency[j]) *
+					amount_probolity[k][j][i] = bcr(groups[k]->Length, group_frequency[j]) * pow(alph.frequency[i] / 100, group_frequency[j]) *
 						pow(1 - alph.frequency[i] / 100, groups[k]->Length - group_frequency[j]);
 				}
 
 				double sum_amount_probolity = 0;
 
-				for (int m = 0; m < alph.length; m++) sum_amount_probolity += amount_probolity[j][m];
+				for (int m = 0; m < alph.length; m++) sum_amount_probolity += amount_probolity[k][j][m];
 
 				for (int i = 0; i < alph.length; i++)
-					conformoty_probability[k][i][j] = amount_probolity[j][i] / sum_amount_probolity;
+					conformoty_probability[k][i][j] = amount_probolity[k][j][i] / sum_amount_probolity;
 			}
 		}
 
@@ -593,7 +594,43 @@ namespace VigenereAnalysis {
 		return best_words[0];
 	}
 	
+	double *freq(String^word, int lenghtkey)
+	{
+		int i, j, k,dist;
+		double new_amount_probolity[R][R] = { 0 };
+		for (i = 0; i < R; i++)
+			for (j = 0; j < R; j++)
+			new_amount_probolity[i][j] = 1;
+	
+		double probolity[R][R] = { 0 };
+		double sum = 0;
+		for (i = 0; i < R; i++)
+			for (j = 0; j < R; j++)
+			{
+				
+				for (k = 0; k++; k < lenghtkey)
+				{
+					dist = i + word[0] - word[k];
+					if (dist < 0)
+						dist += 32;
+					dist %= 32;
+					new_amount_probolity[i][j] *= amount_probolity[k][j][dist];
+				}
+			}
+		for (i = 0; i < R; i++)
+			for (j = 0; j < R; j++)
+			{
+				sum = 0;
+				for (k = 0; k++; k <R)
+				{
+					sum += new_amount_probolity[k][j];
+					
+				}
+				probolity[i][j] = new_amount_probolity[i][j] / sum;
+			}
+		return probolity[0];
 
+	}
 
 	//// Функция подбирает ключ, основываясь на длине ключа, используя частотный анализ
 	//String^ keyDetermination(String^ text, int **conformity) {
