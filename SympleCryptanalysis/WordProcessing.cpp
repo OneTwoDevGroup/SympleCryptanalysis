@@ -88,12 +88,13 @@ namespace WordProcessing {
 		int amount = 0;                                                                                   // Переменнная определяет номер последнего изменения
 
 		// Функция сохраняет изменения																								
-		void save_changes(String^ text, int **conformity) {
+		void save_changes(String^ text, int *conformity) {
 			textChanges[amount % ARRAY_SIZE] = text;
-			for (int i = 0; i < alph.length; i++) {
-				if ((*conformity)[i] == -1)	(*conformity)[i] = amount > 0 ? conformityChanges[(amount - 1) % ARRAY_SIZE][i] : i;
-				conformityChanges[amount % ARRAY_SIZE][i] = (*conformity)[i];
-			} 
+			memcpy(conformityChanges[amount % ARRAY_SIZE], conformity, sizeof(int) * MAXALPHLEN);
+			//for (int i = 0; i < alph.length; i++) {
+			//	if ((*conformity)[i] == -1)	(*conformity)[i] = amount > 0 ? conformityChanges[(amount - 1) % ARRAY_SIZE][i] : i;
+			//	conformityChanges[amount % ARRAY_SIZE][i] = (*conformity)[i];
+			//} 
 			amount++;
 
 		}
@@ -119,31 +120,39 @@ namespace WordProcessing {
 		}
 
 		//Функция сохраняет последние изменения
-		String^ changeTextUp(String^ *text, String^ *conformity_table, int **conformity = NULL, String ^key = nullptr) {
+		String^ changeTextUp(String^ *text, String^ *conformity_table, int *conformity = NULL, String ^key = nullptr) {
 			
-			String^ old_text = *text;
+			
 
 			if (conformity) {
-				//*text = getFirstText(*text);
-				for (int i = 0; i < alph.length; i++) 
-					if ((*conformity)[i]!=-1)
-						*text = (*text)->Replace(alph.getLetter(i) + "", (alph.getLetter((*conformity)[i]) + "")->ToUpper());
+				
+				//for (int i = 0; i < alph.length; i++) 
+				//	if ((*conformity)[i]!=-1)
+				//		*text = (*text)->Replace(alph.getLetter(i) + "", (alph.getLetter((*conformity)[i]) + "")->ToUpper());
 	
-				*text = (*text)->ToLower();
-				save_changes(old_text, conformity);
+				save_changes(*text, conformity);
+				
+				*text = getFirstText(*text);
+				*text = VigenereAnalysis::shiftLettersInText(*text, key, conformity);
+
+				*conformity_table = "";
 
 				for (int i = 0; i < alph.length; i++)
-					*conformity_table += alph.getLetter((*conformity)[i]) + " - " + alph.getLetter(i) + "\r\n";
+					*conformity_table += alph.getLetter(conformity[i]) + " - " + alph.getLetter(i) + "\r\n";
 			}
 			else {
+				String^ old_text = *text;
+
 				int **conformity = (int**)malloc(MAXALPHLEN * sizeof(int));
 				*text = getFirstText(*text);
+				
 				VigenereAnalysis::textPreparing(text, conformity, key);
-				save_changes(old_text, conformity);
+				save_changes(old_text, *conformity);
 
-				for (int i = 0; i < alph.length; i++) {
+				*conformity_table = "";
+
+				for (int i = 0; i < alph.length; i++) 
 					*conformity_table += alph.getLetter((*conformity)[i]) + " - " + alph.getLetter(i) + "\r\n";
-				}
 			}
 
 			return *text;

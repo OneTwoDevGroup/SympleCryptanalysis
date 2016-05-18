@@ -23,4 +23,5 @@ namespace VigenereAnalysis {
 
 	void splitIntoGroups(String^ text, int key_length, array<System::String ^>^ groups);
 
+	String^ shiftLettersInText(String^ text, String^ key, int *conformity);
 }

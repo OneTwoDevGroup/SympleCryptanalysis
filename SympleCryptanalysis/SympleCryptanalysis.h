@@ -44,7 +44,7 @@ namespace SympleCryptanalysis {
 
 		private: System::Windows::Forms::Button^  FindInDictionaryButton;
 		private: System::Windows::Forms::Button^  ChangeTextDownButton;
-		private: System::Windows::Forms::Button^  ChangeTextUpButton;
+
 		private: System::Windows::Forms::TextBox^  ConformityTable;
 		private: System::Windows::Forms::ComboBox^  keys_list;
 
@@ -55,6 +55,17 @@ namespace SympleCryptanalysis {
 		private: System::Windows::Forms::TextBox^  replacing_symbol;
 		private: System::Windows::Forms::Label^  key_label;
 		private: System::Windows::Forms::Label^  key_len_label;
+		private: System::Windows::Forms::Label^  label6;
+		private: System::Windows::Forms::Label^  label5;
+		private: System::Windows::Forms::Label^  label4;
+		private: System::Windows::Forms::Label^  label3;
+		private: System::Windows::Forms::Label^  label2;
+		private: System::Windows::Forms::Label^  label1;
+		private: System::Windows::Forms::TextBox^  incorrect_symbols_amount;
+		private: System::Windows::Forms::TextBox^  word_length;
+		private: System::Windows::Forms::TextBox^  substring_length;
+		private: System::Windows::Forms::TextBox^  substring_position;
+		private: System::Windows::Forms::ComboBox^  changeable_words_list;
 
 
 
@@ -77,6 +88,17 @@ namespace SympleCryptanalysis {
 				this->TextBox = (gcnew System::Windows::Forms::RichTextBox());
 				this->DictionaryConformityText = (gcnew System::Windows::Forms::TextBox());
 				this->buttons_panel = (gcnew System::Windows::Forms::Panel());
+				this->label6 = (gcnew System::Windows::Forms::Label());
+				this->label5 = (gcnew System::Windows::Forms::Label());
+				this->label4 = (gcnew System::Windows::Forms::Label());
+				this->label3 = (gcnew System::Windows::Forms::Label());
+				this->label2 = (gcnew System::Windows::Forms::Label());
+				this->label1 = (gcnew System::Windows::Forms::Label());
+				this->incorrect_symbols_amount = (gcnew System::Windows::Forms::TextBox());
+				this->word_length = (gcnew System::Windows::Forms::TextBox());
+				this->substring_length = (gcnew System::Windows::Forms::TextBox());
+				this->substring_position = (gcnew System::Windows::Forms::TextBox());
+				this->changeable_words_list = (gcnew System::Windows::Forms::ComboBox());
 				this->replaceable_symbol_label = (gcnew System::Windows::Forms::Label());
 				this->replacing_symbol_label = (gcnew System::Windows::Forms::Label());
 				this->replaceable_symbol = (gcnew System::Windows::Forms::TextBox());
@@ -87,7 +109,6 @@ namespace SympleCryptanalysis {
 				this->keys_list = (gcnew System::Windows::Forms::ComboBox());
 				this->FindInDictionaryButton = (gcnew System::Windows::Forms::Button());
 				this->ChangeTextDownButton = (gcnew System::Windows::Forms::Button());
-				this->ChangeTextUpButton = (gcnew System::Windows::Forms::Button());
 				this->ConformityTable = (gcnew System::Windows::Forms::TextBox());
 				this->buttons_panel->SuspendLayout();
 				this->SuspendLayout();
@@ -118,6 +139,17 @@ namespace SympleCryptanalysis {
 				// 
 				// buttons_panel
 				// 
+				this->buttons_panel->Controls->Add(this->label6);
+				this->buttons_panel->Controls->Add(this->label5);
+				this->buttons_panel->Controls->Add(this->label4);
+				this->buttons_panel->Controls->Add(this->label3);
+				this->buttons_panel->Controls->Add(this->label2);
+				this->buttons_panel->Controls->Add(this->label1);
+				this->buttons_panel->Controls->Add(this->incorrect_symbols_amount);
+				this->buttons_panel->Controls->Add(this->word_length);
+				this->buttons_panel->Controls->Add(this->substring_length);
+				this->buttons_panel->Controls->Add(this->substring_position);
+				this->buttons_panel->Controls->Add(this->changeable_words_list);
 				this->buttons_panel->Controls->Add(this->replaceable_symbol_label);
 				this->buttons_panel->Controls->Add(this->replacing_symbol_label);
 				this->buttons_panel->Controls->Add(this->replaceable_symbol);
@@ -128,18 +160,124 @@ namespace SympleCryptanalysis {
 				this->buttons_panel->Controls->Add(this->keys_list);
 				this->buttons_panel->Controls->Add(this->FindInDictionaryButton);
 				this->buttons_panel->Controls->Add(this->ChangeTextDownButton);
-				this->buttons_panel->Controls->Add(this->ChangeTextUpButton);
 				this->buttons_panel->Dock = System::Windows::Forms::DockStyle::Fill;
 				this->buttons_panel->Location = System::Drawing::Point(650, 0);
 				this->buttons_panel->Name = L"buttons_panel";
 				this->buttons_panel->Size = System::Drawing::Size(330, 561);
 				this->buttons_panel->TabIndex = 12;
 				// 
+				// label6
+				// 
+				this->label6->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->label6->AutoSize = true;
+				this->label6->Location = System::Drawing::Point(154, 249);
+				this->label6->Name = L"label6";
+				this->label6->Size = System::Drawing::Size(110, 13);
+				this->label6->TabIndex = 32;
+				this->label6->Text = L"Changeable words list";
+				// 
+				// label5
+				// 
+				this->label5->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->label5->AutoSize = true;
+				this->label5->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12.25F));
+				this->label5->Location = System::Drawing::Point(81, 193);
+				this->label5->Name = L"label5";
+				this->label5->Size = System::Drawing::Size(149, 20);
+				this->label5->TabIndex = 31;
+				this->label5->Text = L"Linguistic Analysis";
+				// 
+				// label4
+				// 
+				this->label4->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->label4->AutoSize = true;
+				this->label4->Location = System::Drawing::Point(45, 394);
+				this->label4->Name = L"label4";
+				this->label4->Size = System::Drawing::Size(127, 13);
+				this->label4->TabIndex = 30;
+				this->label4->Text = L"Incorrect symbols amount";
+				// 
+				// label3
+				// 
+				this->label3->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->label3->AutoSize = true;
+				this->label3->Location = System::Drawing::Point(72, 344);
+				this->label3->Name = L"label3";
+				this->label3->Size = System::Drawing::Size(65, 13);
+				this->label3->TabIndex = 29;
+				this->label3->Text = L"Word length";
+				// 
+				// label2
+				// 
+				this->label2->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->label2->AutoSize = true;
+				this->label2->Location = System::Drawing::Point(64, 295);
+				this->label2->Name = L"label2";
+				this->label2->Size = System::Drawing::Size(83, 13);
+				this->label2->TabIndex = 28;
+				this->label2->Text = L"Substring length";
+				// 
+				// label1
+				// 
+				this->label1->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->label1->AutoSize = true;
+				this->label1->Location = System::Drawing::Point(58, 249);
+				this->label1->Name = L"label1";
+				this->label1->Size = System::Drawing::Size(90, 13);
+				this->label1->TabIndex = 27;
+				this->label1->Text = L"Substring position";
+				// 
+				// incorrect_symbols_amount
+				// 
+				this->incorrect_symbols_amount->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->incorrect_symbols_amount->Location = System::Drawing::Point(61, 410);
+				this->incorrect_symbols_amount->Name = L"incorrect_symbols_amount";
+				this->incorrect_symbols_amount->Size = System::Drawing::Size(86, 20);
+				this->incorrect_symbols_amount->TabIndex = 26;
+				this->incorrect_symbols_amount->Text = L"1";
+				// 
+				// word_length
+				// 
+				this->word_length->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->word_length->Location = System::Drawing::Point(61, 360);
+				this->word_length->Name = L"word_length";
+				this->word_length->Size = System::Drawing::Size(86, 20);
+				this->word_length->TabIndex = 25;
+				this->word_length->Text = L"5";
+				// 
+				// substring_length
+				// 
+				this->substring_length->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->substring_length->Location = System::Drawing::Point(61, 311);
+				this->substring_length->Name = L"substring_length";
+				this->substring_length->Size = System::Drawing::Size(86, 20);
+				this->substring_length->TabIndex = 24;
+				this->substring_length->Text = L"20";
+				// 
+				// substring_position
+				// 
+				this->substring_position->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->substring_position->Location = System::Drawing::Point(61, 265);
+				this->substring_position->Name = L"substring_position";
+				this->substring_position->Size = System::Drawing::Size(86, 20);
+				this->substring_position->TabIndex = 23;
+				this->substring_position->Text = L"0";
+				// 
+				// changeable_words_list
+				// 
+				this->changeable_words_list->Anchor = System::Windows::Forms::AnchorStyles::None;
+				this->changeable_words_list->FormattingEnabled = true;
+				this->changeable_words_list->Location = System::Drawing::Point(170, 265);
+				this->changeable_words_list->Name = L"changeable_words_list";
+				this->changeable_words_list->Size = System::Drawing::Size(86, 21);
+				this->changeable_words_list->TabIndex = 22;
+				this->changeable_words_list->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::changeable_words_list_SelectedIndexChanged);
+				// 
 				// replaceable_symbol_label
 				// 
 				this->replaceable_symbol_label->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->replaceable_symbol_label->AutoSize = true;
-				this->replaceable_symbol_label->Location = System::Drawing::Point(167, 176);
+				this->replaceable_symbol_label->Location = System::Drawing::Point(167, 131);
 				this->replaceable_symbol_label->Name = L"replaceable_symbol_label";
 				this->replaceable_symbol_label->Size = System::Drawing::Size(97, 13);
 				this->replaceable_symbol_label->TabIndex = 21;
@@ -149,7 +287,7 @@ namespace SympleCryptanalysis {
 				// 
 				this->replacing_symbol_label->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->replacing_symbol_label->AutoSize = true;
-				this->replacing_symbol_label->Location = System::Drawing::Point(62, 176);
+				this->replacing_symbol_label->Location = System::Drawing::Point(62, 131);
 				this->replacing_symbol_label->Name = L"replacing_symbol_label";
 				this->replacing_symbol_label->Size = System::Drawing::Size(85, 13);
 				this->replacing_symbol_label->TabIndex = 20;
@@ -158,7 +296,7 @@ namespace SympleCryptanalysis {
 				// replaceable_symbol
 				// 
 				this->replaceable_symbol->Anchor = System::Windows::Forms::AnchorStyles::None;
-				this->replaceable_symbol->Location = System::Drawing::Point(170, 204);
+				this->replaceable_symbol->Location = System::Drawing::Point(170, 159);
 				this->replaceable_symbol->Name = L"replaceable_symbol";
 				this->replaceable_symbol->Size = System::Drawing::Size(86, 20);
 				this->replaceable_symbol->TabIndex = 19;
@@ -168,11 +306,10 @@ namespace SympleCryptanalysis {
 				// replacing_symbol
 				// 
 				this->replacing_symbol->Anchor = System::Windows::Forms::AnchorStyles::None;
-				this->replacing_symbol->Location = System::Drawing::Point(61, 204);
+				this->replacing_symbol->Location = System::Drawing::Point(61, 159);
 				this->replacing_symbol->Name = L"replacing_symbol";
 				this->replacing_symbol->Size = System::Drawing::Size(86, 20);
 				this->replacing_symbol->TabIndex = 18;
-				this->replacing_symbol->TextChanged += gcnew System::EventHandler(this, &MyForm::replacing_symbol_TextChanged);
 				this->replacing_symbol->Enter += gcnew System::EventHandler(this, &MyForm::replacing_symbol_Enter);
 				// 
 				// key_label
@@ -215,43 +352,32 @@ namespace SympleCryptanalysis {
 				this->keys_list->Size = System::Drawing::Size(86, 21);
 				this->keys_list->TabIndex = 14;
 				this->keys_list->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::keys_list_SelectedIndexChanged);
+				this->keys_list->Click += gcnew System::EventHandler(this, &MyForm::keys_list_Click);
 				// 
 				// FindInDictionaryButton
 				// 
 				this->FindInDictionaryButton->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->FindInDictionaryButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->FindInDictionaryButton->Location = System::Drawing::Point(80, 453);
+				this->FindInDictionaryButton->Location = System::Drawing::Point(80, 185);
 				this->FindInDictionaryButton->Name = L"FindInDictionaryButton";
 				this->FindInDictionaryButton->Size = System::Drawing::Size(150, 38);
 				this->FindInDictionaryButton->TabIndex = 13;
 				this->FindInDictionaryButton->Text = L"Find In Dictionary";
 				this->FindInDictionaryButton->UseVisualStyleBackColor = true;
+				this->FindInDictionaryButton->Visible = false;
 				this->FindInDictionaryButton->Click += gcnew System::EventHandler(this, &MyForm::FindInDictionaryButton_Click);
 				// 
 				// ChangeTextDownButton
 				// 
 				this->ChangeTextDownButton->Anchor = System::Windows::Forms::AnchorStyles::None;
 				this->ChangeTextDownButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->ChangeTextDownButton->Location = System::Drawing::Point(80, 362);
+				this->ChangeTextDownButton->Location = System::Drawing::Point(80, 493);
 				this->ChangeTextDownButton->Name = L"ChangeTextDownButton";
 				this->ChangeTextDownButton->Size = System::Drawing::Size(150, 37);
 				this->ChangeTextDownButton->TabIndex = 12;
 				this->ChangeTextDownButton->Text = L"Cancel Changes";
 				this->ChangeTextDownButton->UseVisualStyleBackColor = true;
 				this->ChangeTextDownButton->Click += gcnew System::EventHandler(this, &MyForm::ChangeTextDownButton_Click);
-				// 
-				// ChangeTextUpButton
-				// 
-				this->ChangeTextUpButton->Anchor = System::Windows::Forms::AnchorStyles::None;
-				this->ChangeTextUpButton->FlatStyle = System::Windows::Forms::FlatStyle::Popup;
-				this->ChangeTextUpButton->Location = System::Drawing::Point(80, 331);
-				this->ChangeTextUpButton->Name = L"ChangeTextUpButton";
-				this->ChangeTextUpButton->Size = System::Drawing::Size(150, 37);
-				this->ChangeTextUpButton->TabIndex = 11;
-				this->ChangeTextUpButton->Text = L"Change Text";
-				this->ChangeTextUpButton->UseVisualStyleBackColor = true;
-				this->ChangeTextUpButton->Visible = false;
-				this->ChangeTextUpButton->Click += gcnew System::EventHandler(this, &MyForm::ChangeTextUpButton_Click);
 				// 
 				// ConformityTable
 				// 
@@ -301,6 +427,16 @@ namespace SympleCryptanalysis {
 			ConformityTable->Text = conformity_table;
 
 		}
+
+		// Обработка нажатия кнопки изменения текста
+		//private: System::Void ChangeTextUpButton_Click(System::Object^  sender, System::EventArgs^  e) {
+
+		//	String^ conformity_table; String^ text = TextBox->Text->ToLower();
+		//	WordProcessing::changeTextUp(&text, &conformity_table);
+		//	TextBox->Text = text;
+		//	ConformityTable->Text = conformity_table;
+
+		//}
 
 		// Обработка нажатия кнопки отката измений
 		private: System::Void ChangeTextDownButton_Click(System::Object^  sender, System::EventArgs^  e) {
@@ -363,50 +499,68 @@ namespace SympleCryptanalysis {
 		private: System::Void replaceable_symbol_Enter(System::Object^  sender, System::EventArgs^  e) {
 
 		}
-	private: System::Void replacing_symbol_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-		//WordProcessing::Alphabit alph("rus");
-		//if (replacing_symbol->Text != L"" && replaceable_symbol->Text != L"" &&
-		//	alph.isLetter(replacing_symbol->Text[0]) && alph.isLetter(replaceable_symbol->Text[0])) {
-
-		//	int* conformity = (int*)malloc(MAXALPHLEN * sizeof(int));
-
-		//	for (int i = 0; i < alph.length; i++) conformity[i] = -1;
-
-		//	conformity[replacing_symbol->Text[0] - alph.firstchar] = replaceable_symbol->Text[0] - alph.firstchar;
-		//	conformity[replaceable_symbol->Text[0] - alph.firstchar] = replacing_symbol->Text[0] - alph.firstchar;
-
-		//	String^ conformity_table; String^ text = TextBox->Text->ToLower();
-		//	WordProcessing::changeTextUp(&text, &conformity_table, &conformity);
-		//	TextBox->Text = text; ConformityTable->Text = conformity_table;
-		//}
-	}
-
-	private: System::Void replaceable_symbol_TextChanged(System::Object^  sender, System::EventArgs^  e) {
-		WordProcessing::Alphabit alph("rus");
-		if (replacing_symbol->Text != L"" && replaceable_symbol->Text != L"" &&
-			alph.isLetter(replacing_symbol->Text[0]) && alph.isLetter(replaceable_symbol->Text[0])) {
-
-			//int* conformity = WordProcessing::getLastConformity();
-
-			int *conformity = (int*)malloc(sizeof(int) * MAXALPHLEN);
-			for (int i = 0; i < alph.length; i++) conformity[i] = -1;
-
-			
-			//int changedSign = conformity[replacing_symbol->Text[0] - alph.firstchar];
-			//
-			//for (int j = 0; j < MAXALPHLEN; j++)
-			//	if (conformity[j] == replaceable_symbol->Text[0] - alph.firstchar)
-			//		conformity[j] = changedSign;
-			//conformity[replacing_symbol->Text[0] - alph.firstchar] = replaceable_symbol->Text[0] - alph.firstchar;
 
 
-			conformity[replacing_symbol->Text[0] - alph.firstchar] = replaceable_symbol->Text[0] - alph.firstchar;
-			conformity[replaceable_symbol->Text[0] - alph.firstchar] = replacing_symbol->Text[0] - alph.firstchar;
+		private: System::Void replaceable_symbol_TextChanged(System::Object^  sender, System::EventArgs^  e) {
+			WordProcessing::Alphabit alph("rus");
+			if (replacing_symbol->Text != L"" && replaceable_symbol->Text != L"" &&
+				alph.isLetter(replacing_symbol->Text[0]) && alph.isLetter(replaceable_symbol->Text[0])) {
 
-			String^ conformity_table; String^ text = TextBox->Text->ToLower();
-			WordProcessing::changeTextUp(&text, &conformity_table, &conformity);
-			TextBox->Text = text; ConformityTable->Text = conformity_table;
+				int* conformity = WordProcessing::getLastConformity();
+
+				int replacing = replacing_symbol->Text[0] - alph.firstchar;
+				int replaceable = replaceable_symbol->Text[0] - alph.firstchar;
+				
+				int temp;
+				for (int i = 0; i < alph.length; i++)
+					if (conformity[i] == replacing) {
+						conformity[i] = replaceable;
+						for (int j = 0; j < alph.length; j++) {
+							if (i != j && conformity[j] == replaceable) {
+								conformity[j] = replacing;
+								break;
+							}
+
+						}
+						break;	
+					}
+
+
+				//int temp = conformity[replacing_symbol->Text[0] - alph.firstchar];
+				//conformity[replacing_symbol->Text[0] - alph.firstchar] = replaceable_symbol->Text[0] - alph.firstchar;
+				//for (int i = 0; i < alph.length; i++) {
+				//	if (i != replacing_symbol->Text[0] - alph.firstchar && conformity[i] == replaceable_symbol->Text[0] - alph.firstchar)
+				//		conformity[i] = temp;
+				//}
+
+				String^ conformity_table; String^ text = TextBox->Text->ToLower();
+				WordProcessing::changeTextUp(&text, &conformity_table, conformity, keys_list->Text);
+				TextBox->Text = text; ConformityTable->Text = conformity_table;
+			}
 		}
-	}
+
+		private: System::Void keys_list_Click(System::Object^  sender, System::EventArgs^  e) {
+			changeable_words_list->Items->Clear();
+
+			int::Parse(substring_length->Text);
+			int::Parse(substring_position->Text);
+			int::Parse(word_length->Text);
+			int::Parse(incorrect_symbols_amount->Text);
+
+			array<System::String ^>^ words = gcnew array<System::String^>(100);
+			int i = 0; while (i < 20 && words[i]){ changeable_words_list->Items->Add(words[i]); i++; }
+
+		}
+		
+		private: System::Void changeable_words_list_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
+			String^ conformity_table; String^ text = TextBox->Text->ToLower();
+			
+			changeable_words_list->Text;
+
+			DictionaryConformityText->Text = LinguisticAnalysis::DictionaryAnalysis(&text, &conformity_table);
+			
+			TextBox->Text = text;
+			ConformityTable->Text = conformity_table;
+		}
 };
 }

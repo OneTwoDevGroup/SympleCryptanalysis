@@ -944,6 +944,7 @@ namespace VigenereAnalysis {
 		
 		*text = shiftLettersInText(*text, key, *conformity);
 
+
 		
 
 
