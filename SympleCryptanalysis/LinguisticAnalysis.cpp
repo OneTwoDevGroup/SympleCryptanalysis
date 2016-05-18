@@ -204,7 +204,7 @@ namespace LinguisticAnalysis {
 		if (word->Length - maxMatchedLetters < matchesNum+1) {
 			return words;
 		}
-		else return nullptr;
+		else return gcnew cli::array<System::String ^>(1);
 	}
 	
 	
@@ -241,24 +241,24 @@ namespace LinguisticAnalysis {
 			}
 		}
 		String^ temp;*/
-			return words2;
+			return words2 /*!= nullptr ? words2 : gcnew array<System::String ^>(0)*/;
 		}
 	}
 
 	String^ DictionaryMakeChange(String^ word, String^ *text, String^ key, String^ *conformity_table, String^ tempWord, int wordLength) {
 		int* conformity = WordProcessing::getLastConformity();
 		String^ result;
-		if (tempWord[0] != '0') {
+		if (tempWord != "" && tempWord[0] != '0') {
 			for (int i = 0; i < wordLength-1; i++) {
 				if (word[i] != tempWord[i]) {
 					int tempSign = conformity[word[i] - 1072];
 					conformity[word[i] - 1072] = tempWord[i] - 1072;
-					for (int i = 0; i < MAXALPHLEN; i++)
-						if (conformity[i] == word[i] - 1072) {
-							conformity[i] = tempWord[i] - 1072;
-							for (int j = 0; j < MAXALPHLEN; j++) {
-								if (i != j && conformity[j] == tempWord[i] - 1072) {
-									conformity[j] = word[i] - 1072;
+					for (int j = 0; j < 32; j++)
+						if (conformity[j] == word[i] - 1072) {
+							conformity[j] = tempWord[i] - 1072;
+							for (int k = 0; k < 32; k++) {
+								if (j != k && conformity[k] == tempWord[i] - 1072) {
+									conformity[k] = word[i] - 1072;
 									break;
 								}
 

@@ -560,7 +560,7 @@ namespace SympleCryptanalysis {
 			array<System::String ^>^ words = LinguisticAnalysis::DictionaryBasedChange(text, int::Parse(substring_length->Text), int::Parse(word_length->Text), int::Parse(incorrect_symbols_amount->Text), int::Parse(substring_position->Text));
 			TextBox->Text = text;
 			ConformityTable->Text = conformity_table;
-			for (int i = 0; i < 10; i++) changeable_words_list->Items->Add(words[i]);
+			for (int i = 0; i < 100; i++) if (i < words->Length && words[i]) changeable_words_list->Items->Add(words[i]); else break;
 			DictionaryConformityText->Text = words[0];
 		}
 };

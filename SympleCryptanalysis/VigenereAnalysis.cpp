@@ -658,7 +658,7 @@ namespace VigenereAnalysis {
 		std::string word;
 
 		array<System::String ^>^ best_words = gcnew array<System::String^>(1000);
-
+		array<System::String ^>^ dic_words = LinguisticAnalysis::GetWordsWithLen(key_length);
 		double best_coef = 0;
 		//string best_word[1000];
 		
@@ -673,41 +673,41 @@ namespace VigenereAnalysis {
 		//	dictionary.clear();
 		//	dictionary.seekg(0, ios::beg);
 
-		while (dictionary) {
-				
-			getline(dictionary, word); int len = word.length();
-			if (len != key_length) continue;
+		for (int i = 0; i < dic_words->Length; i++) {
+			if (!dic_words[i] || dic_words[i] == "") break;
 
 			double coef = 0;
 
-			for (int i = 0; i < key_length; i++)
-				for (int j = 0; j < key_length; j++) {
-					if (i == j) continue;
-					coef += shift_probobility[i][j][(alph.length + word[i] - word[j]) % alph.length];
+			for (int j = 0; j < key_length; j++)
+				for (int k = 0; k < key_length; k++) {
+					if (j == k) continue;
+					coef += shift_probobility[j][k][(alph.length + dic_words[i][j] - dic_words[i][k]) % alph.length];
 				}
 			if (coef > best_coef )	best_coef = coef;
 
 		}
 
 		double eps = 0.9;
-		dictionary.clear();
-		dictionary.seekg(0, std::ios::beg);
+		//dictionary.clear();
+		//dictionary.seekg(0, std::ios::beg);
 
-		while (dictionary) {
+		for (int i = 0; i < dic_words->Length; i++) {
 
-			getline(dictionary, word); int len = word.length();
-			if (len != key_length) continue;
+			if (!dic_words[i] || dic_words[i] == "") break;
+
+			//getline(dictionary, word); int len = word.length();
+			//if (len != key_length) continue;
 
 			double coef = 0;
 
-			for (int i = 0; i < key_length; i++)
-				for (int j = 0; j < key_length; j++) {
-					if (i == j) continue;
-					coef += shift_probobility[i][j][(alph.length + word[i] - word[j]) % alph.length];
+			for (int j = 0; j < key_length; j++)
+				for (int k = 0; k < key_length; k++) {
+					if (j == k) continue;
+					coef += shift_probobility[j][k][(alph.length + dic_words[i][j] - dic_words[i][k]) % alph.length];
 				}
 			if (fabs(coef - best_coef) <= eps) {
 				best_coef = coef;
-				best_words[amount % 1000] = gcnew String(word.c_str());;
+				best_words[amount % 1000] = dic_words[i];
 				amount++;
 			}
 
@@ -1150,6 +1150,8 @@ int* ratio(String^ text, int* conformits,String^key)
 		
 		//*conformity = FrequencyAnalysis::conformityDetermination(*text);
 		*conformity = freq(key, key->Length);
+
+		String ^temp; for (int i = 0; i < alph.length; i++) temp += alph.getLetter((*conformity)[i]) + " ";
 	//	*conformity = ratio(*text, *conformity);
 		//fclose(log_file);
 
