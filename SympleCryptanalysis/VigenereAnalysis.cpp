@@ -374,6 +374,7 @@ namespace VigenereAnalysis {
 
 		return besti;
 	}
+	static double  probolity[R][R] = { 0 };
 	int *freq(String^word, int lenghtkey)
 	{
 		int i, j, k, dist;
@@ -382,7 +383,7 @@ namespace VigenereAnalysis {
 			for (j = 0; j < R; j++)
 				new_amount_probolity[i][j] = 1;
 
-		double probolity[R][R] = { 0 };
+		
 		double sum = 0;
 		for (i = 0; i < R; i++)
 			for (j = 0; j < R; j++)
@@ -414,9 +415,10 @@ namespace VigenereAnalysis {
 			ind[i][0] = 255;
 			ind[i][1] = 255;
 		}
-		int z;
+		int z,g;
 		bool flag = 1;
 		double max = -1;
+		int save[2];
 		for (k = 0; k < R; k++)
 		{
 			 max = -1;
@@ -430,7 +432,32 @@ namespace VigenereAnalysis {
 						for (z = 0; z < R; z++)
 						{
 							if ((ind[z][0] == i) || (ind[z][1] == j))
+							{
+							/*	double max2 = -1;
+								for (g = 0; g < R; g++)
+								{
+
+									if (ind[z][0] == i)
+										if ((probolity[ind[z][0]][g]<probolity[i][j]) && (probolity[ind[z][0]][g]>max2))
+										{
+											max2 = probolity[ind[z][0]][g];
+											save[0] = ind[z][0];
+											save[1] = g;
+										}
+									if (ind[z][1] == j)
+										if ((probolity[g][ind[z][1]] < probolity[i][j]) && (probolity[g][ind[z][1]]>max2))
+										{
+											max2 = ind[z][1];
+											save[0] = g;
+											save[1] = ind[z][0];
+										}
+								}
+								if (max2 > 0.3*probolity[i][j])
+								{
+									
+								}*/
 								flag = 0;
+						}
 						}
 						if (flag)
 						{
@@ -443,6 +470,17 @@ namespace VigenereAnalysis {
 
 			}
 		}
+
+	/*	for (k = 0; k < R; k++)
+		{
+			if (probolity[ind[k][0]][ind[k][1]] < 0.5)
+				for (i = k; i < R; i++)
+					if (probolity[ind[i][0]][ind[i][1]]<0.5)
+					for (j = 0; j < R; j++)
+					{
+						i
+					}*/
+		
 		for (i = 0; i < R; i++)
 		{
 			ind[i][0] += 192;
@@ -453,6 +491,8 @@ namespace VigenereAnalysis {
 		{
 			conformity[ind[i][1]-192] = ind[i][0]-192;
 		}
+		
+		
 		return conformity;
 
 	}
@@ -756,7 +796,7 @@ namespace VigenereAnalysis {
 	//	return key;
 	//}
 
-	int *multiGrammStatisctic(String^ text) {
+	/*int *multiGrammStatisctic(String^ text) {
 
 		const int sample_size = 100;
 		const double min_freq = 0.0001;
@@ -833,7 +873,8 @@ namespace VigenereAnalysis {
 
 		return conformities;
 
-	}
+	}*/
+
 
 	String^ shiftLettersInText(String^ text, String^ key, int *conformity) {
 
@@ -855,9 +896,9 @@ namespace VigenereAnalysis {
 
 		return text_builder.ToString();				// Возвращаем изменённую строку
 	}
+	String^ replaceLettersInText(String^ text, int *conformity)
+	{
 
-	String^ replaceLettersInText(String^ text, int *conformity) {
-		
 		// Формируем изменяемую строку
 		Text::StringBuilder text_builder(text);
 
@@ -867,9 +908,184 @@ namespace VigenereAnalysis {
 			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
 			text_builder[j] = alph.getLetter(conformity[text_builder[j] - alph.firstchar]);
 		}
+
+		return text_builder.ToString();				// Возвращаем изменённую строку
+	}
+static float frequensy[R][R];
+float multiGrammStatisctic(String^ text,int* conformitis,String^key) 
+{
+	String^ newtext;
+	newtext = shiftLettersInText(text,  key, conformitis);
+	unsigned char *S = (unsigned char*)(char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(newtext);
+	int count[R][R] = { 0 };
+	int  j, k;
+	int n = 0;
+	unsigned char bigr[2];
+	bigr[1] = *S;
+	int size = strlen((const char*)S);
+	int i = 0;
+		while ((i<size)&&((bigr[1]<224) || (bigr[1]>255)))
+		{
+			i++;
+			bigr[1] = (*++S);
+		}
+		if (bigr[1] < MAXLOW)
+			bigr[1] += 32;
+		
+		n++;
+	 
+		for (i = i; i < size; i++)
+				{
+					bigr[0] = bigr[1];
+					
+					bigr[1] = *++S;
+			
+					if ((bigr[1] < 192) || (bigr[1]>255))
+					{
+						while ((i<size)&&((bigr[1] < 192) || (bigr[1]>255)))
+						{
+							i++;
+							bigr[1] = *++S;
+							
+						}
+					}
+					if (bigr[1] < MAXLOW)
+						bigr[1] += 32;
+					count[bigr[0]-224][bigr[1]-224]+= 1;
+					n++;
+				}
+		double  feature = 0;
+		
+		
+		//std::ifstream fp1("bigr.txt");
+
+		
+		for (i = 0; i < R; i++)
+		{
+			for (j = 0; j < R; j++)
+			{
+				if (frequensy[i][j])
+					feature += count[i][j] * log(frequensy[i][j]);
+			}
+		}
+
+		
+		return feature;
+		
+
+}
+int* ratio(String^ text, int* conformits,String^key)
+{
+
+	String^ temp;
+	for (int i = 0; i < 32; i++)
+		temp += conformits[i].ToString() + " ";
+
+
+	int i, j, mini;
+	int minj = -1;
+	float min = MAXDWORD;
+	int* newconformits=(int*)malloc(sizeof(int)*MAXALPHLEN);
+	for (i = 0; i < R; i++)
+		newconformits[i] = conformits[i];
+	
+
+	temp = "";
+	for (int i = 0; i < 32; i++)
+		temp += conformits[i].ToString() + " ";
+	temp = "";
+	for (int i = 0; i < 32; i++)
+		temp += newconformits[i].ToString() + " ";
+
+	bool flag = 1;
+	
+		minj = -1;
+		min = MAXDWORD;
+		/*for (j = 0; j < R; j++)
+		{
+			if (probolity[conformits[j]][j] < min)
+			{
+				min = probolity[conformits[j]][j];
+				minj = j;
+
+			}
+		}*/
+	
+		FILE *fp1 = fopen("bigr.txt", "r");
+		for (i = 0; i < R; i++)
+		{
+			for (j = 0; j < R; j++)
+			{
+				fscanf(fp1, "%e", &(frequensy[i][j]));
+				//frequensy[i][j] << fp1;
+			}
+		}fclose(fp1);
+		double feature = multiGrammStatisctic(text, conformits, key);
+
+		for (j = 0; j < 8000;j++)
+		{ 
+			/*for (i = 0; i < R; i++)
+			{
+
+				/if ((probolity[conformits[j]][j] + probolity[conformits[i]][i]) < (probolity[conformits[j]][i] + probolity[conformits[i]][j]))
+				{*/
+			int pot;
+			int random2 = rand() % 32;
+			int random1 = rand() % 32;
+			while (random1 == random2)
+			{
+				random2 = rand() % 32;
+				 random1 = rand() % 32;
+			}
+			pot = newconformits[random1];
+					newconformits[random1] =newconformits[ random2];
+					newconformits[random2] =pot;
+					float newfeature = multiGrammStatisctic(text, newconformits, key);
+					if (feature < newfeature)
+					{
+						feature = newfeature;
+						//	return newconformits;
+					}
+					else
+					{	
+						pot = newconformits[random1];
+						newconformits[random1] = newconformits[random2];
+						newconformits[random2] = pot;
+
+					}
+
+
+					temp = "";
+					for (int i = 0; i < 32; i++)
+						temp += newconformits[i].ToString() + " ";
+				//}
+			}
+	//}
+
+	temp = "";
+	for (int i = 0; i < 32; i++)
+		temp += newconformits[i].ToString() + " ";
+
+		
+		return newconformits;
+}
+	
+		String^ shiftLettersInText(String^ text, String^ key) {
+		
+		// Формируем изменяемую строку
+		Text::StringBuilder text_builder(text);
+
+		// Заменяет символы текста в соответствии с ключом и квадратом Веженера
+		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
+		for (int j = 0; j < text->Length; j++) {
+			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
+			text_builder[j] = alph.getLetter(text_builder[j] - alph.firstchar - key[(j - not_letters) % key->Length] + key[0]);
+		}
 		
 		return text_builder.ToString();				// Возвращаем изменённую строку
 	}
+
+	
 
 	void swap(int *arr, int a, int b) {
 		
@@ -934,6 +1150,7 @@ namespace VigenereAnalysis {
 		
 		//*conformity = FrequencyAnalysis::conformityDetermination(*text);
 		*conformity = freq(key, key->Length);
+	//	*conformity = ratio(*text, *conformity);
 		//fclose(log_file);
 
 		//if (!(LinguisticAnalysis::CheckPlainText(new_text))) {
@@ -942,10 +1159,12 @@ namespace VigenereAnalysis {
 		//	text = changeText(text, conformity, key);
 		//}
 		
+		
+		
+
+		//*conformity = ratio(*text, *conformity,key);
 		*text = shiftLettersInText(*text, key, *conformity);
 
-
-		
 
 
 
