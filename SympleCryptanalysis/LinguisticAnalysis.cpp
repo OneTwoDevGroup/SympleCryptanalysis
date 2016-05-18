@@ -146,7 +146,7 @@ namespace LinguisticAnalysis {
 		//return 0;
 	}
 
-	String^ PartitialMatchesChanges(String^ word, int matchesNum) {	// Возвращает строку-отчет (используется для отладки и вывода в текстовое поле)
+	array<System::String ^>^ PartitialMatchesChanges(String^ word, int matchesNum, int * pos) {	// Возвращает строку-отчет (используется для отладки и вывода в текстовое поле)
 		const int WORDS_COUNT = 10000;
 		array<System::String ^>^ words = gcnew array<System::String^ >(WORDS_COUNT); // массив слов-совпадений
 		using namespace std;
@@ -185,7 +185,7 @@ namespace LinguisticAnalysis {
 					if (wordString[i] == dic_word[i])
 						matchedLetters++;
 				}
-				if (matchedLetters > maxMatchedLetters) {
+				if ((matchedLetters > maxMatchedLetters) /*&& (word->Length - maxMatchedLetters >= matchesNum + 1)*/) {
 					maxMatchedLetters = matchedLetters;
 					wordsNumber = 0; // переходим в начало массива слов-совпадений
 				}
@@ -193,33 +193,34 @@ namespace LinguisticAnalysis {
 					words[wordsNumber] = msclr::interop::marshal_as<String^>(dic_word);
 					wordsNumber++;
 				}
+				words[wordsNumber] = "0";
+				*pos = wordsNumber + 1;
 			}
 			else break;
 		}
 		if (word->Length - maxMatchedLetters < matchesNum+1) {
-			return words[13];
+			return words;
 		}
-		else return "0";
+		else return nullptr;
 	}
 
-	String^ DictionaryBasedChange(String^ *text, String^ *conformity_table, int stringLength, int wordLength, int matchesNum) {
-		using namespace std;
+	array<System::String ^>^ DictionaryBasedChange(String^ *text, int *pos, String^ *conformity_table, int stringLength, int wordLength, int matchesNum, int start) {
+
 		int* conformity_new = (int*)malloc(MAXALPHLEN * sizeof(int));
 		for (int i = 0; i < MAXALPHLEN; i++)
 			conformity_new[i] = -1;
-		int statistics = 0;
 		String^ result;
 		String^ word;
-		for (int j = 0; j < stringLength - wordLength; j++) {
+		for (int j = start; j < j + wordLength; j++) {
 			int spaceNum = 0;
-			for (int k = 0; k < wordLength+spaceNum; k++)
+			for (int k = 0; k < wordLength + spaceNum; k++)
 				if ((*text)[j + k] != ' ')
 					word += (*text)[j + k];
 				else
 					spaceNum++;
-			//word = (*text)->Substring(j+1, wordLength);
-			String^ tempWord = PartitialMatchesChanges(word, matchesNum);
-			if (tempWord[0] != '0') {
+			array<System::String ^>^ tempWords = PartitialMatchesChanges(word, matchesNum, pos);
+			tempWords[*pos] = word;
+			/*if (tempWord[0] != '0') {
 				for (int i = 0; i < wordLength; i++)
 					if (word[i] != tempWord[i]) {
 						int tempInte = word[i]-1072;
@@ -232,10 +233,33 @@ namespace LinguisticAnalysis {
 					}
 			}
 		}
-		String^ temp;
-		for (int i = 0; i < 32; i++)
-			temp += conformity_new[i].ToString() + " ";
+		String^ temp;*/
+			return tempWords;
+		}
+	}
 
+	String^ DictionaryMakeChange(String^ *text, String^ key, String^ *conformity_table, String^ word, String^ tempWord, int wordLength) {
+		int* conformity = WordProcessing::getLastConformity();
+		String^ result;
+		if (tempWord[0] != '0') {
+			for (int i = 0; i < wordLength; i++) {
+				if (word[i] != tempWord[i]) {
+					int tempSign = conformity[word[i] - 1072];
+					conformity[word[i] - 1072] = tempWord[i] - 1072;
+					for (int j = 0; j < MAXALPHLEN; j++)
+						if (conformity[j] == tempWord[i] - 1072) {
+							conformity[j] = tempSign;
+							break;
+						}
+
+					result = result + word + "\r\n" + tempWord + "\r\n";
+					result = result + word[i] + " -> " + tempWord[i] + "\r\n";
+					WordProcessing::changeTextUp(text, conformity_table, &conformity, key);
+					break;
+				}
+				
+			}
+		}
 		return result;
 	}
 
@@ -282,12 +306,15 @@ namespace LinguisticAnalysis {
 		//			dictionaryConformity += words[i] + "\r\n";
 
 		//		return dictionaryConformity;
-		GetWordsWithLen(7);
+		//GetWordsWithLen(7);
 		time_t t = clock();
-		String^ temp = DictionaryBasedChange(text, conformity_table, 20, 7, 5);
+		String ^ tempWord;
+		int pos;
+		String^ key;
+		array<System::String ^>^ temp = DictionaryBasedChange(text, &pos, conformity_table, 40, 7, 4, 22);
+		String^ result = DictionaryMakeChange(text, key, conformity_table, temp[pos], temp[0], 7);
 		time_t t2 = clock() - t;
-		temp = temp + "\r\n" + "\r\n" + t2.ToString();
-		return temp;
+		return result;
 	}
 
 	
