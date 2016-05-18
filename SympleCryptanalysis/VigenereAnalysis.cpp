@@ -407,7 +407,10 @@ namespace VigenereAnalysis {
 					sum += new_amount_probolity[k][j];
 
 				}
-				probolity[i][j] = new_amount_probolity[i][j] / sum;
+				if (sum)
+					probolity[i][j] = new_amount_probolity[i][j] / sum;
+				else
+					probolity[i][j] = 0;
 			}
 	unsigned 	char ind[R][2];
 		for (i = 0; i < R; i++)
