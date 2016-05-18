@@ -146,7 +146,10 @@ namespace LinguisticAnalysis {
 		//return 0;
 	}
 
-	array<System::String ^>^ PartitialMatchesChanges(String^ word, int matchesNum, int * pos) {	// Возвращает строку-отчет (используется для отладки и вывода в текстовое поле)
+	int pos;
+	gcroot<array<System::String ^>^> words2;
+
+	array<System::String ^>^ PartitialMatchesChanges(String^ word, int matchesNum/*, int * pos*/) {	// Возвращает строку-отчет (используется для отладки и вывода в текстовое поле)
 		const int WORDS_COUNT = 10000;
 		array<System::String ^>^ words = gcnew array<System::String^ >(WORDS_COUNT); // массив слов-совпадений
 		using namespace std;
@@ -194,7 +197,7 @@ namespace LinguisticAnalysis {
 					wordsNumber++;
 				}
 				words[wordsNumber] = "0";
-				*pos = wordsNumber + 1;
+				pos = wordsNumber + 1;
 			}
 			else break;
 		}
@@ -203,8 +206,11 @@ namespace LinguisticAnalysis {
 		}
 		else return nullptr;
 	}
+	
+	
 
-	array<System::String ^>^ DictionaryBasedChange(String^ *text, int *pos, String^ *conformity_table, int stringLength, int wordLength, int matchesNum, int start) {
+
+	array<System::String ^>^ DictionaryBasedChange(String^ text, int stringLength, int wordLength, int matchesNum, int start) {
 
 		int* conformity_new = (int*)malloc(MAXALPHLEN * sizeof(int));
 		for (int i = 0; i < MAXALPHLEN; i++)
@@ -214,12 +220,13 @@ namespace LinguisticAnalysis {
 		for (int j = start; j < j + wordLength; j++) {
 			int spaceNum = 0;
 			for (int k = 0; k < wordLength + spaceNum; k++)
-				if ((*text)[j + k] != ' ')
-					word += (*text)[j + k];
+				if (text[j + k] != ' ')
+					word += text[j + k];
 				else
 					spaceNum++;
-			array<System::String ^>^ tempWords = PartitialMatchesChanges(word, matchesNum, pos);
-			tempWords[*pos] = word;
+			//array<System::String ^>^ tempWords = PartitialMatchesChanges(word, matchesNum, pos);
+			words2 = PartitialMatchesChanges(word, matchesNum);
+			words2[0] = word;
 			/*if (tempWord[0] != '0') {
 				for (int i = 0; i < wordLength; i++)
 					if (word[i] != tempWord[i]) {
@@ -234,27 +241,34 @@ namespace LinguisticAnalysis {
 			}
 		}
 		String^ temp;*/
-			return tempWords;
+			return words2;
 		}
 	}
 
-	String^ DictionaryMakeChange(String^ *text, String^ key, String^ *conformity_table, String^ word, String^ tempWord, int wordLength) {
+	String^ DictionaryMakeChange(String^ word, String^ *text, String^ key, String^ *conformity_table, String^ tempWord, int wordLength) {
 		int* conformity = WordProcessing::getLastConformity();
 		String^ result;
 		if (tempWord[0] != '0') {
-			for (int i = 0; i < wordLength; i++) {
+			for (int i = 0; i < wordLength-1; i++) {
 				if (word[i] != tempWord[i]) {
 					int tempSign = conformity[word[i] - 1072];
 					conformity[word[i] - 1072] = tempWord[i] - 1072;
-					for (int j = 0; j < MAXALPHLEN; j++)
-						if (conformity[j] == tempWord[i] - 1072) {
-							conformity[j] = tempSign;
+					for (int i = 0; i < MAXALPHLEN; i++)
+						if (conformity[i] == word[i] - 1072) {
+							conformity[i] = tempWord[i] - 1072;
+							for (int j = 0; j < MAXALPHLEN; j++) {
+								if (i != j && conformity[j] == tempWord[i] - 1072) {
+									conformity[j] = word[i] - 1072;
+									break;
+								}
+
+							}
 							break;
 						}
 
 					result = result + word + "\r\n" + tempWord + "\r\n";
 					result = result + word[i] + " -> " + tempWord[i] + "\r\n";
-					WordProcessing::changeTextUp(text, conformity_table, &conformity, key);
+					WordProcessing::changeTextUp(text, conformity_table, conformity, key);
 					break;
 				}
 				
@@ -311,10 +325,10 @@ namespace LinguisticAnalysis {
 		String ^ tempWord;
 		int pos;
 		String^ key;
-		array<System::String ^>^ temp = DictionaryBasedChange(text, &pos, conformity_table, 40, 7, 4, 22);
-		String^ result = DictionaryMakeChange(text, key, conformity_table, temp[pos], temp[0], 7);
+		array<System::String ^>^ temp = DictionaryBasedChange(*text, 40, 7, 4, 22);
+		//String^ result = DictionaryMakeChange(text, key, conformity_table, temp[0], 7);
 		time_t t2 = clock() - t;
-		return result;
+		return "";
 	}
 
 	

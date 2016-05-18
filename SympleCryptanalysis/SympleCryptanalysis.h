@@ -272,6 +272,7 @@ namespace SympleCryptanalysis {
 				this->changeable_words_list->Size = System::Drawing::Size(86, 21);
 				this->changeable_words_list->TabIndex = 22;
 				this->changeable_words_list->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::changeable_words_list_SelectedIndexChanged);
+				this->changeable_words_list->Click += gcnew System::EventHandler(this, &MyForm::changeable_words_list_Click);
 				// 
 				// replaceable_symbol_label
 				// 
@@ -301,7 +302,6 @@ namespace SympleCryptanalysis {
 				this->replaceable_symbol->Size = System::Drawing::Size(86, 20);
 				this->replaceable_symbol->TabIndex = 19;
 				this->replaceable_symbol->TextChanged += gcnew System::EventHandler(this, &MyForm::replaceable_symbol_TextChanged);
-				this->replaceable_symbol->Enter += gcnew System::EventHandler(this, &MyForm::replaceable_symbol_Enter);
 				// 
 				// replacing_symbol
 				// 
@@ -310,7 +310,6 @@ namespace SympleCryptanalysis {
 				this->replacing_symbol->Name = L"replacing_symbol";
 				this->replacing_symbol->Size = System::Drawing::Size(86, 20);
 				this->replacing_symbol->TabIndex = 18;
-				this->replacing_symbol->Enter += gcnew System::EventHandler(this, &MyForm::replacing_symbol_Enter);
 				// 
 				// key_label
 				// 
@@ -352,7 +351,6 @@ namespace SympleCryptanalysis {
 				this->keys_list->Size = System::Drawing::Size(86, 21);
 				this->keys_list->TabIndex = 14;
 				this->keys_list->SelectedIndexChanged += gcnew System::EventHandler(this, &MyForm::keys_list_SelectedIndexChanged);
-				this->keys_list->Click += gcnew System::EventHandler(this, &MyForm::keys_list_Click);
 				// 
 				// FindInDictionaryButton
 				// 
@@ -493,12 +491,6 @@ namespace SympleCryptanalysis {
 			ConformityTable->Text = conformity_table;
 		}
 
-		private: System::Void replacing_symbol_Enter(System::Object^  sender, System::EventArgs^  e) {
-
-		}
-		private: System::Void replaceable_symbol_Enter(System::Object^  sender, System::EventArgs^  e) {
-
-		}
 
 
 		private: System::Void replaceable_symbol_TextChanged(System::Object^  sender, System::EventArgs^  e) {
@@ -538,29 +530,38 @@ namespace SympleCryptanalysis {
 				TextBox->Text = text; ConformityTable->Text = conformity_table;
 			}
 		}
+				
 
 		private: System::Void keys_list_Click(System::Object^  sender, System::EventArgs^  e) {
+			
+					String^ text = TextBox->Text->ToLower();
+
+			array<System::String ^>^ words = LinguisticAnalysis::DictionaryBasedChange(text, int::Parse(substring_length->Text), int::Parse(word_length->Text), int::Parse(incorrect_symbols_amount->Text), int::Parse(substring_position->Text));
+
 			changeable_words_list->Items->Clear();
-
-			int::Parse(substring_length->Text);
-			int::Parse(substring_position->Text);
-			int::Parse(word_length->Text);
-			int::Parse(incorrect_symbols_amount->Text);
-
-			array<System::String ^>^ words = gcnew array<System::String^>(100);
 			int i = 0; while (i < 20 && words[i]){ changeable_words_list->Items->Add(words[i]); i++; }
 
 		}
 		
 		private: System::Void changeable_words_list_SelectedIndexChanged(System::Object^  sender, System::EventArgs^  e) {
 			String^ conformity_table; String^ text = TextBox->Text->ToLower();
-			
-			changeable_words_list->Text;
 
-			DictionaryConformityText->Text = LinguisticAnalysis::DictionaryAnalysis(&text, &conformity_table);
-			
+			changeable_words_list->Text;
+			String^ temp = DictionaryConformityText->Text;
+			DictionaryConformityText->Text = LinguisticAnalysis::DictionaryMakeChange(temp, &text, keys_list->Text, &conformity_table, changeable_words_list->Text, int::Parse(word_length->Text));
+
 			TextBox->Text = text;
 			ConformityTable->Text = conformity_table;
+		}
+		private: System::Void changeable_words_list_Click(System::Object^  sender, System::EventArgs^  e) {
+			changeable_words_list->Items->Clear();
+			String^ conformity_table; String^ text = TextBox->Text->ToLower();
+			//DictionaryConformityText->Text = LinguisticAnalysis::DictionaryBasedChange(&text, keys_list->Text, &conformity_table, changeable_words_list->Text, int::Parse(word_length->Text));
+			array<System::String ^>^ words = LinguisticAnalysis::DictionaryBasedChange(text, int::Parse(substring_length->Text), int::Parse(word_length->Text), int::Parse(incorrect_symbols_amount->Text), int::Parse(substring_position->Text));
+			TextBox->Text = text;
+			ConformityTable->Text = conformity_table;
+			for (int i = 0; i < 10; i++) changeable_words_list->Items->Add(words[i]);
+			DictionaryConformityText->Text = words[0];
 		}
 };
 }

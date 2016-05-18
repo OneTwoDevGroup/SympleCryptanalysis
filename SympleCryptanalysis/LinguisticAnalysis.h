@@ -10,9 +10,8 @@ namespace LinguisticAnalysis {
 
 	bool CheckPlainText(String^ text);
 
-	// ‘ункци€ подбирает слово из словар€, в соответветствии с параметрами
-	String^ DictionaryBasedChange(String^ *text, String^ *conformity_table, int stringLength, int wordLength, int matchesNum, int start);
-
+	array<System::String ^>^ DictionaryBasedChange(String^ text, int stringLength, int wordLength, int matchesNum, int start);
 	// «амен€ет таблицу соответствий, соответственно со словом, выбранным пользователем
-	void DictionaryMakeChange(String^ *text, String^ *conformity_table, String^ word, String^ tempWord, int wordLength);
+
+	String^ DictionaryMakeChange(String^ word, String^ *text, String^ key, String^ *conformity_table, String^ tempWord, int wordLength);
 }

@@ -164,7 +164,7 @@ namespace WordProcessing {
 	} Changes; // Экземпляр класса хранящий все изменения
 
 	//Функция сохраняет последние изменения
-	String^ changeTextUp(String^ *text, String^ *conformity_table, int **conformity = NULL, String ^key = nullptr) { 
+	String^ changeTextUp(String^ *text, String^ *conformity_table, int *conformity = NULL, String ^key = nullptr) { 
 		return Changes.changeTextUp(text, conformity_table, conformity, key); 
 	}
 
