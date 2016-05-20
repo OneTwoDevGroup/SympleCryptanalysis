@@ -5,9 +5,6 @@
 #include <fcntl.h>
 #include <io.h>
 
-#include <fstream>
-#include <string>
-
 #include "WordProcessing.h"
 #include "FrequencyAnalysis.h"
 #include "LinguisticAnalysis.h"
@@ -41,11 +38,13 @@ unsigned bcr(int n, int k) {
 namespace VigenereAnalysis {
 
 	using namespace System;
+	
 	WordProcessing::Alphabit alph("rus"); // Класс определяет используемый язык
 	double amount_probolity[u][MAXALPHLEN][MAXALPHLEN] = { 0 };
+	
 	int* Index (String^ text)
 	{
-//char alf[R] = { 'А','Б','В','Г','Д','Е','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ъ','Ы','Ь','Ю','Я' };
+		//char alf[R] = { 'А','Б','В','Г','Д','Е','Ж','З','И','Й','К','Л','М','Н','О','П','Р','С','Т','У','Ф','Х','Ц','Ч','Ш','Щ','Э','Ъ','Ы','Ь','Ю','Я' };
 		unsigned 	char alf[R] = { 'а','б','в','г','д','е','ж','з','и','й','к','л','м','н','о','п','р','с','т','у','ф','х','ц','ч','ш','щ','э','ъ','ы','ь','ю','я' };
 
 		unsigned char *S = (unsigned char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(text);
@@ -563,8 +562,7 @@ namespace VigenereAnalysis {
 
 	}
 
-	// Поиск сдвигов
-	
+	// Поиск сдвигов	
 	String ^keyDetermination(array<System::String ^>^ *keys, array<System::String ^>^ groups, int key_length) {
 
 		double conformoty_probability[u][MAXALPHLEN][MAXALPHLEN] = { 0 };
@@ -647,9 +645,7 @@ namespace VigenereAnalysis {
 		//	shifts[l] = best_shift;
 
 		//}
-
-
-
+		
 		//array<System::String ^>^ keys = gcnew array<System::String^>(MAXKEYAMOUNT);
 
 		//for (int shift = 0; shift < alph.length; shift++)
@@ -657,24 +653,14 @@ namespace VigenereAnalysis {
 		//		keys[shift] += alph.getLetter(shifts[i] + shift);
 
 		
-		std::ifstream dictionary("Configs/russian_dictionary.dic");
-		std::string word;
-
 		array<System::String ^>^ best_words = gcnew array<System::String^>(1000);
 		array<System::String ^>^ dic_words = LinguisticAnalysis::GetWordsWithLen(key_length);
 		double best_coef = 0;
-		//string best_word[1000];
+
 		
 
 		int amount = 0;
-		//double eps = 0.19400000000000015;
 
-		//do {
-		//	
-		//	eps += 0.001;
-		//	amount = 0;
-		//	dictionary.clear();
-		//	dictionary.seekg(0, ios::beg);
 
 		for (int i = 0; i < dic_words->Length; i++) {
 			if (!dic_words[i] || dic_words[i] == "") break;
@@ -690,16 +676,12 @@ namespace VigenereAnalysis {
 
 		}
 
-		double eps = 0.9;
-		//dictionary.clear();
-		//dictionary.seekg(0, std::ios::beg);
+		const double eps = 0.9;
 
 		for (int i = 0; i < dic_words->Length; i++) {
 
 			if (!dic_words[i] || dic_words[i] == "") break;
 
-			//getline(dictionary, word); int len = word.length();
-			//if (len != key_length) continue;
 
 			double coef = 0;
 
@@ -722,161 +704,8 @@ namespace VigenereAnalysis {
 		
 	}
 	
-	
-
-	//// Функция подбирает ключ, основываясь на длине ключа, используя частотный анализ
-	//String^ keyDetermination(String^ text, int **conformity) {
-
-	//	// Определяем длину ключа
-	//	int* lenght = (result(KasiskiExamination(text), Index(text)));
- //       int key_length = result(KasiskiExamination(text), Index(text))[0];
-	//	//int key_length = 7;
-	//	//for (i = 0; i < u; i++)
-	//	//	lenght++;
-	//	//	int key_length = *(result(KasiskiExamination(text), Index(text)));
-
-	//	// Задаём массив групп, на которые разбивается текст в зависимости от длины ключа
-	//	array<System::String ^>^ groups = gcnew array<System::String^>(MAXKEYAMOUNT);
-
-	//	// Задаём переменную под хранение ключа
-	//	String^ key;
-
-	//	// Цикл заполняет группы
-	//	int not_letters = 0; // Опеределяет количество небуквенных символов, которые нужно пропустить
-	//	for (int j = 0; j < text->Length; j++) {
-	//		if (!alph.isLetter(text[j])) { not_letters++; continue; }
-	//		groups[(j - not_letters) % key_length] += text[j];
-	//	}
-	//	
-	//	double *text_frequency = FrequencyAnalysis::frequencyDetermination(groups[0]);
-	//	int shifts[MAXKEYAMOUNT] = { 0 };
-	//	for (int i = 1; i < key_length; i++) {
-
-	//		double *group_frequency = FrequencyAnalysis::frequencyDetermination(groups[i]);
-	//		long double max_conformity_coef = 0; int best_shift;
-
-	//		for (int shift = 0; shift < alph.length; shift++) {
-	//			long double conformity_coef = 0;
-	//			for (char letter = 0; letter < alph.length; letter++)
-	//				conformity_coef += text_frequency[letter] * group_frequency[(letter + shift) % alph.length];
-
-	//			if (max_conformity_coef < conformity_coef) {
-	//				max_conformity_coef = conformity_coef;
-	//				best_shift = shift;
-	//			}
-	//		}
-
-	//		shifts[i] = best_shift;
-
-	//		//int best_shift = shifts[i];
-
-	//		for (char letter = 0; letter < alph.length; letter++)
-	//			text_frequency[letter] = (text_frequency[letter] + group_frequency[(letter + best_shift) % alph.length]) / 2;
-
-	//	}
 
 
-
-	//	// Отладочная информация
-	//	FILE *log_file = fopen("Configs/log.txt", "w+");
-	//	_setmode(_fileno(log_file), _O_U8TEXT);
-
-	//	fwprintf(log_file, L"Таблица частот для всего текста суммарно:\n");
-	//	for (int i = 0; i < alph.length; i++)
-	//		fwprintf(log_file, L"%lc - %lf\n", alph.getLetter(i), text_frequency[i]);
-	//	fclose(log_file);
-	//	// Отладочная информация
-
-
-	//	*conformity = FrequencyAnalysis::conformityDetermination(text_frequency);
-
-	//	// Цикл делает частотный анализ для каждой группы и формирует ключ
-	//	for (int i = 0; i < key_length; i++)
-	//		//key += alph.getLetter(FrequencyAnalysis::shiftDeducing(groups[i], conformity));
-	//		key += alph.getLetter(shifts[i]);
-
-
-	//	return key;
-	//}
-
-	/*int *multiGrammStatisctic(String^ text) {
-
-		const int sample_size = 100;
-		const double min_freq = 0.0001;
-		const int size = 50000;
-		const int grams = 3;
-		
-		int *conformities = (int *)malloc(MAXALPHLEN * sizeof(int));
-		for (int i = 0; i < MAXALPHLEN; i++) conformities[i] = 0;
-		
-		int multigrams_amount[size] = { 0 };
-		int letters_amount = 0, link = 0, j, digit;
-		
-		for (int i = 0; i < text->Length - 1; i++) {
-			if (!alph.isLetter(text[i])) continue;
-			
-			link = 0;
-			j = i;
-			digit = grams - 1;
-
-			while (j < text->Length && digit >= 0) {
-				while (j < text->Length && !alph.isLetter(text[j])) j++;
-				link += (text[j] - alph.firstchar) * pow(alph.length, digit);
-				digit--;
-				j++;
-			}
-
-			if (digit > 0) break;
-			multigrams_amount[link]++;
-			letters_amount += grams;
-		}
-
-		array<String^>^ multigrams = gcnew array<System::String^>(sample_size);
-		double freq[sample_size];
-		int counter = -1;
-
-		for (int i = 0; i < size; i++) {
-			double frequency = (double)multigrams_amount[i] / (double)letters_amount;
-			if (frequency > min_freq) {
-				int code = i;
-				counter++;
-				if (counter == sample_size) break;
-				for (int j = 0; j < grams; j++) {
-					multigrams[counter] += alph.getLetter(code % alph.length);
-					code /= alph.length;
-				}
-
-				freq[counter] = frequency;
-			}
-		}
-
-		for (int i = 1; i < sample_size; i++) {
-			
-			int temp = freq[i];
-			String ^temp_str = multigrams[i];
-
-			for (int j = i - 1; j >= 0; j--) {
-				if (freq[j] < temp) break;
-
-				freq[j + 1] = freq[j];
-				freq[j] = temp;
-
-				multigrams[j + 1] = multigrams[j];
-				multigrams[j] = temp_str;
-			}
-		}
-
-		IO::StreamReader^ threegrams_stat = IO::File::OpenText(L"Configs/threegrams_stat.txt");
-		String^ multigram;
-		for (int i = 0; i < sample_size; i++) {
-			multigram = threegrams_stat->ReadLine();
-			for (int j = 0; j < 3; j++)
-				conformities[multigrams[i][j] - alph.firstchar] = multigram[j] - alph.firstchar;
-		}
-
-		return conformities;
-
-	}*/
 
 
 	String^ shiftLettersInText(String^ text, String^ key, int *conformity) {
@@ -899,226 +728,8 @@ namespace VigenereAnalysis {
 
 		return text_builder.ToString();				// Возвращаем изменённую строку
 	}
-	String^ replaceLettersInText(String^ text, int *conformity)
-	{
-
-		// Формируем изменяемую строку
-		Text::StringBuilder text_builder(text);
-
-		// Заменяет символы текста в соответствии с ключом и квадратом Веженера
-		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
-		for (int j = 0; j < text->Length; j++) {
-			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
-			text_builder[j] = alph.getLetter(conformity[text_builder[j] - alph.firstchar]);
-		}
-
-		return text_builder.ToString();				// Возвращаем изменённую строку
-	}
-static float frequensy[R][R];
-float multiGrammStatisctic(String^ text,int* conformitis,String^key) 
-{
-	String^ newtext;
-	newtext = shiftLettersInText(text,  key, conformitis);
-	unsigned char *S = (unsigned char*)(char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(newtext);
-	int count[R][R] = { 0 };
-	int  j, k;
-	int n = 0;
-	unsigned char bigr[2];
-	bigr[1] = *S;
-	int size = strlen((const char*)S);
-	int i = 0;
-		while ((i<size)&&((bigr[1]<224) || (bigr[1]>255)))
-		{
-			i++;
-			bigr[1] = (*++S);
-		}
-		if (bigr[1] < MAXLOW)
-			bigr[1] += 32;
-		
-		n++;
-	 
-		for (i = i; i < size; i++)
-				{
-					bigr[0] = bigr[1];
-					
-					bigr[1] = *++S;
-			
-					if ((bigr[1] < 192) || (bigr[1]>255))
-					{
-						while ((i<size)&&((bigr[1] < 192) || (bigr[1]>255)))
-						{
-							i++;
-							bigr[1] = *++S;
-							
-						}
-					}
-					if (bigr[1] < MAXLOW)
-						bigr[1] += 32;
-					count[bigr[0]-224][bigr[1]-224]+= 1;
-					n++;
-				}
-		double  feature = 0;
-		
-		
-		//std::ifstream fp1("bigr.txt");
-
-		
-		for (i = 0; i < R; i++)
-		{
-			for (j = 0; j < R; j++)
-			{
-				if (frequensy[i][j])
-					feature += count[i][j] * log(frequensy[i][j]);
-			}
-		}
-
-		
-		return feature;
-		
-
-}
-int* ratio(String^ text, int* conformits,String^key)
-{
-
-	String^ temp;
-	for (int i = 0; i < 32; i++)
-		temp += conformits[i].ToString() + " ";
 
 
-	int i, j, mini;
-	int minj = -1;
-	float min = MAXDWORD;
-	int* newconformits=(int*)malloc(sizeof(int)*MAXALPHLEN);
-	for (i = 0; i < R; i++)
-		newconformits[i] = conformits[i];
-	
-
-	temp = "";
-	for (int i = 0; i < 32; i++)
-		temp += conformits[i].ToString() + " ";
-	temp = "";
-	for (int i = 0; i < 32; i++)
-		temp += newconformits[i].ToString() + " ";
-
-	bool flag = 1;
-	
-		minj = -1;
-		min = MAXDWORD;
-		/*for (j = 0; j < R; j++)
-		{
-			if (probolity[conformits[j]][j] < min)
-			{
-				min = probolity[conformits[j]][j];
-				minj = j;
-
-			}
-		}*/
-	
-		FILE *fp1 = fopen("bigr.txt", "r");
-		for (i = 0; i < R; i++)
-		{
-			for (j = 0; j < R; j++)
-			{
-				fscanf(fp1, "%e", &(frequensy[i][j]));
-				//frequensy[i][j] << fp1;
-			}
-		}fclose(fp1);
-		double feature = multiGrammStatisctic(text, conformits, key);
-
-		for (j = 0; j < 8000;j++)
-		{ 
-			/*for (i = 0; i < R; i++)
-			{
-
-				/if ((probolity[conformits[j]][j] + probolity[conformits[i]][i]) < (probolity[conformits[j]][i] + probolity[conformits[i]][j]))
-				{*/
-			int pot;
-			int random2 = rand() % 32;
-			int random1 = rand() % 32;
-			while (random1 == random2)
-			{
-				random2 = rand() % 32;
-				 random1 = rand() % 32;
-			}
-			pot = newconformits[random1];
-					newconformits[random1] =newconformits[ random2];
-					newconformits[random2] =pot;
-					float newfeature = multiGrammStatisctic(text, newconformits, key);
-					if (feature < newfeature)
-					{
-						feature = newfeature;
-						//	return newconformits;
-					}
-					else
-					{	
-						pot = newconformits[random1];
-						newconformits[random1] = newconformits[random2];
-						newconformits[random2] = pot;
-
-					}
-
-
-					temp = "";
-					for (int i = 0; i < 32; i++)
-						temp += newconformits[i].ToString() + " ";
-				//}
-			}
-	//}
-
-	temp = "";
-	for (int i = 0; i < 32; i++)
-		temp += newconformits[i].ToString() + " ";
-
-		
-		return newconformits;
-}
-	
-		String^ shiftLettersInText(String^ text, String^ key) {
-		
-		// Формируем изменяемую строку
-		Text::StringBuilder text_builder(text);
-
-		// Заменяет символы текста в соответствии с ключом и квадратом Веженера
-		int not_letters = 0;  // Опеределяет количество небуквенных символов, которые нужно пропустить
-		for (int j = 0; j < text->Length; j++) {
-			if (!alph.isLetter(text_builder[j])) { not_letters++; continue; }
-			text_builder[j] = alph.getLetter(text_builder[j] - alph.firstchar - key[(j - not_letters) % key->Length] + key[0]);
-		}
-		
-		return text_builder.ToString();				// Возвращаем изменённую строку
-	}
-
-	
-
-	void swap(int *arr, int a, int b) {
-		
-		//FILE *log_file = fopen("Configs/log.txt", "r+");
-		//fseek(log_file, 0, SEEK_END);
-		//fprintf(log_file, "%d - %d\n", a, b);
-		//fclose(log_file);
-
-		arr[a] ^= arr[b];
-		arr[b] ^= arr[a];
-		arr[a] ^= arr[b];
-	}
-
-	//bool tryToSwapConformity(int *conformity, int n, String^ text, String^ key) {
-
-	//	if (n == 20) 
-	//		if (LinguisticAnalysis::CheckPlainText(changeText(text, conformity, key))) return true;
-	//		else return false;
-
-	//	for (int i = 1; i < n - 20; i++) {
-	//		
-	//		swap(conformity, n - 1, n - i - 1);
-	//		
-	//		if (tryToSwapConformity(conformity, n - 1, text, key)) return true;
-	//		
-	//		swap(conformity, n - 1, n - i - 1);
-	//	}
-
-	//	return false;
-	//}
 
 	// Функция дешифрует текст
 	String^ textPreparing(String^ *text, int **conformity, String^ key = nullptr) {
@@ -1133,10 +744,7 @@ int* ratio(String^ text, int* conformits,String^key)
 			splitIntoGroups(*text, key_length, groups);
 
 			//int *shifts = shiftsDetermination(groups, key_length);
-
-
-
-
+			
 			// Подбираем ключ
 			array<System::String ^>^ keys = gcnew array<System::String^>(MAXKEYAMOUNT);
 			key = keyDetermination(&keys, groups, key_length);
@@ -1144,8 +752,7 @@ int* ratio(String^ text, int* conformits,String^key)
 		}
 		
 		
-		//*text = shiftLettersInText(*text, key);
-
+		//*conformity = ratio(*text, *conformity,key);
 		//int *conformity = multiGrammStatisctic(text);
 
 		//Таблицы соответствия букв шифротекста буквам исходного алфавита
@@ -1155,19 +762,14 @@ int* ratio(String^ text, int* conformits,String^key)
 		*conformity = freq(key, key->Length);
 
 		String ^temp; for (int i = 0; i < alph.length; i++) temp += alph.getLetter((*conformity)[i]) + " ";
-	//	*conformity = ratio(*text, *conformity);
-		//fclose(log_file);
 
 		//if (!(LinguisticAnalysis::CheckPlainText(new_text))) {
 		//	
 		//	tryToSwapConformity(conformity, alph.length, text, key);
 		//	text = changeText(text, conformity, key);
 		//}
-		
-		
-		
 
-		//*conformity = ratio(*text, *conformity,key);
+		
 		*text = shiftLettersInText(*text, key, *conformity);
 
 
@@ -1192,3 +794,178 @@ int* ratio(String^ text, int* conformits,String^key)
 		return *text;
 	}
 }
+
+//bool tryToSwapConformity(int *conformity, int n, String^ text, String^ key) {
+
+//	if (n == 20) 
+//		if (LinguisticAnalysis::CheckPlainText(changeText(text, conformity, key))) return true;
+//		else return false;
+
+//	for (int i = 1; i < n - 20; i++) {
+//		
+//		swap(conformity, n - 1, n - i - 1);
+//		
+//		if (tryToSwapConformity(conformity, n - 1, text, key)) return true;
+//		
+//		swap(conformity, n - 1, n - i - 1);
+//	}
+
+//	return false;
+//}
+
+//void swap(int *arr, int a, int b) {
+//
+//	//FILE *log_file = fopen("Configs/log.txt", "r+");
+//	//fseek(log_file, 0, SEEK_END);
+//	//fprintf(log_file, "%d - %d\n", a, b);
+//	//fclose(log_file);
+//
+//	arr[a] ^= arr[b];
+//	arr[b] ^= arr[a];
+//	arr[a] ^= arr[b];
+//}
+
+
+//static float frequensy[R][R];
+//float multiGrammStatisctic(String^ text, int* conformitis, String^key)
+//{
+//	String^ newtext;
+//	newtext = shiftLettersInText(text, key, conformitis);
+//	unsigned char *S = (unsigned char*)(char*)(void*)System::Runtime::InteropServices::Marshal::StringToHGlobalAnsi(newtext);
+//	int count[R][R] = { 0 };
+//	int  j, k;
+//	int n = 0;
+//	unsigned char bigr[2];
+//	bigr[1] = *S;
+//	int size = strlen((const char*)S);
+//	int i = 0;
+//	while ((i<size) && ((bigr[1]<224) || (bigr[1]>255)))
+//	{
+//		i++;
+//		bigr[1] = (*++S);
+//	}
+//	if (bigr[1] < MAXLOW)
+//		bigr[1] += 32;
+//
+//	n++;
+//
+//	for (i = i; i < size; i++)
+//	{
+//		bigr[0] = bigr[1];
+//
+//		bigr[1] = *++S;
+//
+//		if ((bigr[1] < 192) || (bigr[1]>255))
+//		{
+//			while ((i<size) && ((bigr[1] < 192) || (bigr[1]>255)))
+//			{
+//				i++;
+//				bigr[1] = *++S;
+//
+//			}
+//		}
+//		if (bigr[1] < MAXLOW)
+//			bigr[1] += 32;
+//		count[bigr[0] - 224][bigr[1] - 224] += 1;
+//		n++;
+//	}
+//	double  feature = 0;
+//
+//
+//	//std::ifstream fp1("bigr.txt");
+//
+//
+//	for (i = 0; i < R; i++)
+//	{
+//		for (j = 0; j < R; j++)
+//		{
+//			if (frequensy[i][j])
+//				feature += count[i][j] * log(frequensy[i][j]);
+//		}
+//	}
+//
+//
+//	return feature;
+//
+//
+//}
+
+
+//int *multiGrammStatisctic(String^ text) {
+//
+//	const int sample_size = 100;
+//	const double min_freq = 0.0001;
+//	const int size = 50000;
+//	const int grams = 3;
+//
+//	int *conformities = (int *)malloc(MAXALPHLEN * sizeof(int));
+//	for (int i = 0; i < MAXALPHLEN; i++) conformities[i] = 0;
+//
+//	int multigrams_amount[size] = { 0 };
+//	int letters_amount = 0, link = 0, j, digit;
+//
+//	for (int i = 0; i < text->Length - 1; i++) {
+//		if (!alph.isLetter(text[i])) continue;
+//
+//		link = 0;
+//		j = i;
+//		digit = grams - 1;
+//
+//		while (j < text->Length && digit >= 0) {
+//			while (j < text->Length && !alph.isLetter(text[j])) j++;
+//			link += (text[j] - alph.firstchar) * pow(alph.length, digit);
+//			digit--;
+//			j++;
+//		}
+//
+//		if (digit > 0) break;
+//		multigrams_amount[link]++;
+//		letters_amount += grams;
+//	}
+//
+//	array<String^>^ multigrams = gcnew array<System::String^>(sample_size);
+//	double freq[sample_size];
+//	int counter = -1;
+//
+//	for (int i = 0; i < size; i++) {
+//		double frequency = (double)multigrams_amount[i] / (double)letters_amount;
+//		if (frequency > min_freq) {
+//			int code = i;
+//			counter++;
+//			if (counter == sample_size) break;
+//			for (int j = 0; j < grams; j++) {
+//				multigrams[counter] += alph.getLetter(code % alph.length);
+//				code /= alph.length;
+//			}
+//
+//			freq[counter] = frequency;
+//		}
+//	}
+//
+//	for (int i = 1; i < sample_size; i++) {
+//
+//		int temp = freq[i];
+//		String ^temp_str = multigrams[i];
+//
+//		for (int j = i - 1; j >= 0; j--) {
+//			if (freq[j] < temp) break;
+//
+//			freq[j + 1] = freq[j];
+//			freq[j] = temp;
+//
+//			multigrams[j + 1] = multigrams[j];
+//			multigrams[j] = temp_str;
+//		}
+//	}
+//
+//	IO::StreamReader^ threegrams_stat = IO::File::OpenText(L"Configs/threegrams_stat.txt");
+//	String^ multigram;
+//	for (int i = 0; i < sample_size; i++) {
+//		multigram = threegrams_stat->ReadLine();
+//		for (int j = 0; j < 3; j++)
+//			conformities[multigrams[i][j] - alph.firstchar] = multigram[j] - alph.firstchar;
+//	}
+//
+//	return conformities;
+//
+//}
