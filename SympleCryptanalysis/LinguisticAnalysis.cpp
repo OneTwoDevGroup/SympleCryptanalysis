@@ -207,7 +207,7 @@ namespace LinguisticAnalysis {
 		if (word->Length - maxMatchedLetters < matchesNum+1) {
 			return words;
 		}
-		else return nullptr;
+		else return gcnew cli::array<System::String ^>(1);
 	}
 	
 	
@@ -244,14 +244,14 @@ namespace LinguisticAnalysis {
 			}
 		}
 		String^ temp;*/
-			return words2;
+			return words2 /*!= nullptr ? words2 : gcnew array<System::String ^>(0)*/;
 		}
 	}
 
 	String^ DictionaryMakeChange(String^ word, String^ *text, String^ key, String^ *conformity_table, String^ tempWord, int wordLength) {
 		int* conformity = WordProcessing::getLastConformity();
 		String^ result;
-		if (tempWord[0] != '0') {
+		if (tempWord != "" && tempWord[0] != '0') {
 			for (int i = 0; i < wordLength-1; i++) {
 				if (word[i] != tempWord[i]) {
 					int pos = p + i;//-----------------------------

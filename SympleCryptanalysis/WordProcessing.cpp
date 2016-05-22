@@ -89,6 +89,13 @@ namespace WordProcessing {
 
 		// Функция сохраняет изменения																								
 		void save_changes(String^ text, int *conformity) {
+			if (amount == ARRAY_SIZE - 1) {
+				for (int i = 1; i < ARRAY_SIZE / 2; i++) {
+					textChanges[i] = textChanges[i + ARRAY_SIZE / 2];
+					memcpy(conformityChanges[i], conformityChanges[i + ARRAY_SIZE], MAXALPHLEN * sizeof(int));
+				}
+				amount = ARRAY_SIZE / 2;
+			}
 			textChanges[amount % ARRAY_SIZE] = text;
 			memcpy(conformityChanges[amount % ARRAY_SIZE], conformity, sizeof(int) * MAXALPHLEN);
 			//for (int i = 0; i < alph.length; i++) {
@@ -105,9 +112,14 @@ namespace WordProcessing {
 		String^ getFirstText(String^ text = nullptr) { return (amount != 0 || text == nullptr) ? textChanges[0]->ToLower() : text; }
 
 		// Функция передаёт последний текст
-		String^ getLastText() { return textChanges[amount - 1]->ToLower(); }
+		String^ getLastText() { return (amount > 0) ? textChanges[amount - 1]->ToLower() : ""; }
 
-		int *getLastConformity() { return (amount != 0) ? conformityChanges[amount - 1] : NULL; }
+		int *getLastConformity() {
+			int *conformity = (int *)malloc(sizeof(int) * MAXALPHLEN);
+			if (amount > 0)	for (int i = 0; i < alph.length; i++) conformity[i] = conformityChanges[amount - 1][i];
+			else for (int i = 0; i < alph.length; i++) conformity[i] = i;
+			return conformity;
+		}
 
 		//Функция откатывает последние изменения
 		String^ changeTextDown(String^ *text, String^ *conformity_table) {

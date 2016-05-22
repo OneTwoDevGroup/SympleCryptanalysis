@@ -14,4 +14,6 @@ namespace LinguisticAnalysis {
 	// Заменяет таблицу соответствий, соответственно со словом, выбранным пользователем
 
 	String^ DictionaryMakeChange(String^ word, String^ *text, String^ key, String^ *conformity_table, String^ tempWord, int wordLength);
+
+	array<System::String ^>^ GetWordsWithLen(int length);
 }
