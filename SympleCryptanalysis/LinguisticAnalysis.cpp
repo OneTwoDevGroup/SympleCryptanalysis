@@ -4,6 +4,7 @@
 #include <regex>
 #include "WordProcessing.h"
 #include <time.h>
+
 #define MAX_LEN 20
 
 
@@ -88,6 +89,8 @@ namespace LinguisticAnalysis {
 
 
 	//-----------------------------------------------------------------------------
+
+	WordProcessing::Alphabit alph("rus");
 
 /*array<System::String ^>^ PartitialMatches(String^ word)*/		// Возвращает массив слов (найденные совпадения)
 	//int PartitialMatches(String^ word, int minMatches)
@@ -208,7 +211,7 @@ namespace LinguisticAnalysis {
 	}
 	
 	
-
+	int p = 0; //===========================
 
 	array<System::String ^>^ DictionaryBasedChange(String^ text, int stringLength, int wordLength, int matchesNum, int start) {
 
@@ -217,11 +220,11 @@ namespace LinguisticAnalysis {
 			conformity_new[i] = -1;
 		String^ result;
 		String^ word;
-		for (int j = start; j < j + wordLength; j++) {
+		for (p = start; p < p + wordLength; p++) {
 			int spaceNum = 0;
 			for (int k = 0; k < wordLength + spaceNum; k++)
-				if (text[j + k] != ' ')
-					word += text[j + k];
+				if (text[p + k] != ' ')
+					word += text[p + k];
 				else
 					spaceNum++;
 			//array<System::String ^>^ tempWords = PartitialMatchesChanges(word, matchesNum, pos);
@@ -251,14 +254,24 @@ namespace LinguisticAnalysis {
 		if (tempWord[0] != '0') {
 			for (int i = 0; i < wordLength-1; i++) {
 				if (word[i] != tempWord[i]) {
-					int tempSign = conformity[word[i] - 1072];
-					conformity[word[i] - 1072] = tempWord[i] - 1072;
-					for (int i = 0; i < MAXALPHLEN; i++)
-						if (conformity[i] == word[i] - 1072) {
-							conformity[i] = tempWord[i] - 1072;
-							for (int j = 0; j < MAXALPHLEN; j++) {
-								if (i != j && conformity[j] == tempWord[i] - 1072) {
-									conformity[j] = word[i] - 1072;
+					int pos = p + i;//-----------------------------
+					for (int k = 0; k < p + i; k++)
+						if ((*text)[k] == ' ')
+							pos--;//-------------------------------
+					//int tempSign = conformity[word[i] - alph.firstchar];
+					//conformity[word[i] - alph.firstchar] = tempWord[i] - alph.firstchar;
+					int replaceable = tempWord[i] - alph.firstchar;
+					int replacing = word[i] - alph.firstchar;
+					int shift = pos % key->Length;
+					for (int i = 0; i < alph.length; i++)
+						if (conformity[i] == (alph.length + replaceable + shift) % alph.length) {
+							for (int j = 0; j < alph.length; j++) {
+								if (i != j && conformity[j] == (alph.length + replacing + shift) % alph.length) {
+
+									int temp = conformity[i];
+									conformity[i] = conformity[j];
+									conformity[j] = temp;
+
 									break;
 								}
 
