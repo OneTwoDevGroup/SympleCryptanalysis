@@ -297,7 +297,7 @@ namespace VigenereAnalysis {
 			{
 				if ((lenght_distance[i][1] % j) == 0)
 				{
-					h[j] +=1.0;
+					h[j] +=1.0*lenght_distance[i][0]*lenght_distance[i][0];
 					/*if (lenght_distance[i][0]>5)
 					{
 						if (count_matched[i]>2 * max_match_sum / 3)
