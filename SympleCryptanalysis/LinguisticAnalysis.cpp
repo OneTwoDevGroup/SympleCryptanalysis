@@ -212,6 +212,7 @@ namespace LinguisticAnalysis {
 	
 	
 	int p = 0; //===========================
+	int pos2 = 0;
 
 	array<System::String ^>^ DictionaryBasedChange(String^ text, int stringLength, int wordLength, int matchesNum, int start) {
 
@@ -245,6 +246,10 @@ namespace LinguisticAnalysis {
 		}
 		String^ temp;*/
 			return words2 /*!= nullptr ? words2 : gcnew array<System::String ^>(0)*/;
+			pos2 = p;
+			for (int k = 0; k < p; k++)
+				if ((*text)[k] == ' ')
+					pos2--;
 		}
 	}
 
@@ -252,26 +257,26 @@ namespace LinguisticAnalysis {
 		int* conformity = WordProcessing::getLastConformity();
 		String^ result;
 		if (tempWord != "" && tempWord[0] != '0') {
-			for (int i = 0; i < wordLength-1; i++) {
+			for (int i = 0; i < wordLength; i++) {
 				if (word[i] != tempWord[i]) {
-					int pos = p + i;//-----------------------------
-					for (int k = 0; k < p + i; k++)
+					int tempPos = pos2 + i;//-----------------------------
+					/*for (int k = 0; k < p + i; k++)
 						if ((*text)[k] == ' ')
-							pos--;//-------------------------------
-					//int tempSign = conformity[word[i] - alph.firstchar];
-					//conformity[word[i] - alph.firstchar] = tempWord[i] - alph.firstchar;
-					int replaceable = tempWord[i] - alph.firstchar;
-					int replacing = word[i] - alph.firstchar;
-					int shift = pos % key->Length;
-					for (int i = 0; i < alph.length; i++)
-						if (conformity[i] == (alph.length + replaceable + shift) % alph.length) {
+							pos--;*///-------------------------------
+					int replaceable = word[i] - alph.firstchar;
+					int replacing = tempWord[i] - alph.firstchar;
+					int shift = key[tempPos % key->Length] - key[0];
+					for (int n = 0; n < alph.length; n++)
+						if (conformity[n] == (alph.length + replaceable + shift) % alph.length) {
 							for (int j = 0; j < alph.length; j++) {
-								if (i != j && conformity[j] == (alph.length + replacing + shift) % alph.length) {
+								if (n != j && conformity[j] == (alph.length + replacing + shift) % alph.length) {
 
-									int temp = conformity[i];
-									conformity[i] = conformity[j];
+									int temp = conformity[n];
+									conformity[n] = conformity[j];
 									conformity[j] = temp;
-
+									int tempTest[50] = { 0 };
+									for (int l = 0; l < alph.length; l++)
+										tempTest[l] = conformity[l];
 									break;
 								}
 
