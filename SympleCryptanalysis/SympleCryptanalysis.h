@@ -560,6 +560,9 @@ namespace SympleCryptanalysis {
 								int temp = conformity[i];
 								conformity[i] = conformity[j];
 								conformity[j] = temp;
+								int tempTest[50] = { 0 };
+								for (int l = 0; l < alph.length; l++)
+									tempTest[l] = conformity[l];
 
 								break;
 							}
